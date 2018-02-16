@@ -20,7 +20,10 @@ A LRN element
         display: block;
       }
     </style>
-    <h2>[[title]]</h2>
+  <video>
+    <slot></slot>
+  </video>
+  <div id="transcript"><slot name="transcript"></slot></div>
   </template>
 
   <script>
