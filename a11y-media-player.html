@@ -1,4 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../responsive-utility/responsive-utility.html">
+<link rel="import" href="a11y-media-play-button.html">
+<link rel="import" href="a11y-media-button.html">
 
 <!--
 `a11y-media-player`
@@ -19,11 +22,61 @@ A LRN element
       :host {
         display: block;
       }
+      :host, 
+      :host #controls, 
+      :host #media-inner,
+      :host #media-inner > * {
+        width: 100%;
+      }
+      :host #media-inner {
+        padding-top: 57.2%;
+        position: relative;
+      }
+      :host #video {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      :host #playbutton {
+        padding-top: 57.2%;
+        opacity: 1;
+        -webkit-transition: opacity 0.5s;
+        -moz-transition: opacity 0.5s;
+        transition: opacity 0.5s;
+      }
+      :host #playbutton[disabled], 
+      :host[playing] #playbutton {
+        opacity: 0;
+      }
+      :host #controls {
+        display: table-row;
+      }
     </style>
-  <video>
-    <slot></slot>
-  </video>
-  <div id="transcript"><slot name="transcript"></slot></div>
+    <div id="player-inner">
+      <div id="media">
+        <div id="media-inner">
+          <video 
+            autoplay$="[[autoplay]]" 
+            id="video" 
+            loop$="[[loop]]" 
+            muted$="[[muted]]">
+            <slot></slot>
+          </video>
+          <a11y-media-play-button id="playbutton"></a11y-media-play-button>
+        </div>
+      </div>
+      <div id="controls">
+        <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
+        <!--a11y-media-button icon="av:fast-rewind" label="backward"></a11y-media-button>
+        <a11y-media-button icon="av:fast-forward" label="forward"></a11y-media-button>
+        <a11y-media-button icon="av:replay" label="restart"></a11y-media-button-->
+        <a11y-media-button icon="av:volume-off" label="mute" toggle$="[[muted]]"></a11y-media-button>
+        <a11y-media-button icon="av:volume-up" label="volume"></a11y-media-button>
+        <!--a11y-media-button icon="fullscreen" label="full screen"></a11y-media-button-->
+        <a11y-media-button icon="av:loop" label="loop" toggle$="[[loop]]"></a11y-media-button>
+      </div>
+    </div>
+    <!--div id="transcript"><slot name="transcript"></slot></div-->
   </template>
 
   <script>
@@ -31,13 +84,163 @@ A LRN element
 
       is: 'a11y-media-player',
 
-      properties: {
-        title: {
-          type: String,
-          value: 'a11y-media-player',
-        },
+      listeners: {
+        'play-button-clicked': 'play',
+        'button-clicked': '_onButtonClick'
       },
 
+      properties: {
+        /* fullscreen option
+        allowFullscreen: {
+          type: Boolean,
+          value: true,
+        },
+        button if media has chapters
+        chaptersButton: {
+          type: Boolean,
+          value: false,
+        },
+        enable debug mode
+        debug: {
+          type: Boolean,
+          value: false,
+        }, */
+        /* autoplay is an option, 
+         * but generally not recommended for a11y
+         */ 
+        autoplay: {
+          type: Boolean,
+          value: false,
+        },
+        /*
+         * media aspect ratio
+         */
+         aspect: {
+          type: String,
+          value: null,
+        },
+        /*
+         * language
+         */
+        lang: {
+          type: String,
+          value: 'en',
+          reflectToAttribute: true,
+        },
+        /*
+         * length of video
+         */
+        length: {
+          type: String,
+          value: '',
+        },
+        /* 
+         * looping is not fully supported
+         */
+        loop: {
+          type: Boolean,
+          value: false,
+        },
+        /* 
+         * is audio muted
+         */
+        muted: {
+          type: Boolean,
+          value: false,
+        },
+        /*
+         * is media playing
+         */
+        playing: {
+          type: String,
+          value: false,
+          reflectToAttribute: true
+        },
+        /*
+         * play/pause button
+         */
+        playPause: {
+          type: Object,
+          computed: '_getPlayPause(playing)'
+        },
+        /* the length of the video
+        length: {
+          type: TODO,
+          value: TODO,
+        },
+        looping is not fully supported
+        startTime: {
+          type: TODO,
+          value: TODO,
+        },
+        /* the title of the video
+        title: {
+          type: String,
+          value: null,
+        },
+        button if media has transcript
+        transcriptButton: {
+          type: Boolean,
+          value: false,
+        },
+        button if media has descriptions
+        descriptionsButton: {
+          type: Boolean,
+          value: false,
+        },
+        Range is 0 to 10. Best not to crank it to avoid overpowering screen readers
+        volume: {
+          type: Number,
+          value: 7,
+        }, */
+      },
+      ready: function(){
+        console.log(this.$.video.duration);
+      },
+      /* play the media */
+      play: function(e){
+        if (e === undefined || e.detail === this.$.playbutton) {
+          this.$.playbutton.setAttribute('disabled',true);
+          this.playing = true;
+          this.$.video.play();
+        }
+      },
+      /* play the media */
+      pause: function(e){
+        this.playing = false;
+        this.$.video.pause();
+      },
+      /* toggle looping media */
+      toggleLoop: function(mode){
+        mode = mode === undefined ? mode = !this.loop : mode;
+        this.loop = mode;
+        this.$.video.loop = mode;
+      },
+      /* toggle mute */
+      toggleMute: function(mode){
+        mode = mode === undefined ? mode = !this.muted : mode;
+        this.muted = !this.muted;
+        this.$.video.muted = this.muted;
+      },
+      /* set play/pause button */
+      _getPlayPause: function(playing){
+        return playing ? {'icon': 'av:pause', 'label': 'pause'} : {'icon': 'av:play-arrow', 'label': 'play'};
+      },
+      /* determine which button was clicked and act accordingly */
+      _onButtonClick: function(e){
+        console.log(e.detail.parentNode,this.$.controls,e.detail.label);
+        if(e.detail.parentNode === this.$.controls) {
+          if (e.detail.label === 'play') {
+            this.play();
+          } else if (e.detail.label === 'pause') {
+            this.pause();
+          } else if (e.detail.label === 'loop') {
+            this.toggleLoop();
+          } else if (e.detail.label === 'mute') {
+            this.toggleMute();
+          }
+        }
+      }
     });
   </script>
 </dom-module>

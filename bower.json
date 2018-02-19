@@ -3,7 +3,10 @@
   "description": "A LRN element",
   "main": "a11y-media-player.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.10.1"
+    "polymer": "Polymer/polymer#^1.10.1",
+    "lrnsys-button": "LRNWebComponents/lrnsys-button#^1.3.1",
+    "responsive-utility": "LRNWebComponents/responsive-utility",
+    "iron-icons": "PolymerElements/iron-icons#^2.0.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

@@ -1,0 +1,97 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/av-icons.html">
+
+<!--
+`a11y-media-button`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+ -
+ -
+ -
+
+-->
+
+<dom-module id="a11y-media-button">
+  <template>
+    <style>
+      :host {
+        margin: 0;
+        padding: 0;
+        display: table-cell;
+      }
+      :host #button {
+        padding: 3px;
+        margin: 0;
+      }
+      :host iron-icon {
+        height: 18px;
+        width: 18px;
+      }
+      :host:active,
+      :host:focus,
+      :host:hover {
+        outline: 1px solid blue;
+      }
+      :host[toggle] #button {
+        background-color: #333;
+        color: #fff;
+      }
+      :host .sr-only {
+        position: absolute;
+        left: -99999;
+        top: 0;
+        height: 0;
+        width: 0;
+        overflow: hidden;
+      }
+    </style>
+    <button id="button" aria-role="button" tabindex="0" aria-label$="[[label]]" controls="video">
+      <iron-icon icon$="[[icon]]"></iron-icon>
+      <span class="sr-only">[[label]]</span>
+    </button>
+    <iron-a11y-keys id="a11y" keys="enter" target$="[[__target]]"
+    on-keys-pressed="_buttonTap"></iron-a11y-keys>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'a11y-media-button',
+
+      listeners: {
+        'button.tap': '_buttonTap'
+      },
+
+      properties: {
+        /*
+         * iron-icon type
+         */
+        icon: {
+          type: String,
+          value: null,
+        },
+        /*
+         * button label
+         */
+         label: {
+          type: String,
+          value: null,
+        },
+      },
+
+      ready: function(){
+        this.__target = this.$.button;
+      },
+
+      _buttonTap: function(){
+        this.fire('button-clicked',this);
+      }
+
+
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,91 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`a11y-media-play-button`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+ -
+ -
+ -
+
+-->
+
+<dom-module id="a11y-media-play-button">
+  <template>
+    <style>
+      :host {
+        display: block;
+        z-index: 2;
+      }
+      :host, 
+      :host #button {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      :host #button {
+        height: 100%;
+        padding:0;
+        margin: 0;
+        border: none;
+        background: rgba(200,200,200,0.5);
+      }
+      :host #button:active,
+      :host #button:focus,
+      :host #button:hover {
+        cursor: pointer;
+        outline: 1px solid blue;
+      }
+    </style>
+    <button id="button" tabindex="0" aria-hidden="true" tab-index="-1" disabled$="[[disabled]]" controls="video">
+      <svg id="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"  width="30%" height="30%">
+        <g>
+          <polygon points="30,20 30,180 170,100" fill="#000000" stroke="#ffffff" stroke-width="15px"/>
+          <text x="50" y="115" fill="#ffffff" font-size="30px">Play</text>
+        </g>
+      </svg>
+    </button>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'a11y-media-play-button',
+
+      listeners: {
+        'button.tap': '_playMedia'
+      },
+
+      properties: {
+        /*
+         * button label
+         */
+         label: {
+          type: String,
+          value: 'play',
+        },
+        /*
+         * is button disabled
+         */
+         disabled: {
+          type: Boolean,
+          value: false,
+        },
+      },
+
+      ready: function(){
+        this.__target = this.$.button;
+      },
+
+      _playMedia: function(){
+        this.fire('play-button-clicked',this);
+      }
+
+
+    });
+  </script>
+</dom-module>
