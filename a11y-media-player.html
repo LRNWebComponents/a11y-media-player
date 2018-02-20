@@ -1,5 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-slider/paper-slider.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
+<link rel="import" href="screenfull-lib.html">
 <link rel="import" href="a11y-media-play-button.html">
 <link rel="import" href="a11y-media-button.html">
 
@@ -24,6 +26,7 @@ A LRN element
       }
       :host, 
       :host #controls, 
+      :host #slider, 
       :host #media-inner,
       :host #media-inner > * {
         width: 100%;
@@ -65,18 +68,26 @@ A LRN element
           <a11y-media-play-button id="playbutton"></a11y-media-play-button>
         </div>
       </div>
+      <paper-slider id="slider" value$="[[elapsed]]" max$="[[duration]]" secondary-progress$="[[buffered]]"></paper-slider>
       <div id="controls">
+        <a11y-media-button icon="av:replay" label="restart"></a11y-media-button>
+        <a11y-media-button icon="av:fast-rewind" label="backward"></a11y-media-button>
         <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
-        <!--a11y-media-button icon="av:fast-rewind" label="backward"></a11y-media-button>
         <a11y-media-button icon="av:fast-forward" label="forward"></a11y-media-button>
-        <a11y-media-button icon="av:replay" label="restart"></a11y-media-button-->
         <a11y-media-button icon="av:volume-off" label="mute" toggle$="[[muted]]"></a11y-media-button>
-        <a11y-media-button icon="av:volume-up" label="volume"></a11y-media-button>
-        <!--a11y-media-button icon="fullscreen" label="full screen"></a11y-media-button-->
+        <!--a11y-media-button icon="av:volume-up" label="volume"></a11y-media-button-->
         <a11y-media-button icon="av:loop" label="loop" toggle$="[[loop]]"></a11y-media-button>
+        <template is="dom-if" if="[[__showFullscreen]]">
+          <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]"></a11y-media-button>
+        </template>
       </div>
     </div>
+    <div id="length"></div>
     <!--div id="transcript"><slot name="transcript"></slot></div-->
+    <iron-a11y-keys id="a11y" keys="up right" target$="[[__slider]]"
+    on-keys-pressed="forward"></iron-a11y-keys>
+    <iron-a11y-keys id="a11y" keys="down left" target$="[[__slider]]"
+    on-keys-pressed="rewind"></iron-a11y-keys>
   </template>
 
   <script>
@@ -90,21 +101,13 @@ A LRN element
       },
 
       properties: {
-        /* fullscreen option
+        /* 
+         * fullscreen option 
+         */
         allowFullscreen: {
           type: Boolean,
           value: true,
         },
-        button if media has chapters
-        chaptersButton: {
-          type: Boolean,
-          value: false,
-        },
-        enable debug mode
-        debug: {
-          type: Boolean,
-          value: false,
-        }, */
         /* autoplay is an option, 
          * but generally not recommended for a11y
          */ 
@@ -118,6 +121,34 @@ A LRN element
          aspect: {
           type: String,
           value: null,
+        },
+        /*
+         * buffered video in seconds
+         */
+        buffered: {
+          type: Number,
+          value: 0,
+        },
+        /*
+         * duration of video in seconds
+         */
+        duration: {
+          type: Number,
+          value: 0,
+        },
+        /*
+         * elapsed time in seconds
+         */
+        elapsed: {
+          type: Number,
+          value: 0,
+        },
+        /* 
+         * is fullscreen mode
+         */
+        fullscreen: {
+          type: Boolean,
+          value: false,
         },
         /*
          * language
@@ -157,45 +188,54 @@ A LRN element
           reflectToAttribute: true
         },
         /*
+         * playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
+         */
+        playbackRate: {
+          type: Number,
+          value: 1
+        },
+        /*
          * play/pause button
          */
         playPause: {
           type: Object,
           computed: '_getPlayPause(playing)'
         },
-        /* the length of the video
-        length: {
-          type: TODO,
-          value: TODO,
-        },
-        looping is not fully supported
-        startTime: {
-          type: TODO,
-          value: TODO,
-        },
-        /* the title of the video
-        title: {
-          type: String,
-          value: null,
-        },
-        button if media has transcript
-        transcriptButton: {
-          type: Boolean,
-          value: false,
-        },
-        button if media has descriptions
-        descriptionsButton: {
-          type: Boolean,
-          value: false,
-        },
-        Range is 0 to 10. Best not to crank it to avoid overpowering screen readers
+        /* Range is 0 to 10. Best not to crank it to avoid overpowering screen readers
         volume: {
           type: Number,
           value: 7,
         }, */
       },
       ready: function(){
-        console.log(this.$.video.duration);
+        let root = this, video = this.$.video;
+        root.__slider = root.$.slider;
+        root.__updateDrag = false;
+        root.__showFullscreen = this.allowFullscreen && screenfull.enabled;
+        if(root.__showFullscreen) {
+          screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen });
+        }
+        root.$.slider.addEventListener('dragging-changed', (e) => {
+          if (root.$.slider.dragging) { root.__updateDrag = true; }
+        });
+        root.__update = setInterval(() => {
+          if(root.duration === 0) { 
+            root.duration = video.duration > 0 ? video.duration*1000: 0; 
+          } else {
+            if(!root.$.slider.dragging && !root.__updateDrag){ 
+              root.elapsed = video.currentTime > 0 ? video.currentTime*1000 : 0;
+              root.$.length.innerHTML = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
+            } else if(!root.$.slider.dragging){
+              root.seek(root.$.slider.value/1000);
+              root.__updateDrag = false;
+            }
+            if(root.elapsed == root.duration && !root.loop){
+              root.$.playbutton.removeAttribute('disabled');
+              root.playing = false;
+            }
+            root.buffered = video.buffered.length > 0 ? video.buffered.end(0)*1000 : root.elapsed;
+          } 
+        }, 1);
       },
       /* play the media */
       play: function(e){
@@ -210,25 +250,65 @@ A LRN element
         this.playing = false;
         this.$.video.pause();
       },
+      /* play the media */
+      rewind: function(amt){
+        amt = amt !== undefined ? amt : 1;
+        this.seek(Math.max(this.$.video.currentTime - amt,0));
+      },
+      /* play the media */
+      forward: function(amt){
+        amt = amt !== undefined ? amt : 1;
+        this.seek(Math.min(this.$.video.currentTime + amt,this.$.video.duration));
+      },
+      /* seek to a time */
+      seek: function(time){
+        let seekable = this.$.video.seekable;
+        if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
+          this.$.video.currentTime = time;
+        }
+      },
       /* toggle looping media */
       toggleLoop: function(mode){
-        mode = mode === undefined ? mode = !this.loop : mode;
+        mode = mode === undefined ? !this.loop : mode;
         this.loop = mode;
         this.$.video.loop = mode;
       },
       /* toggle mute */
       toggleMute: function(mode){
-        mode = mode === undefined ? mode = !this.muted : mode;
+        mode = mode === undefined ? !this.muted : mode;
         this.muted = !this.muted;
         this.$.video.muted = this.muted;
+      },
+      /* set play/pause button */
+      _convertTime: function(val,max){
+        max = max === undefined ? val : max;
+        let a = (val) => { return val < 10 ? '0' + val : val; }, 
+        b = (val,i) => { return Math.floor(max/i) > 0 ? a(Math.floor(val/i))+':' : '' },
+        c = (val) => { return Math.floor(max/3600) > 0 ? a(Math.round(val)) : a(Math.floor(val))+'.'+a(Math.round(val*10)) };
+        return b(val,3600)+b(val%3600,60)+c(val%60);
       },
       /* set play/pause button */
       _getPlayPause: function(playing){
         return playing ? {'icon': 'av:pause', 'label': 'pause'} : {'icon': 'av:play-arrow', 'label': 'play'};
       },
+      /* seeks to slider position when slider is dragged */
+      _onSliderChange: function(slider){
+        console.log(slider);
+        this.seek(slider.value/1000);
+      },
+      /* resume updating value via playback */
+      _onDraggingChange: function(root){
+        console.log('change',root,root.$.slider.dragging);
+        if(root.$.slider.dragging){
+          root.$.slider.addEventListener('value-changed',root._onSliderChange(root.$.slider));
+        } else {
+          //this.seek(e.target.value/1000);
+          root.$.slider.removeEventListener('value-changed',root._onSliderChange(root.$.slider));
+        }
+        this.__dragging = root.$.slider.dragging; 
+      },
       /* determine which button was clicked and act accordingly */
       _onButtonClick: function(e){
-        console.log(e.detail.parentNode,this.$.controls,e.detail.label);
         if(e.detail.parentNode === this.$.controls) {
           if (e.detail.label === 'play') {
             this.play();
@@ -238,6 +318,15 @@ A LRN element
             this.toggleLoop();
           } else if (e.detail.label === 'mute') {
             this.toggleMute();
+          } else if (e.detail.label === 'backward') {
+            this.rewind(this.$.video.duration/20);
+          } else if (e.detail.label === 'forward') {
+            this.forward(this.$.video.duration/20);
+          } else if (e.detail.label === 'restart') {
+            this.seek(0);
+            this.play();
+          } else if (e.detail.label === 'full screen') {
+            screenfull.toggle(this);
           }
         }
       }
