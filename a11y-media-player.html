@@ -68,7 +68,7 @@ A LRN element
           <a11y-media-play-button id="playbutton"></a11y-media-play-button>
         </div>
       </div>
-      <paper-slider id="slider" value$="[[elapsed]]" max$="[[duration]]" secondary-progress$="[[buffered]]"></paper-slider>
+      <paper-slider id="slider" value$="[[elapsed]]" max$="[[duration]]" secondary-progress$="[[buffered]]" tab-index="-1"></paper-slider>
       <div id="controls">
         <a11y-media-button icon="av:replay" label="restart"></a11y-media-button>
         <a11y-media-button icon="av:fast-rewind" label="backward"></a11y-media-button>
@@ -210,45 +210,64 @@ A LRN element
       ready: function(){
         let root = this, video = this.$.video;
         root.__slider = root.$.slider;
-        root.__updateDrag = false;
+        root.__resumePlaying = false;
         root.__showFullscreen = this.allowFullscreen && screenfull.enabled;
         if(root.__showFullscreen) {
           screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen });
         }
         root.$.slider.addEventListener('dragging-changed', (e) => {
-          if (root.$.slider.dragging) { root.__updateDrag = true; }
+          if (!root.$.slider.dragging) { 
+            console.log('value',root.$.slider.value,'immediate value',root.$.slider.immediateValue);
+            root.seek(root.$.slider.immediateValue/1000);
+            if (root.__resumePlaying) root.play();
+            root.__resumePlaying = false;
+          }
         });
-        root.__update = setInterval(() => {
+        root.$.slider.addEventListener('focused-changed', (e) => {
+          if(root.$.slider.focused){
+            if (root.playing) root.__resumePlaying = true;
+            root.pause();
+          } else {
+            root.seek(root.$.slider.value/1000);
+            if (root.__resumePlaying) root.play();
+            root.__resumePlaying = false;
+          }
+        });
+        root.__getLength = setInterval(() => {
           if(root.duration === 0) { 
             root.duration = video.duration > 0 ? video.duration*1000: 0; 
           } else {
-            if(!root.$.slider.dragging && !root.__updateDrag){ 
-              root.elapsed = video.currentTime > 0 ? video.currentTime*1000 : 0;
-              root.$.length.innerHTML = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
-            } else if(!root.$.slider.dragging){
-              root.seek(root.$.slider.value/1000);
-              root.__updateDrag = false;
-            }
-            if(root.elapsed == root.duration && !root.loop){
-              root.$.playbutton.removeAttribute('disabled');
-              root.playing = false;
-            }
-            root.buffered = video.buffered.length > 0 ? video.buffered.end(0)*1000 : root.elapsed;
+           clearInterval(root.__getLength);
           } 
         }, 1);
       },
       /* play the media */
       play: function(e){
-        if (e === undefined || e.detail === this.$.playbutton) {
-          this.$.playbutton.setAttribute('disabled',true);
-          this.playing = true;
-          this.$.video.play();
+        let root = this;
+        if (e === undefined || e.detail === root.$.playbutton) {
+          root.$.playbutton.setAttribute('disabled',true);
+          root.playing = true;
+
+          root.__playProgress = setInterval(() => {
+            root.elapsed = video.currentTime > 0 ? video.currentTime*1000 : 0;
+            root.$.length.innerHTML = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
+            
+            if(root.elapsed == root.duration && !root.loop){
+              root.$.playbutton.removeAttribute('disabled');
+              root.playing = false;
+            }
+            root.buffered = video.buffered.length > 0 ? video.buffered.end(0)*1000 : root.elapsed;
+          }, 1);
+
+          root.$.video.play();
         }
       },
       /* play the media */
       pause: function(e){
-        this.playing = false;
-        this.$.video.pause();
+        let root = this;
+        root.playing = false;
+        root.$.video.pause();
+        clearInterval(root.__playProgress);
       },
       /* play the media */
       rewind: function(amt){
@@ -293,7 +312,6 @@ A LRN element
       },
       /* seeks to slider position when slider is dragged */
       _onSliderChange: function(slider){
-        console.log(slider);
         this.seek(slider.value/1000);
       },
       /* resume updating value via playback */
