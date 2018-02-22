@@ -22,23 +22,19 @@ A LRN element
       :host {
         margin: 0;
         padding: 0;
-        display: table-cell;
       }
       :host #button {
-        padding: 3px;
         margin: 0;
+        border: none;
+        background-color: black;
+        color: #bbb;
       }
-      :host iron-icon {
-        height: 18px;
-        width: 18px;
-      }
-      :host:active,
-      :host:focus,
-      :host:hover {
-        outline: 1px solid blue;
+      :host:active #button,
+      :host:focus #button,
+      :host:hover #button {
+        color: #fff;
       }
       :host[toggle] #button {
-        background-color: #333;
         color: #fff;
       }
       :host .sr-only {
@@ -53,7 +49,7 @@ A LRN element
     <button id="button" aria-role="button" tabindex="0" aria-label$="[[label]]" controls="video">
       <iron-icon icon$="[[icon]]"></iron-icon>
     </button>
-    <paper-tooltip>[[label]]</paper-tooltip>
+    <paper-tooltip for="button">[[label]]</paper-tooltip>
     <iron-a11y-keys id="a11y" keys="enter" target$="[[__target]]"
     on-keys-pressed="_buttonTap"></iron-a11y-keys>
   </template>

@@ -24,18 +24,16 @@ A LRN element
       :host {
         margin: 0;
         padding: 0;
-        display: table-cell;
+        display: inline-flex;
       }
       :host > * {
         display: inline-block;
       }
       :host > #input ::slotted(#container) {
-        padding: 0;
+        padding: 3px;
       }
       :host > #input ::slotted(#container > .paper-input-container > .prefix.paper-input-container > iron-icon) {
-        width: 16px;
-        height: 16px;
-        padding: 3px;
+       
       }
     </style>
     <paper-input 

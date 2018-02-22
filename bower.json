@@ -10,7 +10,12 @@
     "paper-slider": "PolymerElements/paper-slider#^2.0.4",
     "screenfull": "^3.3.2",
     "paper-input": "PolymerElements/paper-input#^2.1.1",
-    "paper-tooltip": "PolymerElements/paper-tooltip#^2.1.1"
+    "paper-tooltip": "PolymerElements/paper-tooltip#^2.1.1",
+    "paper-menu-button": "PolymerElements/paper-menu-button#^2.1.0",
+    "neon-animation": "PolymerElements/neon-animation#1.2.5",
+    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
+    "paper-item": "PolymerElements/paper-item#^2.1.0",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
