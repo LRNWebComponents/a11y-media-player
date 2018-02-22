@@ -1,7 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icons/av-icons.html">
+<link rel="import" href="../iron-icons/hardware-icons.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
 <!--
 `a11y-media-number-input`
@@ -27,6 +29,9 @@ A LRN element
       :host > * {
         display: inline-block;
       }
+      :host > #input ::slotted(#container) {
+        padding: 0;
+      }
       :host > #input ::slotted(#container > .paper-input-container > .prefix.paper-input-container > iron-icon) {
         width: 16px;
         height: 16px;
@@ -44,6 +49,7 @@ A LRN element
       <iron-icon icon$="[[icon]]" slot="prefix"></iron-icon>
       <div slot="suffix">[[suffix]]</div>
     </paper-input>
+    <paper-tooltip for="input">[[label]]</paper-tooltip>
   </template>
 
   <script>
@@ -112,7 +118,6 @@ A LRN element
       },
       attached: function(){
         let root = this;
-        console.log(root.defaultValue);
         root.$.input.value = root.defaultValue;
         root.$.input.addEventListener('change', function(e){
           root.value = root.$.input.value;

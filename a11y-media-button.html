@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icons/av-icons.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
 <!--
 `a11y-media-button`
@@ -51,8 +52,8 @@ A LRN element
     </style>
     <button id="button" aria-role="button" tabindex="0" aria-label$="[[label]]" controls="video">
       <iron-icon icon$="[[icon]]"></iron-icon>
-      <span class="sr-only">[[label]]</span>
     </button>
+    <paper-tooltip>[[label]]</paper-tooltip>
     <iron-a11y-keys id="a11y" keys="enter" target$="[[__target]]"
     on-keys-pressed="_buttonTap"></iron-a11y-keys>
   </template>

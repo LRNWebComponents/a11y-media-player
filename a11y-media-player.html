@@ -73,6 +73,7 @@ A LRN element
       <paper-slider id="slider" value$="[[elapsed]]" max$="[[duration]]" secondary-progress$="[[buffered]]" tab-index="-1"></paper-slider>
       <div id="controls">
         <a11y-media-button icon="av:replay" label="restart"></a11y-media-button>
+        <a11y-media-button icon="av:loop" label="loop" toggle$="[[loop]]"></a11y-media-button>
         <a11y-media-button icon="av:fast-rewind" label="backward"></a11y-media-button>
         <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
         <a11y-media-button icon="av:fast-forward" label="forward"></a11y-media-button>
@@ -87,25 +88,22 @@ A LRN element
           suffix="%"
           default-value$="[[volume]]">
         </a11y-media-number-input>
-        <!--a11y-media-button icon="av:volume-up" label="volume"></a11y-media-button-->
-        <a11y-media-button icon="av:loop" label="loop" toggle$="[[loop]]"></a11y-media-button>
+        <a11y-media-number-input 
+          id="playback" 
+          icon="hardware:watch"
+          label="Speed" 
+          max="400" 
+          min="50"
+          step="50" 
+          suffix="%"
+          default-value$="[[playbackRate]]">
+        </a11y-media-number-input>
         <template is="dom-if" if="[[__showFullscreen]]">
           <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]"></a11y-media-button>
         </template>
-        <a11y-media-number-input 
-          id="playback" 
-          icon="av:av-timer"
-          label="Speed" 
-          max="4" 
-          min="0.5"
-          step="0.5" 
-          suffix="X"
-          default-value$="[[playbackRate]]">
-        </a11y-media-number-input>
       </div>
     </div>
     <div id="length"></div>
-    <!--div id="transcript"><slot name="transcript"></slot></div-->
     <iron-a11y-keys id="a11y" keys="up right" target$="[[__slider]]"
     on-keys-pressed="forward"></iron-a11y-keys>
     <iron-a11y-keys id="a11y" keys="down left" target$="[[__slider]]"
@@ -214,7 +212,7 @@ A LRN element
          */
         playbackRate: {
           type: Number,
-          value: 1
+          value: 100
         },
         /*
          * play/pause button
@@ -256,7 +254,7 @@ A LRN element
           }
         });
         root.$.playback.addEventListener('input-changed',function(e){
-          root.$.video.playbackRate = e.target.value !== null ? e.target.value : 1;
+          root.$.video.playbackRate = e.target.value !== null ? e.target.value/100 : 1;
         });
         root.$.volume.addEventListener('input-changed',function(e){
           root.$.video.volume = e.target.value !== null ? e.target.value/100 : 0.7;
