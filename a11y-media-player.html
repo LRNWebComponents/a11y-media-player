@@ -1,8 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
+<link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="screenfull-lib.html">
 <link rel="import" href="a11y-media-play-button.html">
+<link rel="import" href="a11y-media-number-input.html">
 <link rel="import" href="a11y-media-button.html">
 
 <!--
@@ -75,11 +77,31 @@ A LRN element
         <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
         <a11y-media-button icon="av:fast-forward" label="forward"></a11y-media-button>
         <a11y-media-button icon="av:volume-off" label="mute" toggle$="[[muted]]"></a11y-media-button>
+        <a11y-media-number-input 
+          id="volume" 
+          icon="av:volume-up"
+          label="Volume" 
+          max="100" 
+          min="10"
+          step="10" 
+          suffix="%"
+          default-value$="[[volume]]">
+        </a11y-media-number-input>
         <!--a11y-media-button icon="av:volume-up" label="volume"></a11y-media-button-->
         <a11y-media-button icon="av:loop" label="loop" toggle$="[[loop]]"></a11y-media-button>
         <template is="dom-if" if="[[__showFullscreen]]">
           <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]"></a11y-media-button>
         </template>
+        <a11y-media-number-input 
+          id="playback" 
+          icon="av:av-timer"
+          label="Speed" 
+          max="4" 
+          min="0.5"
+          step="0.5" 
+          suffix="X"
+          default-value$="[[playbackRate]]">
+        </a11y-media-number-input>
       </div>
     </div>
     <div id="length"></div>
@@ -201,11 +223,12 @@ A LRN element
           type: Object,
           computed: '_getPlayPause(playing)'
         },
-        /* Range is 0 to 10. Best not to crank it to avoid overpowering screen readers
+        /* 
+         * Range is 0 to 10. Default should not be loud enough to overpower screen readers. */
         volume: {
           type: Number,
-          value: 7,
-        }, */
+          value: 70,
+        },
       },
       ready: function(){
         let root = this, video = this.$.video;
@@ -217,7 +240,6 @@ A LRN element
         }
         root.$.slider.addEventListener('dragging-changed', (e) => {
           if (!root.$.slider.dragging) { 
-            console.log('value',root.$.slider.value,'immediate value',root.$.slider.immediateValue);
             root.seek(root.$.slider.immediateValue/1000);
             if (root.__resumePlaying) root.play();
             root.__resumePlaying = false;
@@ -232,6 +254,12 @@ A LRN element
             if (root.__resumePlaying) root.play();
             root.__resumePlaying = false;
           }
+        });
+        root.$.playback.addEventListener('input-changed',function(e){
+          root.$.video.playbackRate = e.target.value !== null ? e.target.value : 1;
+        });
+        root.$.volume.addEventListener('input-changed',function(e){
+          root.$.video.volume = e.target.value !== null ? e.target.value/100 : 0.7;
         });
         root.__getLength = setInterval(() => {
           if(root.duration === 0) { 

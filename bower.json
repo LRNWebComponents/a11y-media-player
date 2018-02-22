@@ -8,7 +8,7 @@
     "responsive-utility": "LRNWebComponents/responsive-utility",
     "iron-icons": "PolymerElements/iron-icons#^2.0.1",
     "paper-slider": "PolymerElements/paper-slider#^2.0.4",
-    "screenfull": "^3.3.2"
+    "screenfull": "^3.3.2",
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
