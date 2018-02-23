@@ -25,17 +25,25 @@ A LRN element
       }
       :host #button {
         margin: 0;
+        padding: 8px;
         border: none;
         background-color: black;
         color: #bbb;
+        transition: color 0.25s;
       }
       :host:active #button,
       :host:focus #button,
       :host:hover #button {
         color: #fff;
+        cursor: pointer;
       }
       :host[toggle] #button {
-        color: #fff;
+        color: #00fffd;
+      }
+      :host[toggle]:active #button,
+      :host[toggle]:focus #button,
+      :host[toggle]:hover #button {
+        color: #bffffe;
       }
       :host .sr-only {
         position: absolute;
@@ -64,6 +72,13 @@ A LRN element
       },
 
       properties: {
+        /*
+         * iron-icon type
+         */
+        icon: {
+          type: String,
+          value: null,
+        },
         /*
          * iron-icon type
          */
