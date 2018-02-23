@@ -38,6 +38,9 @@ A LRN element
       :host #media-inner > * {
         width: 100%;
       }
+      :host #media {
+        z-index: 1;
+      }
       :host #player-inner {
         background-color: black;
       }
@@ -82,23 +85,36 @@ A LRN element
       :host paper-item {
         min-height: 40;
       }
+      :host paper-toggle-button {
+        --paper-toggle-button-unchecked-bar-color:  #eeeeee;
+        --paper-toggle-button-unchecked-button-color:  #f8f8f8;
+        --paper-toggle-button-checked-bar-color:  #00fffd;
+        --paper-toggle-button-checked-button-color:  #00eeff;
+      }
+      :host paper-slider {
+        z-index: 3;
+        --paper-slider-knob-color: #transparent;
+        --paper-slider-knob-start-color: transparent;
+        --paper-slider-knob-start-border-color: transparent;
+        --paper-slider-knob-end-color: transparent;
+        --paper-slider-knob-end-border-color: transparent;
+        --paper-slider-active-color: #00fffd;
+        --paper-slider-secondary-color: #4E7373;
+        --paper-slider-pin-color: #444;
+        --paper-slider-pin-start-color: #444;
+      }
       :host paper-item .menu-text {
         display: inline-block;
-        width: 120px;
+        width: 130px;
       }
       :host paper-item .menu-text2 {
         width: 60px;
       }
-      :host paper-toggle-button {
-        --paper-toggle-button-unchecked-bar-color:  #eeeeee;
-        --paper-toggle-button-unchecked-button-color:  #ffffff;
-        --paper-toggle-button-checked-bar-color:  #c2f9ff;
-        --paper-toggle-button-checked-button-color:  #66eeff;
-      }
-      :host paper-slider {
-        --paper-slider-knob-color: #66eeff;
-        --paper-slider-active-color: #66eeff;
-        --paper-slider-secondary-color: #c2f9ff;
+      :host paper-item paper-slider {
+        width: 110px;
+        --paper-slider-knob-color: #00eeff;
+        --paper-slider-knob-start-color: #00eeff;
+        --paper-slider-knob-end-color: #00eeff;
       }
     </style>
     <div id="player-inner">
@@ -114,7 +130,7 @@ A LRN element
           <a11y-media-play-button id="playbutton"></a11y-media-play-button>
         </div>
       </div>
-      <paper-slider id="slider" value$="[[elapsed]]" max$="[[duration]]" secondary-progress$="[[buffered]]" tab-index="-1"></paper-slider>
+      <paper-slider id="slider" max$="[[duration]]" pin secondary-progress$="[[buffered]]" tab-index="-1" value$="[[elapsed]]"></paper-slider>
       <div id="controls">
         <a11y-media-button icon="av:replay" label="restart"></a11y-media-button>
         <a11y-media-button icon="av:fast-rewind" label="backward"></a11y-media-button>
@@ -140,11 +156,11 @@ A LRN element
             </paper-item>
             <paper-item>
               <div class="menu-text2">Speed </div>
-              <paper-slider id="speed" min="50" max="400" step="50" tab-index="-1"></paper-slider>
+              <paper-slider id="speed" min="50" max="400" pin step="50" tab-index="-1" value$="[[playbackRate]]"></paper-slider>
             </paper-item>
             <paper-item>
               <div class="menu-text2">Volume </div>
-              <paper-slider id="volume" min="0" max="100" step="10" tab-index="-1"></paper-slider>
+              <paper-slider id="volume" min="0" max="100" pin step="10" tab-index="-1" value$="[[volume]]"></paper-slider>
             </paper-item>
           </paper-listbox>
         </paper-menu-button>
