@@ -439,6 +439,7 @@ A LRN element
             if(root.elapsed == root.duration && !root.loop){
               root.$.playbutton.removeAttribute('disabled');
               root.playing = false;
+              clearInterval(root.__playProgress);
             }
             root.buffered = video.buffered.length > 0 ? video.buffered.end(0) : root.elapsed;
           }, 1);
@@ -483,6 +484,12 @@ A LRN element
         this.$.volume.value = this.muted ? 0 : Math.max(this.volume,10);
         this.$.video.volume = this.muted ? 0 : Math.max(this.volume/100,0.1);
         this.$.video.muted = this.muted;
+      },
+      /* toggle loop */
+      toggleLoop: function(mode){
+        mode = mode === undefined ? !this.loop : mode;
+        this.loop = mode;
+        this.$.video.muted = this.loop;
       },
       /**
        * sets size class based on parent container and breakpoints
@@ -550,7 +557,7 @@ A LRN element
         } else if (e.target === this.$.captions) {
           this.toggleCC();
         } else if (e.target === this.$.loop) {
-          this.$.video.loop = e.target.checked;
+          this.toggleLoop();
         } else if (e.target === this.$.volume) {
           this.volume = this.$.volume.value !== null ? this.$.volume.value : 70;
           this.$.video.volume = this.volume !== null ? this.volume/100 : 0.7;
