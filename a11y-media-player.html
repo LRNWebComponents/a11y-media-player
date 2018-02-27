@@ -171,8 +171,10 @@ A LRN element
             autoplay$="[[autoplay]]" 
             id="video" 
             loop$="[[loop]]" 
-            muted$="[[muted]]">
+            muted$="[[muted]]" 
+            preload="metadata">
             <slot></slot>
+            HTML5 video not supported 
           </video>
           <a11y-media-play-button id="playbutton"></a11y-media-play-button>
         </div>
@@ -360,6 +362,13 @@ A LRN element
           type: Object,
           computed: '_getMuteUnmute(muted)'
         },
+        /*
+         * selected track
+         */
+        track: {
+          type: Object,
+          value: null,
+        },
         /* 
          * Range is 0 to 100. Default should not be loud enough to overpower screen readers. */
         volume: {
@@ -382,14 +391,22 @@ A LRN element
         if(root.__showFullscreen) {
           screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen });
         }
+        //hide the video subtitles and captions
+        root.track = video.textTracks.length > 0 ? video.textTracks[0] : null;
+        for(i in video.textTracks) {
+          if (video.textTracks[i] !== null) video.textTracks[i].mode = 'hidden';
+        }
+        //handle dragging with a mouse
+        //when dragging stops, seek to that value and if the video was playing before the dragging, resume it
         root.$.slider.addEventListener('dragging-changed', (e) => {
-          console.log('dragging-changed',root.$.slider.dragging,'resume',root.__resumePlaying);
           if (!root.$.slider.dragging) { 
             root.seek(root.$.slider.immediateValue);
             if (root.__resumePlaying) root.play();
             root.__resumePlaying = false;
           }
         });
+        //handle slider focus
+        //temporarily pause playback so that a value can be selected, but note if playing should be resumed
         root.$.slider.addEventListener('focused-changed', (e) => {
           console.log('focused-changed',root.$.slider.focused,'drag',root.$.slider.dragging,'resume',root.__resumePlaying);
           if(root.$.slider.focused){
@@ -401,15 +418,7 @@ A LRN element
             root.__resumePlaying = false;
           }
         });
-        root.__getLength = setInterval(() => {
-          if(root.duration === 0) { 
-            root.duration = video.duration > 0 ? video.duration: 0; 
-            root.__length = '0.00/'+(Math.round(root.duration*100)/100);
-          } else {
-           clearInterval(root.__getLength);
-          } 
-        }, 1);
-
+        //adjust video width and height based on attributes
         if (root.width === 'unset' && root.height === 'unset'){
           root.style.width = '100%';  
         } else if (root.width === 'unset' && root.height !== 'unset') {
@@ -417,10 +426,13 @@ A LRN element
         } else {
           root.style.width = root.width;  
         }
+        //get and convert video duration & adjust aspect ration based on loaded metadata
         root.$.video.addEventListener('loadedmetadata',function(){
           if (root.width !== 'unset') root.setAttribute('width',root.width);
           if (root.height !== 'unset') root.setAttribute('width',root.height);
           let aspect = root.$.video.videoHeight/root.$.video.videoWidth * 100;
+          root.duration = video.duration > 0 ? video.duration: 0; 
+          root.__length = root._convertTime(0)+'/'+root._convertTime(video.duration);
           root.$.playbutton.style.paddingTop = aspect+'%';
           root.$.mediaobject.style.paddingTop = aspect+'%';
         });
@@ -474,8 +486,9 @@ A LRN element
       /* toggle mute */
       toggleCC: function(mode){
         mode = mode === undefined ? !this.cc : mode;
+        console.log(this.track);
         this.cc = mode;
-        console.log('TODO: CC',mode);
+        this.track.mode = mode ? 'showing' : 'hidden';
       },
       /* toggle mute */
       toggleMute: function(mode){
@@ -501,9 +514,9 @@ A LRN element
       _convertTime: function(val,max){
         max = max === undefined ? val : max;
         let a = (val) => { return val < 10 ? '0' + val : val; }, 
-        b = (val,i) => { return Math.floor(max/i) > 0 ? a(Math.floor(val/i))+':' : '' },
+        b = (val,i) => { return Math.floor(max/i) > 0 ? a(Math.floor(val/i)) : '00' },
         c = (val) => { return Math.floor(max/3600) > 0 ? a(Math.round(val)) : a(Math.floor(val))+'.'+a(Math.round(val*10)) };
-        return b(val,3600)+b(val%3600,60)+c(val%60);
+        return b(val,3600)+':'+b(val%3600,60)+':'+c(val%60);
       },
       /* set play/pause button */
       _getPlayPause: function(playing){
