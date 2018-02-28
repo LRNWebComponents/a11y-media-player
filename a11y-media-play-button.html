@@ -76,11 +76,7 @@ A LRN element
           value: false,
         },
       },
-
-      ready: function(){
-        this.__target = this.$.button;
-      },
-
+      //if the button is clicked, let the player know
       _playMedia: function(){
         this.fire('play-button-clicked',this);
       }

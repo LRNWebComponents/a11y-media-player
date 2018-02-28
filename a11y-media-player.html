@@ -73,12 +73,11 @@ A LRN element
       :host[playing] #playbutton {
         opacity: 0;
       }
-      :host #status {
+      :host .status {
         font-size: 85%;
         padding: 8px 13px 8px;
-        text-align: right;
       }
-      :host #status, 
+      :host .status, 
       :host paper-icon-button {
         border: none;
         background-color: black;
@@ -192,10 +191,11 @@ A LRN element
               <a11y-media-button icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
               <paper-slider id="volume" min="0" max="100" pin step="10" tab-index="-1" value$="[[volume]]"></paper-slider>
             </div>
+            <span class="status" hidden-when="xs"><juicy-html html$="[[__length]]"></juicy-html></span>
           </div>
           <div class="section-right">
-            <a11y-media-button hidden-when="xs" icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
-            <paper-menu-button id="settings" vertical-align="bottom" close-on-activate="false">
+            <a11y-media-button icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
+            <paper-menu-button id="settings" vertical-align="bottom" ignore-select>
               <paper-icon-button icon="settings" slot="dropdown-trigger" alt="Settings"></paper-icon-button>
               <paper-listbox slot="dropdown-content">
                 <paper-item>
@@ -205,7 +205,7 @@ A LRN element
                 <paper-item>
                   <div class="menu-text">Loop </div>
                   <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button></paper-item>
-                <paper-item hidden-when="sm md lg xl">
+                <paper-item>
                   <div class="menu-text">Captions </div>
                   <paper-toggle-button id="captions" checked$="[[cc]]"></paper-toggle-button>
                 </paper-item>
@@ -221,7 +221,7 @@ A LRN element
         </div>
       </div>
     </div>
-    <div id="status"><juicy-html html$="[[__length]]"></juicy-html></div>
+    <div class="status" hidden-when="sm md lg xl"><juicy-html html$="[[__length]]"></juicy-html></div>
     <iron-a11y-keys id="a11y" keys="up right" target$="[[__slider]]"
     on-keys-pressed="forward"></iron-a11y-keys>
     <iron-a11y-keys id="a11y" keys="down left" target$="[[__slider]]"
@@ -405,6 +405,14 @@ A LRN element
             root.__resumePlaying = false;
           }
         });
+        root.$.settings.addEventListener('iron-activate', (e) => {
+          e.preventDefault();
+          console.log('activated');
+        });
+        root.$.settings.addEventListener('iron-select', (e) => {
+          e.preventDefault();
+          console.log('selected');
+        });
         //handle slider focus
         //temporarily pause playback so that a value can be selected, but note if playing should be resumed
         root.$.slider.addEventListener('focused-changed', (e) => {
@@ -437,60 +445,77 @@ A LRN element
           root.$.mediaobject.style.paddingTop = aspect+'%';
         });
       },
-      /* play the media */
+      /* 
+       * plays the media 
+       */
       play: function(e){
         let root = this, video = root.$.video;
         if (e === undefined || e.detail === root.$.playbutton) {
           root.$.playbutton.setAttribute('disabled',true);
           root.playing = true;
-
+          // while playing, update the slider and length
           root.__playProgress = setInterval(() => {
             root.elapsed = video.currentTime > 0 ? video.currentTime : 0;
             root.__length = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
-            
+            // if the video reaches the end and is not set to loop, stop
             if(root.elapsed == root.duration && !root.loop){
               root.$.playbutton.removeAttribute('disabled');
               root.playing = false;
               clearInterval(root.__playProgress);
             }
+            //updated buffered section of the slider
             root.buffered = video.buffered.length > 0 ? video.buffered.end(0) : root.elapsed;
           }, 1);
 
           root.$.video.play();
         }
       },
-      /* play the media */
+      /* 
+       * pauses the media 
+       */
       pause: function(e){
         let root = this;
         root.playing = false;
         root.$.video.pause();
-        clearInterval(root.__playProgress);
+        clearInterval(root.__playProgress); //stops updating the slider and length
       },
-      /* play the media */
+      /* 
+       * seeks media backward at a set increment
+       */
       rewind: function(amt){
         amt = amt !== undefined ? amt : 1;
         this.seek(Math.max(this.$.video.currentTime - amt,0));
       },
-      /* play the media */
+      /* 
+       * seeks media forward at a set increment
+       */
       forward: function(amt){
         amt = amt !== undefined ? amt : 1;
         this.seek(Math.min(this.$.video.currentTime + amt,this.$.video.duration));
       },
-      /* seek to a time */
+      /* 
+       * seek to a specific time 
+       */
       seek: function(time){
         let seekable = this.$.video.seekable;
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
           this.$.video.currentTime = time;
         }
       },
-      /* toggle mute */
+      /* 
+       * toggles captions:
+       * toggleCC(true) to check the toggle, toggleCC(false) for unchecking, and toggleCC to toggle  
+       */
       toggleCC: function(mode){
         mode = mode === undefined ? !this.cc : mode;
         console.log(this.track);
         this.cc = mode;
         this.track.mode = mode ? 'showing' : 'hidden';
       },
-      /* toggle mute */
+      /* 
+       * toggles mute:
+       * toggleMute(true) to check the toggle, toggleMute(false) for unchecking, and toggleMute to toggle  
+       */
       toggleMute: function(mode){
         mode = mode === undefined ? !this.muted : mode;
         this.muted = mode;
@@ -498,7 +523,10 @@ A LRN element
         this.$.video.volume = this.muted ? 0 : Math.max(this.volume/100,0.1);
         this.$.video.muted = this.muted;
       },
-      /* toggle loop */
+      /* 
+       * toggles looping:
+       * toggleLoop(true) to check the toggle, toggleLoop(false) for unchecking, and toggleLoop to toggle  
+       */
       toggleLoop: function(mode){
         mode = mode === undefined ? !this.loop : mode;
         this.loop = mode;
@@ -565,9 +593,10 @@ A LRN element
       },
       /* determine which button was clicked and act accordingly */
       _onSettingsChanged: function(e){
+        console.log('settings');
         if (e.target === this.$.autoplay) {
           this.$.video.autoplay = e.target.checked;
-        } else if (e.target === this.$.captions) {
+        } else if (e.target === this.$.captions) { //todo
           this.toggleCC();
         } else if (e.target === this.$.loop) {
           this.toggleLoop();

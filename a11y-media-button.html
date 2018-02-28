@@ -94,11 +94,11 @@ A LRN element
           value: null,
         },
       },
-
+      // sets target for a11y keys
       ready: function(){
         this.__target = this.$.button;
       },
-
+      // lets player know this button was clicked
       _buttonTap: function(){
         this.fire('button-clicked',this);
       }
