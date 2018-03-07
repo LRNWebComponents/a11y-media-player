@@ -157,14 +157,21 @@ A LRN element
       :host #settings dropdown-select {
         --primary-text-color: white;
       }
-      :host paper-item .menu-text {
-        width: 120px;
+      :host .setting {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
       }
-      :host paper-item .menu-text2 {
-        width: 60px;
+      :host .setting-text {
+        min-width: 100px;
       }
-      :host paper-item paper-slider {
-        width: 110px;
+      :host .setting-control {
+        max-width: 100px;
+      }
+      :host .setting-slider {
+        width: 130px;
+        margin-left: -15px;
+        margin-right: -15px;
       }
     </style>
     <div id="empty"></div>
@@ -204,29 +211,45 @@ A LRN element
               <paper-icon-button icon="settings" slot="dropdown-trigger" alt="Settings"></paper-icon-button>
               <paper-listbox id="settingslist" slot="dropdown-content">
                 <paper-item>
-                  <div class="menu-text">Autoplay </div>
-                  <paper-toggle-button id="autoplay" checked$="[[autoplay]]"></paper-toggle-button>
+                  <div class="setting">
+                    <div class="setting-text">Autoplay </div>
+                    <div class="setting-control">
+                      <paper-toggle-button id="autoplay" checked$="[[autoplay]]"></paper-toggle-button>
+                    </div>
+                  </div>
                 </paper-item>
                 <paper-item>
-                  <div class="menu-text">Loop </div>
-                  <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button>
+                  <div class="setting">
+                    <div class="setting-text">Loop </div>
+                    <div class="setting-control">
+                      <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button>
+                    </div>
+                  </div>
                 </paper-item>
                 <!--paper-item>
                   <div class="menu-text">Captions </div>
                   <paper-toggle-button id="captions" checked$="[[cc]]"></paper-toggle-button>
                 </paper-item-->
                 <paper-item class="captions">
-                  <div class="menu-text">Captions</div>
-                  <dropdown-select id="tracks" no-label-float value="">
-                    <paper-item value="">Off</paper-item>
-                    <template is="dom-repeat" items="{{__tracks}}" as="option">
-                      <paper-item value$="{{option.value}}">{{option.text}}</paper-item>
-                    </template>
-                  </dropdown-select>
+                  <div class="setting">
+                    <div class="setting-text">Captions</div>
+                    <div class="setting-control">
+                      <dropdown-select id="tracks" no-label-float value="">
+                        <paper-item value="">Off</paper-item>
+                        <template is="dom-repeat" items="{{__tracks}}" as="option">
+                          <paper-item value$="{{option.value}}">{{option.text}}</paper-item>
+                        </template>
+                      </dropdown-select>
+                    </div>
+                  </div>
                 </paper-item>
                 <paper-item>
-                  <div class="menu-text2">Speed </div>
-                  <paper-slider id="speed" min="50" max="400" pin step="50" tab-index="-1" value$="[[playbackRate]]"></paper-slider>
+                  <div class="setting">
+                    <div class="setting-text">Speed %</div>
+                    <div class="setting-control">
+                      <paper-slider id="speed" class="setting-slider" min="0.5" max="4" pin step="0.5" tab-index="-1" value$="[[playbackRate]]"></paper-slider>
+                    </div>
+                  </div>
                 </paper-item>
               </paper-listbox>
             </paper-menu-button>
@@ -361,7 +384,7 @@ A LRN element
          */
         playbackRate: {
           type: Number,
-          value: 100
+          value: 1
         },
         /*
          * play/pause button
@@ -638,7 +661,7 @@ A LRN element
           this.$.video.volume = this.volume !== null ? this.volume/100 : 0.7;
           this.muted = this.$.volume.value !== null && this.$.volume.value === 0;
         } else if (e.target === this.$.speed) {
-          this.$.video.playbackRate = e.target.value !== null ? e.target.value/100 : 1;
+          this.$.video.playbackRate = e.target.value !== null ? e.target.value : 1;
         }
       }
     });
