@@ -6,10 +6,10 @@
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
-<!--link rel="import" href="../neon-animation/neon-animation.html">
-<link rel="import" href="../web-animations-js/web-animations.html"-->
 <link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
+<link rel="import" href="../dropdown-select/dropdown-select.html">
+<link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
 <link rel="import" href="screenfull-lib.html">
 <link rel="import" href="a11y-media-play-button.html">
 <link rel="import" href="a11y-media-number-input.html">
@@ -34,6 +34,11 @@ A LRN element
       :host {
         display: block;
         max-width: 100%;
+        --paper-listbox-color: white;
+        --paper-listbox-background-color: black;
+      }
+      :host:not([has-captions]) .captions {
+        display: none;
       }
       :host[responsive-size="xs"] *[hidden-when*="xs"],
       :host[responsive-size="sm"] *[hidden-when*="sm"],
@@ -128,14 +133,9 @@ A LRN element
       :host paper-listbox {
         padding: 0;
       }
-      :host paper-item, 
-      :host paper-listbox {
-        color: white;
-        background-color: black;
-      }
       :host paper-item {
         min-height: 40;
-      }
+      } 
       :host paper-toggle-button {
         --paper-toggle-button-unchecked-bar-color:  #eeeeee;
         --paper-toggle-button-unchecked-button-color:  #f8f8f8;
@@ -153,6 +153,9 @@ A LRN element
         --paper-slider-knob-color: #00eeff;
         --paper-slider-knob-start-color: #eeeeee;
         --paper-slider-knob-end-color: #00eeff;
+      }
+      :host #settings dropdown-select {
+        --primary-text-color: white;
       }
       :host paper-item .menu-text {
         width: 120px;
@@ -196,20 +199,30 @@ A LRN element
             <span class="status" hidden-when="xs"><juicy-html html$="[[__length]]"></juicy-html></span>
           </div>
           <div class="section-right">
-            <a11y-media-button icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
+            <a11y-media-button class="captions" icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
             <paper-menu-button id="settings" vertical-align="bottom" ignore-select>
               <paper-icon-button icon="settings" slot="dropdown-trigger" alt="Settings"></paper-icon-button>
-              <paper-listbox slot="dropdown-content">
+              <paper-listbox id="settingslist" slot="dropdown-content">
                 <paper-item>
                   <div class="menu-text">Autoplay </div>
                   <paper-toggle-button id="autoplay" checked$="[[autoplay]]"></paper-toggle-button>
                 </paper-item>
                 <paper-item>
                   <div class="menu-text">Loop </div>
-                  <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button></paper-item>
-                <paper-item>
+                  <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button>
+                </paper-item>
+                <!--paper-item>
                   <div class="menu-text">Captions </div>
                   <paper-toggle-button id="captions" checked$="[[cc]]"></paper-toggle-button>
+                </paper-item-->
+                <paper-item class="captions">
+                  <div class="menu-text">Captions</div>
+                  <dropdown-select id="tracks" no-label-float value="">
+                    <paper-item value="">Off</paper-item>
+                    <template is="dom-repeat" items="{{__tracks}}" as="option">
+                      <paper-item value$="{{option.value}}">{{option.text}}</paper-item>
+                    </template>
+                  </dropdown-select>
                 </paper-item>
                 <paper-item>
                   <div class="menu-text2">Speed </div>
@@ -364,13 +377,6 @@ A LRN element
           type: Object,
           computed: '_getMuteUnmute(muted)'
         },
-        /*
-         * selected track
-         */
-        track: {
-          type: Object,
-          value: null,
-        },
         /* 
          * Range is 0 to 100. Default should not be loud enough to overpower screen readers. */
         volume: {
@@ -385,7 +391,7 @@ A LRN element
         },
       },
       ready: function(){
-        let root = this, video = this.$.video;
+        let root = this, video = this.$.video, tracks = new Array();
         root.__slider = root.$.slider;
         root.__resumePlaying = false;
         root.__showFullscreen = this.allowFullscreen && screenfull.enabled;
@@ -394,10 +400,25 @@ A LRN element
           screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen });
         }
         //hide the video subtitles and captions
-        root.track = video.textTracks.length > 0 ? video.textTracks[0] : null;
+        root.__selectedTrack = video.textTracks.length > 0 ? video.textTracks[0] : null;
         for(i in video.textTracks) {
-          if (video.textTracks[i] !== null) video.textTracks[i].mode = 'hidden';
+          if (video.textTracks[i] !== null && video.textTracks[i].label !== undefined) {
+            root.setAttribute('has-captions',true);
+            video.textTracks[i].mode = 'hidden';
+            tracks.push({'text': video.textTracks[i].label, 'value': i});
+          }
         }
+        root.set('__tracks', tracks);
+        root.$.tracks.addEventListener('change',function(e){
+          if (root.__selectedTrack !== null) {
+            if (e.detail.value !== '') {
+              root.selectTrack(e.detail.value);
+              root.toggleCC(true);
+            } else {
+              root.toggleCC(false);
+            }
+          }
+        });
         //handle dragging with a mouse
         //when dragging stops, seek to that value and if the video was playing before the dragging, resume it
         root.$.slider.addEventListener('dragging-changed', (e) => {
@@ -408,17 +429,15 @@ A LRN element
           }
         });
         root.$.settings.addEventListener('iron-activate', (e) => {
-          e.preventDefault();
-          console.log('activated');
+          console.log(e);
+          if (e.target == root.$.settingslist) e.preventDefault();
         });
         root.$.settings.addEventListener('iron-select', (e) => {
           e.preventDefault();
-          console.log('selected');
         });
         //handle slider focus
         //temporarily pause playback so that a value can be selected, but note if playing should be resumed
         root.$.slider.addEventListener('focused-changed', (e) => {
-          console.log('focused-changed',root.$.slider.focused,'drag',root.$.slider.dragging,'resume',root.__resumePlaying);
           if(root.$.slider.focused){
             if (root.playing) root.__resumePlaying = true;
             root.pause();
@@ -505,14 +524,26 @@ A LRN element
         }
       },
       /* 
+       * select a specific track by index
+       */
+      selectTrack: function(index){
+        for(i in this.$.video.textTracks) {
+          if (index == i) {
+            this.$.video.textTracks[i].mode = 'showing';
+            this.__selectedTrack = this.$.video.textTracks[i];
+          } else if (this.$.video.textTracks[i] !== null) {
+            this.$.video.textTracks[i].mode = 'hidden';
+          }
+        }
+      },
+      /* 
        * toggles captions:
        * toggleCC(true) to check the toggle, toggleCC(false) for unchecking, and toggleCC to toggle  
        */
       toggleCC: function(mode){
         mode = mode === undefined ? !this.cc : mode;
-        console.log(this.track);
         this.cc = mode;
-        this.track.mode = mode ? 'showing' : 'hidden';
+        this.__selectedTrack.mode = mode ? 'showing' : 'hidden';
       },
       /* 
        * toggles mute:
@@ -572,6 +603,7 @@ A LRN element
       },
       /* determine which button was clicked and act accordingly */
       _onButtonClick: function(e){
+        console.log(e);
         if (e.detail.label === 'backward') {
           this.rewind(this.$.video.duration/20);
         } else if (e.detail.label === 'closed captions') {
@@ -595,7 +627,6 @@ A LRN element
       },
       /* determine which button was clicked and act accordingly */
       _onSettingsChanged: function(e){
-        console.log('settings');
         if (e.target === this.$.autoplay) {
           this.$.video.autoplay = e.target.checked;
         } else if (e.target === this.$.captions) { //todo

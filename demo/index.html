@@ -23,19 +23,28 @@
   </head>
   <body>
     <div class="vertical-section-container centered">
-
-    <h3>a11y-media-player demo with tracks</h3>
-    <demo-snippet>
-      <template>
-        <a11y-media-player>
-          <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
-          <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
-          <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
-          <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
-          <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-        </a11y-media-player>
+        
+      <h3>a11y-media-player demo with tracks</h3>
+      <demo-snippet>
+        <template>
+          <a11y-media-player>
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
+            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
+            <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
+            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
+          </a11y-media-player>
         </template>
       </demo-snippet>
+      
+      <!--h3>a11y-media-player demo as audio</h3>
+      <demo-snippet>
+        <template>
+          <a11y-media-player audioOnly>
+            <source src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Santa_Lucia_%28song%29.ogg" type="audio/ogg">
+          </a11y-media-player>
+        </template>
+      </demo-snippet-->
 
       <h3>Basic a11y-media-player demo</h3>
       <demo-snippet>
@@ -48,6 +57,7 @@
           </a11y-media-player>
         </template>
       </demo-snippet>
+      
       <h3>a11y-media-player demo with width set</h3>
       <demo-snippet>
         <template>
