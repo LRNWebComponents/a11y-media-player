@@ -27,7 +27,7 @@ A LRN element
         cursor: pointer;
         font-weight: bold;
       }
-      :host[active=true] {
+      :host[active] {
         background-color: #ccfffd;
       }
       :host .times {
@@ -63,9 +63,18 @@ A LRN element
          */
         active: {
           type: Boolean,
-          valueComputed: '_isActiveCue(activeCues,cue)',
+          reflectToAttribute: true,
+          computed: '_getActiveCue(cue,activeCues)',
           notify: true,
           reflectToAttribute: true
+        },
+        /* 
+         * array of cues 
+         */
+        activeCues: {
+          type: Array,
+          value: null,
+          notify: true
         },
         /* 
          * disable interactive mode that makes the transcript clickable 
@@ -81,13 +90,6 @@ A LRN element
           type: Array,
           value: null
         },
-        /* 
-         * the track number
-         */
-        trackId: {
-          type: String,
-          value: null
-        },
       },
       ready: function(){
         if(!this.disableInteractive) {
@@ -96,13 +98,8 @@ A LRN element
           this.setAttribute('controls',this.mediaId);
         }
       },
-      setActive: function(cues){
-        let root = this, active = false;
-        Object.keys(cues).map(function(key) { 
-          console.log(cues[key].id,root.cue.order,cues[key].id === root.cue.order);
-          active = active || cues[key].id === root.cue.order;
-        });
-        this.active = active;
+      _getActiveCue: function(cue,cues){
+        return cues.includes(cue.order.toString());
       },
       _onClick: function(e){
         if(!this.disableInteractive) {

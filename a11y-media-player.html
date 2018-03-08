@@ -482,33 +482,27 @@ A LRN element
             if (video.textTracks[i] !== null) {
               let text = video.textTracks[i].label !== undefined ? video.textTracks[i].label : video.textTracks[i].language;
               if(text !== undefined){
+                let track = video.textTracks[i];
                 root.setAttribute('has-captions',true);
-                video.textTracks[i].mode = 'showing';
-                cues = Object.keys(video.textTracks[i].cues).map(function(key) { 
-                  return {
-                    'order': Number(key),
-                    'seek': video.textTracks[i].cues[key].startTime,
-                    'start': root._convertTime(video.textTracks[i].cues[key].startTime),
-                    'end': root._convertTime(video.textTracks[i].cues[key].endTime), 
-                    'text': video.textTracks[i].cues[key].text
-                  }; 
-                });
-                video.textTracks[i].mode = 'hidden';
                 tracks.push({
                   'text': text, 
-                  'language': video.textTracks[i].language, 
-                  'value': i, 
-                  'cues': cues
+                  'language': track.language, 
+                  'value': i
                 });
-                video.textTracks[i].oncuechange = function(e){
-                  console.log(root.transcript.$.button);
-                  if (root.transcript !== undefined && root.transcript !== null) root.transcript.setActiveCue(e.currentTarget.activeCues);
+                track.oncuechange = function(e){
+                  if (root.transcript !== undefined && root.transcript !== null) {
+                    root.transcript.activeCues = Object.keys(e.currentTarget.activeCues).map(function(key) { 
+                      return e.currentTarget.activeCues[key].id;
+                    });
+                  }
                 };
               }
             }
           }
           root.set('__tracks', tracks);
-          if (root.transcript !== undefined && root.transcript !== null) root.transcript.setTracks(tracks);
+          if (root.transcript !== undefined && root.transcript !== null) {
+            root._getCues(tracks);
+          }
         });
         // when transcript is ready associate it with the player
         document.body.addEventListener('transcript-ready',function(e){
@@ -594,8 +588,9 @@ A LRN element
             this.$.video.textTracks[i].mode = 'hidden';
           }
         }
-        if (this.transcript !== null) {
-          this.transcript.set('cues', this.__selectedTrack.cues);
+        if (this.transcript !== null && this.transcript.tracks !== null) {
+          this.transcript.setAttribute('selected-transcript',this.__selectedTrackId);
+          //this.transcript.set('cues', this.__selectedTrack.cues);
         }
       },
       /* 
@@ -632,6 +627,38 @@ A LRN element
         mode = mode === undefined ? !this.loop : mode;
         this.loop = mode;
         this.$.video.muted = this.loop;
+      },
+      /**
+       * gets cue data from a track
+       */ 
+      _getCues: function(tracks){
+        let root = this, video = root.$.video, complete = 0;
+        for (var i=0 ; i < tracks.length; i++) {
+          let itrack = tracks[i], track = video.textTracks[i], loaded = itrack.cues !== undefined;
+          if(!loaded){
+            track.mode = 'showing';
+            let temp = setInterval(() => {
+              if (track.cues.length > 0) {
+                track.mode = 'hidden';
+                itrack.cues = Object.keys(track.cues).map(function(key) { 
+                  return {
+                    'order': Number(key),
+                    'seek': track.cues[key].startTime,
+                    'start': root._convertTime(track.cues[key].startTime),
+                    'end': root._convertTime(track.cues[key].endTime), 
+                    'text': track.cues[key].text
+                  };
+                });
+                complete++;
+                if (complete === tracks.length && root.transcript !== null) {
+                  root.transcript.setTracks(tracks);
+                  this.transcript.setAttribute('selected-transcript',this.__selectedTrackId);
+                }
+                clearInterval(temp);
+              }
+            },1);
+          }
+        }
       },
       /**
        * sets size class based on parent container and breakpoints

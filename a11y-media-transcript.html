@@ -20,26 +20,28 @@ A LRN element
     <style>
       :host {
         display: block;
+        padding: 0 15px;
+        overflow-y: scroll; 
+      }
+      :host .transcript-from-track:not([active]) {
+        display: none;
       }
     </style>
-    <div id="transcript">
-      <p>Transcript</p>
-      <template is="dom-repeat" items="[[tracks]]" as="track">
-        <div lang="[[track.language]]" order$="[[track.value]]">
-          <template is="dom-repeat" items="[[track.cues]]" as="cue">
-            <a11y-media-transcript-cue 
-              active-cues$="[[activeCues]]"
-              cue$="[[cue]]"
-              order$="[[cue.order]]"
-              disable-interactive$="[[disableInteractive]]" 
-              controls$="[[mediaId]]" 
-              show-timestamps$="[[showTimestamps]]"  
-              track-id$="[[track.value]]">
-            </a11y-media-transcript-cue>
-          </template>
-        </div>
-      </template>
-    </div>
+    <p>Transcript</p>
+    <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
+      <div class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
+        <template is="dom-repeat" items="[[track.cues]]" as="cue">
+          <a11y-media-transcript-cue 
+            active-cues$="[[activeCues]]"
+            cue$="[[cue]]"
+            order$="[[cue.order]]"
+            disable-interactive$="[[disableInteractive]]" 
+            controls$="[[mediaId]]" 
+            show-timestamps$="[[showTimestamps]]" >
+          </a11y-media-transcript-cue>
+        </template>
+      </div>
+    </template>
   </template>
 
   <script>
@@ -52,6 +54,15 @@ A LRN element
       },
 
       properties: {
+        /* 
+         * array of cues 
+         */
+        activeCues: {
+          type: Array,
+          value: null,
+          reflectToAttribute: true,
+          notify: true
+        },
         /* 
          * disable interactive mode that makes the transcript clickable 
          */
@@ -74,6 +85,13 @@ A LRN element
           value: false,
         },
         /* 
+         * selected transcript track id
+         */
+        selectedTranscript: {
+          type: String,
+          value: '0',
+        },
+        /* 
          * array of cues 
          */
         tracks: {
@@ -81,23 +99,30 @@ A LRN element
           value: null
         },
       },
+      /* 
+       * fires an event to let player object know there is a transcript container
+       */
       attached: function(){
         this.fire('transcript-ready',this);
       },
+      /* 
+       * loads tracks from array
+       */
       setTracks: function(tracks){
-        this.set('tracks',tracks);
+        this.set('tracks',tracks.slice(0));
+        this.$.tracks.render();
       },
-      setActiveCue: function(cues){
-        let buttons = this.querySelectorAll('a11y-media-transcript-cue');
-        for (var i=0; i < buttons.length; i++) {
-          let active = false;
-          Object.keys(cues).map(function(key) { 
-            buttons[i].setAttribute('active',active || cues[key].id === buttons[i].getAttribute('order'));
-          });
-        }
-      },
+      /* 
+       * forwards the listener for transcript cue click to seek accordingly
+       */
       _onCueSeek: function(e){
         this.fire('transcript-seek',e.detail);
+      },
+      /* 
+       * determines if this is the currently selected transcript to show or hide
+       */
+      _getActiveTranscript: function(track,selected){
+        return track.value === selected;
       },
     });
   </script>
