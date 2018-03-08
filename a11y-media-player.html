@@ -14,6 +14,7 @@
 <link rel="import" href="a11y-media-play-button.html">
 <link rel="import" href="a11y-media-number-input.html">
 <link rel="import" href="a11y-media-button.html">
+<link rel="import" href="a11y-media-transcript.html">
 
 <!--
 `a11y-media-player`
@@ -412,6 +413,7 @@ A LRN element
         },
       },
       ready: function(){
+        console.log('ready');
         let root = this, video = this.$.video, tracks = new Array();
         root.__slider = root.$.slider;
         root.__resumePlaying = false;
