@@ -27,15 +27,46 @@
         
       <h3>a11y-media-player demo with tracks</h3>
       <demo-snippet>
+        <p>Transcript can be located anywhere, even in a different <tt>&lt;div/&gt;</tt>.</p>
+        <style>
+          .player-and-transcript {
+            outline: 1px solid black;
+          }
+          @media screen and (min-width: 900px) {
+            .player-and-transcript {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              outline: 1px solid black;
+              background: black;
+            }
+            .player-and-transcript > div {
+              width: 50%;
+              flex-grow: 1;
+            }
+            .player-and-transcript > div:nth-child(2) {
+              padding: 0 15px;
+              background: white;
+            }
+            .player-and-transcript a11y-media-transcript {
+              max-height: 400px;
+              overflow-y: scroll;
+            }
+          }
+        </style>
         <template>
-          <a11y-media-player id="player">
-            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
-            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
-            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
-            <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
-            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-player>
-          <a11y-media-transcript media-id="player" show-timestamps></a11y-media-transcript>
+          <div class="player-and-transcript">
+            <div>
+              <a11y-media-player id="player">
+                <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
+                <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
+                <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
+                <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
+                <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
+              </a11y-media-player>
+            </div>
+            <div><a11y-media-transcript media-id="player" show-timestamps></a11y-media-transcript></div>
+          </div>
         </template>
       </demo-snippet>
       
