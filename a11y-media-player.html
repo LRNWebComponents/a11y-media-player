@@ -484,8 +484,6 @@ A LRN element
               if(text !== undefined){
                 root.setAttribute('has-captions',true);
                 video.textTracks[i].mode = 'showing';
-                console.log(video.textTracks[i].cues);
-                console.log(video.textTracks[i].cues[3]);
                 cues = Object.keys(video.textTracks[i].cues).map(function(key) { 
                   return {
                     'order': Number(key),
@@ -587,6 +585,7 @@ A LRN element
           if (index == i) {
             this.$.video.textTracks[i].mode = 'showing';
             this.__selectedTrack = this.$.video.textTracks[i];
+            this.__selectedTrackId = i;
           } else if (this.$.video.textTracks[i] !== null) {
             this.$.video.textTracks[i].mode = 'hidden';
           }
@@ -602,7 +601,13 @@ A LRN element
       toggleCC: function(mode){
         mode = mode === undefined ? !this.cc : mode;
         this.cc = mode;
-        if (this.__selectedTrack !== undefined) this.__selectedTrack.mode = mode ? 'showing' : 'hidden';
+        if (this.__selectedTrack !== undefined && mode == true) {
+          this.__selectedTrack.mode = 'showing';
+          this.$.tracks.value = this.__selectedTrackId;
+        } else if (this.__selectedTrack !== undefined) {
+          this.__selectedTrack.mode = 'hidden';
+          this.$.tracks.value = '';
+        }
       },
       /* 
        * toggles mute:
