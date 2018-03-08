@@ -574,6 +574,7 @@ A LRN element
         let seekable = this.$.video.seekable;
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
           this.$.video.currentTime = time;
+          this.elapsed = time;
           this.__length = this._convertTime(this.$.video.currentTime,this.$.video.duration) +'/'+ this._convertTime(this.$.video.duration);
           if (this.__resumePlaying) root.play();
         }
