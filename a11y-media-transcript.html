@@ -1,0 +1,97 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../juicy-html/juicy-html.html">
+<link rel="import" href="a11y-media-transcript-cue.html">
+
+<!--
+`a11y-media-transcript`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+ -
+ -
+ -
+
+-->
+
+<dom-module id="a11y-media-transcript">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <div id="transcript">
+      <p>Transcript</p>
+      <template is="dom-repeat" items="[[tracks]]" as="track">
+        <div lang="[[track.language]]" order$="[[track.value]]">
+          <template is="dom-repeat" items="[[track.cues]]" as="cue">
+            <a11y-media-transcript-cue  
+              cue$="[[cue]]"
+              diable-interactive$="[[disableInteractive]]" 
+              controls$="[[mediaId]]" 
+              show-timestamps$="[[showTimestamps]]"  
+              track-id$="[[track.value]]">
+            </a11y-media-transcript-cue>
+          </template>
+        </div>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'a11y-media-transcript',
+
+      listeners: {
+        'cue-seek': '_onCueSeek',
+      },
+
+      properties: {
+        /* 
+         * disable interactive mode that makes the transcript clickable 
+         */
+        disableInteractive: {
+          type: Boolean,
+          value: false,
+        },
+        /* 
+         * the id of media
+         */
+        mediaId: {
+          type: String,
+          value: null,
+        },
+        /* 
+         * show cue's start and end time 
+         */
+        showTimestamps: {
+          type: Boolean,
+          value: false,
+        },
+        /* 
+         * array of cues 
+         */
+        tracks: {
+          type: Array,
+          value: null
+        },
+      },
+      attached: function(){
+        this.fire('transcript-ready',this);
+        /*this.querySelector('a11y-media-transcript-cue').addEventListener('cue-seek',function(e){
+          console.log('cue-seek event',e.detail);
+
+        });*/
+      },
+      setTracks: function(tracks){
+        this.set('tracks',tracks);
+      },
+      _onCueSeek: function(e){
+        this.fire('transcript-seek',e.detail);
+      },
+    });
+  </script>
+</dom-module>

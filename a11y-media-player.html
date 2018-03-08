@@ -174,7 +174,6 @@ A LRN element
         margin-right: -15px;
       }
     </style>
-    <div id="empty"></div>
     <div id="player">
       <div id="media">
         <div id="mediaobject">
@@ -226,10 +225,6 @@ A LRN element
                     </div>
                   </div>
                 </paper-item>
-                <!--paper-item>
-                  <div class="menu-text">Captions </div>
-                  <paper-toggle-button id="captions" checked$="[[cc]]"></paper-toggle-button>
-                </paper-item-->
                 <paper-item class="captions">
                   <div class="setting">
                     <div class="setting-text">Captions</div>
@@ -260,10 +255,7 @@ A LRN element
       </div>
     </div>
     <div class="status" hidden-when="sm md lg xl"><juicy-html html$="[[__length]]"></juicy-html></div>
-    <iron-a11y-keys id="a11y" keys="up right" target$="[[__slider]]"
-    on-keys-pressed="forward"></iron-a11y-keys>
-    <iron-a11y-keys id="a11y" keys="down left" target$="[[__slider]]"
-    on-keys-pressed="rewind"></iron-a11y-keys>
+    </div>
   </template>
 
   <script>
@@ -401,6 +393,12 @@ A LRN element
           computed: '_getMuteUnmute(muted)'
         },
         /* 
+         * the transcript container. */
+        transcript: {
+          type: Object,
+          value: null,
+        },
+        /* 
          * Range is 0 to 100. Default should not be loud enough to overpower screen readers. */
         volume: {
           type: Number,
@@ -422,16 +420,7 @@ A LRN element
         if(root.__showFullscreen) {
           screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen });
         }
-        //hide the video subtitles and captions
-        root.__selectedTrack = video.textTracks.length > 0 ? video.textTracks[0] : null;
-        for(i in video.textTracks) {
-          if (video.textTracks[i] !== null && video.textTracks[i].label !== undefined) {
-            root.setAttribute('has-captions',true);
-            video.textTracks[i].mode = 'hidden';
-            tracks.push({'text': video.textTracks[i].label, 'value': i});
-          }
-        }
-        root.set('__tracks', tracks);
+        //when the tracks dropdown-select changes, update track and CC button
         root.$.tracks.addEventListener('change',function(e){
           if (root.__selectedTrack !== null) {
             if (e.detail.value !== '') {
@@ -447,12 +436,10 @@ A LRN element
         root.$.slider.addEventListener('dragging-changed', (e) => {
           if (!root.$.slider.dragging) { 
             root.seek(root.$.slider.immediateValue);
-            if (root.__resumePlaying) root.play();
             root.__resumePlaying = false;
           }
         });
         root.$.settings.addEventListener('iron-activate', (e) => {
-          console.log(e);
           if (e.target == root.$.settingslist) e.preventDefault();
         });
         root.$.settings.addEventListener('iron-select', (e) => {
@@ -466,7 +453,6 @@ A LRN element
             root.pause();
           } else {
             root.seek(root.$.slider.value);
-            if (root.__resumePlaying) root.play();
             root.__resumePlaying = false;
           }
         });
@@ -478,7 +464,8 @@ A LRN element
         } else {
           root.style.width = root.width;  
         }
-        //get and convert video duration & adjust aspect ration based on loaded metadata
+        //get and convert video duration & adjust aspect ratio based on loaded metadata
+        //get tracks and cues
         root.$.video.addEventListener('loadedmetadata',function(){
           if (root.width !== 'unset') root.setAttribute('width',root.width);
           if (root.height !== 'unset') root.setAttribute('width',root.height);
@@ -487,6 +474,49 @@ A LRN element
           root.__length = root._convertTime(0)+'/'+root._convertTime(video.duration);
           root.$.playbutton.style.paddingTop = aspect+'%';
           root.$.mediaobject.style.paddingTop = aspect+'%';
+
+          //hide the video subtitles and captions and add them to the tracks dropdown-select
+          if (video.textTracks.length > 0) root.selectTrack(0);
+          for(i in video.textTracks) {
+            let cues = {};
+            if (video.textTracks[i] !== null) {
+              let text = video.textTracks[i].label !== undefined ? video.textTracks[i].label : video.textTracks[i].language;
+              if(text !== undefined){
+                root.setAttribute('has-captions',true);
+                video.textTracks[i].mode = 'showing';
+                console.log(video.textTracks[i].cues);
+                console.log(video.textTracks[i].cues[3]);
+                cues = Object.keys(video.textTracks[i].cues).map(function(key) { 
+                  return {
+                    'order': Number(key),
+                    'seek': video.textTracks[i].cues[key].startTime,
+                    'start': root._convertTime(video.textTracks[i].cues[key].startTime),
+                    'end': root._convertTime(video.textTracks[i].cues[key].endTime), 
+                    'text': video.textTracks[i].cues[key].text
+                  }; 
+                });
+                video.textTracks[i].mode = 'hidden';
+                tracks.push({
+                  'text': text, 
+                  'language': video.textTracks[i].language, 
+                  'value': i, 
+                  'cues': cues
+                });
+              }
+            }
+          }
+          root.set('__tracks', tracks);
+          if (root.transcript !== undefined) root.transcript.setTracks(tracks);
+        });
+        // when transcript is ready associate it with the player
+        document.body.addEventListener('transcript-ready',function(e){
+          if(root.getAttribute('id') === e.detail.mediaId) {
+            root.transcript = e.detail;
+            if (root.__tracks !== undefined) root.transcript.setTracks(tracks);
+            root.transcript.addEventListener('cue-seek',function(e){
+              root.seek(e.detail.cue.seek);
+            });
+          }
         });
       },
       /* 
@@ -544,6 +574,8 @@ A LRN element
         let seekable = this.$.video.seekable;
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
           this.$.video.currentTime = time;
+          this.__length = this._convertTime(this.$.video.currentTime,this.$.video.duration) +'/'+ this._convertTime(this.$.video.duration);
+          if (this.__resumePlaying) root.play();
         }
       },
       /* 
@@ -558,6 +590,9 @@ A LRN element
             this.$.video.textTracks[i].mode = 'hidden';
           }
         }
+        if (this.transcript !== null) {
+          this.transcript.set('cues', this.__selectedTrack.cues);
+        }
       },
       /* 
        * toggles captions:
@@ -566,7 +601,7 @@ A LRN element
       toggleCC: function(mode){
         mode = mode === undefined ? !this.cc : mode;
         this.cc = mode;
-        this.__selectedTrack.mode = mode ? 'showing' : 'hidden';
+        if (this.__selectedTrack !== undefined) this.__selectedTrack.mode = mode ? 'showing' : 'hidden';
       },
       /* 
        * toggles mute:
@@ -599,8 +634,9 @@ A LRN element
         max = max === undefined ? val : max;
         let a = (val) => { return val < 10 ? '0' + val : val; }, 
         b = (val,i) => { return Math.floor(max/i) > 0 ? a(Math.floor(val/i)) : '00' },
-        c = (val) => { return Math.floor(max/3600) > 0 ? a(Math.round(val)) : a(Math.floor(val))+'.'+a(Math.round(val*10)) };
-        return b(val,3600)+':'+b(val%3600,60)+':'+c(val%60);
+        c = (val) => { return val < 100 ? val+'0' : val };
+        d = (val) => { return Math.floor(max/3600) > 0 ? a(Math.round(val)) : a(Math.floor(val))+'.'+c(a(Math.round(val*10))) };
+        return b(val,3600)+':'+b(val%3600,60)+':'+d(val%60);
       },
       /* set play/pause button */
       _getPlayPause: function(playing){

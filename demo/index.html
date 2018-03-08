@@ -11,6 +11,7 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../a11y-media-player.html">
+    <link rel="import" href="../a11y-media-transcript.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
     </style>
@@ -27,13 +28,14 @@
       <h3>a11y-media-player demo with tracks</h3>
       <demo-snippet>
         <template>
-          <a11y-media-player>
+          <a11y-media-player id="player">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
           </a11y-media-player>
+          <a11y-media-transcript media-id="player"></a11y-media-transcript>
         </template>
       </demo-snippet>
       
@@ -44,7 +46,7 @@
             <source src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Santa_Lucia_%28song%29.ogg" type="audio/ogg">
           </a11y-media-player>
         </template>
-      </demo-snippet-->
+      </demo-snippet>
 
       <h3>Basic a11y-media-player demo</h3>
       <demo-snippet>
@@ -68,9 +70,9 @@
             <source src="http://techslides.com/demos/sample-videos/small.3gp" type="video/3gp">
             <!--track src="/captions_file.vtt" label="English" kind="captions" srclang="en-us" default-->
             <!--track src="/French_captions_file.vtt" label="French" kind="subtitles" srclang="fr" -->
-          </a11y-media-player>
+          <!--/a11y-media-player>
         </template>
-      </demo-snippet>
+      </demo-snippet-->
     </div>
   </body>
 </html>

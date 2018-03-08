@@ -1,0 +1,89 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../juicy-html/juicy-html.html">
+
+<!--
+`a11y-media-transcript-cue`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+ - creates a cue as static text or as an button that controls media
+ -
+ -
+
+-->
+
+<dom-module id="a11y-media-transcript-cue">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      :host .times {
+        display: none;
+      }
+      :host .text {
+        display: inline-block;
+      }
+      :host[show-timestamps] .times {
+        display: inline-block;
+        font-size: 80%;
+        line-height: 120%;
+        width: 18em;
+        font-family: monospace;
+      }
+    </style>
+    <p>
+      <span class="times"><juicy-html html$="[[cue.start]] - [[cue.end]]"> </juicy-html></span>
+      <span class="text"><juicy-html html$="[[cue.text]]"></juicy-html></span>
+    </p>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'a11y-media-transcript-cue',
+
+      listeners: {
+        'tap': '_onClick'
+      },
+
+      properties: {
+        /* 
+         * disable interactive mode that makes the transcript clickable 
+         */
+        disableInteractive: {
+          type: Boolean,
+          value: false,
+        },
+        /* 
+         * array of cue data 
+         */
+        cue: {
+          type: Array,
+          value: null
+        },
+        /* 
+         * the track number
+         */
+        trackId: {
+          type: String,
+          value: null
+        },
+      },
+      ready: function(){
+        if(!this.disableInteractive) {
+          this.setAttribute('aria-role','button');
+          this.setAttribute('tabindex','0');
+          this.setAttribute('controls',this.mediaId);
+        }
+      },
+      _onClick: function(e){
+        if(!this.disableInteractive) {
+          this.fire('cue-seek',this);
+        }
+      },
+    });
+  </script>
+</dom-module>
