@@ -506,7 +506,7 @@ A LRN element
             }
           }
           root.set('__tracks', tracks);
-          if (root.transcript !== undefined) root.transcript.setTracks(tracks);
+          if (root.transcript !== undefined && root.transcript !== null) root.transcript.setTracks(tracks);
         });
         // when transcript is ready associate it with the player
         document.body.addEventListener('transcript-ready',function(e){
