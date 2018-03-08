@@ -500,6 +500,10 @@ A LRN element
                   'value': i, 
                   'cues': cues
                 });
+                video.textTracks[i].oncuechange = function(e){
+                  console.log(root.transcript.$.button);
+                  if (root.transcript !== undefined && root.transcript !== null) root.transcript.setActiveCue(e.currentTarget.activeCues);
+                };
               }
             }
           }
@@ -574,7 +578,7 @@ A LRN element
           this.$.video.currentTime = time;
           this.elapsed = time;
           this.__length = this._convertTime(this.$.video.currentTime,this.$.video.duration) +'/'+ this._convertTime(this.$.video.duration);
-          if (this.__resumePlaying) root.play();
+          if (this.__resumePlaying) this.play();
         }
       },
       /* 

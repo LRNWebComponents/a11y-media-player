@@ -27,9 +27,11 @@ A LRN element
       <template is="dom-repeat" items="[[tracks]]" as="track">
         <div lang="[[track.language]]" order$="[[track.value]]">
           <template is="dom-repeat" items="[[track.cues]]" as="cue">
-            <a11y-media-transcript-cue  
+            <a11y-media-transcript-cue 
+              active-cues$="[[activeCues]]"
               cue$="[[cue]]"
-              diable-interactive$="[[disableInteractive]]" 
+              order$="[[cue.order]]"
+              disable-interactive$="[[disableInteractive]]" 
               controls$="[[mediaId]]" 
               show-timestamps$="[[showTimestamps]]"  
               track-id$="[[track.value]]">
@@ -81,13 +83,18 @@ A LRN element
       },
       attached: function(){
         this.fire('transcript-ready',this);
-        /*this.querySelector('a11y-media-transcript-cue').addEventListener('cue-seek',function(e){
-          console.log('cue-seek event',e.detail);
-
-        });*/
       },
       setTracks: function(tracks){
         this.set('tracks',tracks);
+      },
+      setActiveCue: function(cues){
+        let buttons = this.querySelectorAll('a11y-media-transcript-cue');
+        for (var i=0; i < buttons.length; i++) {
+          let active = false;
+          Object.keys(cues).map(function(key) { 
+            buttons[i].setAttribute('active',active || cues[key].id === buttons[i].getAttribute('order'));
+          });
+        }
       },
       _onCueSeek: function(e){
         this.fire('transcript-seek',e.detail);

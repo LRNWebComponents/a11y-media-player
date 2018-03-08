@@ -19,6 +19,16 @@ A LRN element
     <style>
       :host {
         display: block;
+        line-height: 250%;
+      }
+      :host:not([disable-interactive]):active,
+      :host:not([disable-interactive]):focus,
+      :host:not([disable-interactive]):hover {
+        cursor: pointer;
+        font-weight: bold;
+      }
+      :host[active=true] {
+        background-color: #ccfffd;
       }
       :host .times {
         display: none;
@@ -34,10 +44,8 @@ A LRN element
         font-family: monospace;
       }
     </style>
-    <p>
-      <span class="times"><juicy-html html$="[[cue.start]] - [[cue.end]]"> </juicy-html></span>
-      <span class="text"><juicy-html html$="[[cue.text]]"></juicy-html></span>
-    </p>
+    <span class="times"><juicy-html html$="[[cue.start]] - [[cue.end]]"> </juicy-html></span>
+    <span class="text"><juicy-html html$="[[cue.text]]"></juicy-html></span>
   </template>
 
   <script>
@@ -50,6 +58,15 @@ A LRN element
       },
 
       properties: {
+        /* 
+         * is cue active 
+         */
+        active: {
+          type: Boolean,
+          valueComputed: '_isActiveCue(activeCues,cue)',
+          notify: true,
+          reflectToAttribute: true
+        },
         /* 
          * disable interactive mode that makes the transcript clickable 
          */
@@ -78,6 +95,14 @@ A LRN element
           this.setAttribute('tabindex','0');
           this.setAttribute('controls',this.mediaId);
         }
+      },
+      setActive: function(cues){
+        let root = this, active = false;
+        Object.keys(cues).map(function(key) { 
+          console.log(cues[key].id,root.cue.order,cues[key].id === root.cue.order);
+          active = active || cues[key].id === root.cue.order;
+        });
+        this.active = active;
       },
       _onClick: function(e){
         if(!this.disableInteractive) {
