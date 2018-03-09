@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 
 <!--
 `a11y-media-transcript-cue`
@@ -46,6 +47,12 @@ A LRN element
     </style>
     <span class="times"><juicy-html html$="[[cue.start]] - [[cue.end]]"> </juicy-html></span>
     <span class="text"><juicy-html html$="[[cue.text]]"></juicy-html></span>
+    <iron-a11y-keys 
+      id="a11y" 
+      keys="enter" 
+      target$="[[__target]]"
+      on-keys-pressed="_onClick">
+    </iron-a11y-keys>
   </template>
 
   <script>
@@ -93,6 +100,7 @@ A LRN element
       },
       ready: function(){
         if(!this.disableInteractive) {
+          this.__target = this;
           this.setAttribute('aria-role','button');
           this.setAttribute('tabindex','0');
           this.setAttribute('controls',this.mediaId);

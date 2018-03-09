@@ -18,7 +18,8 @@
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0",
     "juicy-html": "Juicy/juicy-html#^3.0.0",
     "web-animations-js": "web-animations/web-animations-js#^2.3.1",
-    "dropdown-select": "LRNWebComponents/dropdown-select#^1.0.0"
+    "dropdown-select": "LRNWebComponents/dropdown-select#^1.0.0",
+    "iron-a11y-keys": "PolymerElements/iron-a11y-keys#^2.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

@@ -83,6 +83,7 @@ A LRN element
       :host .status {
         font-size: 85%;
         padding: 8px 13px 8px;
+        min-width: 120px;
       }
       :host .status, 
       :host paper-icon-button {
@@ -98,21 +99,27 @@ A LRN element
       :host .section > * {
         position: absolute;
       }
-      :host .show-volume {
+      :host #showvolume {
         display: inline;
+        position: relative;
       }
-      :host .show-volume #volume {
+      :host #showvolume #volume {
         z-index: 1;
         position: absolute;
-        left: 100%;
-        top: 4px;
+        left: 0px;
+        top: -8px;
         width: 0;
+        background: black;
         overflow: hidden;
-        transition: width 1s;
+        transition: width 0.5s;
       }
-      :host .show-volume:active #volume,
-      :host .show-volume:focus #volume,
-      :host .show-volume:hover #volume {
+      :host #showvolume:active #volume,
+      :host #showvolume:focus #volume,
+      :host #showvolume:hover #volume,
+      :host #showvolume #volume:active,
+      :host #showvolume #volume:focus,
+      :host #showvolume #volume:hover,
+      :host #showvolume #volume.focus {
         overflow: visible;
         width: 100px;
       }
@@ -121,6 +128,7 @@ A LRN element
       }
       :host .section > .section-left {
         left: 0;
+        min-width: 200px;
       }
       :host .section > .section-right {
         right: 0;
@@ -190,20 +198,22 @@ A LRN element
           <a11y-media-play-button id="playbutton"></a11y-media-play-button>
         </div>
       </div>
-      <paper-slider id="slider" max$="[[duration]]" pin secondary-progress$="[[buffered]]" tab-index="-1" value$="[[elapsed]]"></paper-slider>
+      <paper-slider id="slider" max$="[[duration]]" pin secondary-progress$="[[buffered]]" value$="[[elapsed]]"></paper-slider>
       <div id="controls">
         <responsive-utility id="utility" responsive-to-parent="true"></responsive-utility>
         <div class="section">
           <div class="section-left">
-            <a11y-media-button hidden-when="xs" icon="av:fast-rewind" label="backward"></a11y-media-button>
+            <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:fast-rewind" label="backward"></a11y-media-button>
             <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
-            <a11y-media-button hidden-when="xs" icon="av:fast-forward" label="forward"></a11y-media-button>
-            <a11y-media-button hidden-when="xs" icon="av:replay" label="restart"></a11y-media-button>
-            <div class="show-volume">
-              <a11y-media-button icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
-              <paper-slider id="volume" min="0" max="100" pin step="10" tab-index="-1" value$="[[volume]]"></paper-slider>
+            <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:fast-forward" label="forward"></a11y-media-button>
+            <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:replay" label="restart"></a11y-media-button>
+            <div id="showvolume">
+              <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
+              <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]"></paper-slider>
             </div>
-            <span class="status" hidden-when="xs"><juicy-html html$="[[__length]]"></juicy-html></span>
+            <span class="status" disabled$="[[mobileSize]]">
+              <span hidden-when="xs"><juicy-html html$="[[__length]]"></juicy-html></span>
+            </span>
           </div>
           <div class="section-right">
             <a11y-media-button class="captions" icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
@@ -357,10 +367,19 @@ A LRN element
           value: false,
         },
         /*
-         * size of the media element for responsive styleing
+         * size of the media element for responsive styling
          */
         responsiveSize: {
           type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+        /*
+         * is the size mobile
+         */
+        mobileSize: {
+          type: Boolean,
+          computed: '_testAttribute(responsiveSize,"xs")',
           notify: true,
           reflectToAttribute: true
         },
@@ -413,7 +432,6 @@ A LRN element
         },
       },
       ready: function(){
-        console.log('ready');
         let root = this, video = this.$.video, tracks = new Array();
         root.__slider = root.$.slider;
         root.__resumePlaying = false;
@@ -447,6 +465,14 @@ A LRN element
         root.$.settings.addEventListener('iron-select', (e) => {
           e.preventDefault();
         });
+        root.$.mute.$.button.onfocus = function(){
+          root.$.volume.classList.add('focus');
+          console.log(root.$.volume,'focus',root.$.volume.classList);
+        };
+        root.$.mute.$.button.onblur = function(){
+          root.$.volume.classList.remove('focus');
+          console.log(root.$.volume,'blur',root.$.volume.classList);
+        };
         //handle slider focus
         //temporarily pause playback so that a value can be selected, but note if playing should be resumed
         root.$.slider.addEventListener('focused-changed', (e) => {
@@ -667,6 +693,12 @@ A LRN element
        */ 
       _onResponsiveResize: function(e){
         this.responsiveSize = e.detail.screen;
+      },
+      /**
+       * returns true if an attribute is set to a value
+       */ 
+       _testAttribute: function(attr,val){
+        return attr === val;
       },
       /* set play/pause button */
       _convertTime: function(val,max){
