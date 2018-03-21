@@ -200,7 +200,6 @@ A LRN element
       </div>
       <paper-slider id="slider" max$="[[duration]]" pin secondary-progress$="[[buffered]]" value$="[[elapsed]]"></paper-slider>
       <div id="controls">
-        <responsive-utility id="utility" responsive-to-parent="true"></responsive-utility>
         <div class="section">
           <div class="section-left">
             <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:fast-rewind" label="backward"></a11y-media-button>
@@ -277,8 +276,7 @@ A LRN element
       listeners: {
         'play-button-clicked': 'play',
         'button-clicked': '_onButtonClick',
-        'change': '_onSettingsChanged',
-        'screen-resize': '_onResponsiveResize'
+        'change': '_onSettingsChanged'
       },
 
       properties: {
@@ -430,6 +428,14 @@ A LRN element
           type: String,
           value: 'unset'
         },
+      },
+      attached: function(){
+        let root = this;
+        Polymer.ResponsiveUtility.requestAvailability();
+        root.fire('responsive-element',{
+          "element": root,
+          "attribute": "responsive-size"
+        });
       },
       ready: function(){
         let root = this, video = this.$.video, tracks = new Array();
@@ -687,12 +693,6 @@ A LRN element
             },1);
           }
         }
-      },
-      /**
-       * sets size class based on parent container and breakpoints
-       */ 
-      _onResponsiveResize: function(e){
-        this.responsiveSize = e.detail.screen;
       },
       /**
        * returns true if an attribute is set to a value
