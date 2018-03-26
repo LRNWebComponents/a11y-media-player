@@ -1,0 +1,378 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-slider/paper-slider.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../juicy-html/juicy-html.html">
+<link rel="import" href="../dropdown-select/dropdown-select.html">
+<link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
+<link rel="import" href="a11y-media-button.html">
+
+<!--
+`a11y-media-controls`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+ - the control bar for the media player
+ -
+ -
+
+-->
+
+<dom-module id="a11y-media-controls">
+  <template>
+    <style>
+      :host {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+        height: 40px;
+        --paper-listbox-color: white;
+        --paper-listbox-background-color: black;
+      }
+      :host > #controls-left {
+        position: absolute;
+        left: 0;
+        min-width: 200px;
+      }
+      :host > #controls-right {
+        position: absolute;
+        right: 0;
+        top: -2px;
+      }
+      :host paper-menu-button {
+        padding: 0;
+      }
+      :host paper-icon-button:active,
+      :host paper-icon-button:focus,
+      :host paper-icon-button:hover {
+        color: #fff;
+      }
+      :host paper-listbox {
+        padding: 0;
+      }
+      :host paper-item {
+        min-height: 40;
+      } 
+      :host paper-toggle-button {
+        --paper-toggle-button-unchecked-bar-color:  #eeeeee;
+        --paper-toggle-button-unchecked-button-color:  #f8f8f8;
+        --paper-toggle-button-checked-bar-color:  #00fffd;
+        --paper-toggle-button-checked-button-color:  #00eeff;
+      }
+      :host paper-slider {
+        z-index: 3;
+        --paper-slider-knob-start-border-color: transparent;
+        --paper-slider-knob-end-border-color: transparent;
+        --paper-slider-active-color: #00fffd;
+        --paper-slider-secondary-color: #4E7373;
+        --paper-slider-pin-color: #444;
+        --paper-slider-pin-start-color: #444;
+        --paper-slider-knob-color: #00eeff;
+        --paper-slider-knob-start-color: #eeeeee;
+        --paper-slider-knob-end-color: #00eeff;
+      }
+      :host .ellapsed-time, 
+      :host paper-icon-button {
+        border: none;
+        background-color: black;
+        color: #bbb;
+        position: relative;
+      }
+      :host .ellapsed-time {
+        font-size: 85%;
+        padding: 8px 13px 8px;
+        min-width: 120px;
+      }
+      :host[hide-ellapsed-time] .ellapsed-time {
+        display: none;
+      }
+      :host[responsive-size="xs"] *[hidden-when*="xs"],
+      :host[responsive-size="sm"] *[hidden-when*="sm"],
+      :host[responsive-size="md"] *[hidden-when*="md"],
+      :host[responsive-size="lg"] *[hidden-when*="lg"],
+      :host[responsive-size="xl"] *[hidden-when*="xl"] {
+        display: none;
+      }
+      :host:not([has-captions]) .captions {
+        display: none;
+      }
+      :host dropdown-select {
+        --primary-text-color: white;
+      }
+      :host .setting {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      :host .setting-text {
+        min-width: 100px;
+      }
+      :host .setting-control {
+        max-width: 100px;
+      }
+      :host .setting-slider {
+        width: 130px;
+        margin-left: -15px;
+        margin-right: -15px;
+      }
+      :host #showvolume {
+        display: inline;
+        position: relative;
+      }
+      :host #volume {
+        z-index: 1;
+        position: absolute;
+        left: 0px;
+        top: -8px;
+        width: 0;
+        background: black;
+        overflow: hidden;
+        transition: width 0.5s;
+      }
+      :host #volume:active,
+      :host #volume:focus,
+      :host #volume:hover,
+      :host #volume.focus,
+      :host #showvolume:active #volume,
+      :host #showvolume:focus #volume,
+      :host #showvolume:hover #volume {
+        overflow: visible;
+        width: 100px;
+      }
+    </style>
+    <div id="controls-left">
+      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:fast-rewind" label="backward"></a11y-media-button>
+      <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
+      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:fast-forward" label="forward"></a11y-media-button>
+      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:replay" label="restart"></a11y-media-button>
+      <div id="showvolume">
+        <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
+        <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]"></paper-slider>
+      </div>
+      <span class="ellapsed-time" disabled$="[[mobileSize]]">
+        <span hidden-when="xs"><juicy-html html$="[[length]]"></juicy-html></span>
+      </span>
+    </div>
+    <div id="controls-right">
+      <a11y-media-button class="captions" icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
+      <paper-menu-button id="settings" vertical-align="bottom" ignore-select>
+        <paper-icon-button icon="settings" slot="dropdown-trigger" alt="Settings"></paper-icon-button>
+        <paper-listbox id="settingslist" slot="dropdown-content">
+          <paper-item>
+            <div class="setting">
+              <div class="setting-text">Loop </div>
+              <div class="setting-control">
+                <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button>
+              </div>
+            </div>
+          </paper-item>
+          <paper-item class="captions">
+            <div class="setting">
+              <div class="setting-text">Captions</div>
+              <div class="setting-control">
+                <dropdown-select id="tracks" no-label-float value="" label="tracks">
+                  <paper-item value="">Off</paper-item>
+                  <template is="dom-repeat" items="{{__tracks}}" as="option">
+                    <paper-item value$="{{option.value}}">{{option.text}}</paper-item>
+                  </template>
+                </dropdown-select>
+              </div>
+            </div>
+          </paper-item>
+          <paper-item>
+            <div class="setting">
+              <div class="setting-text">Speed %</div>
+              <div class="setting-control">
+                <paper-slider id="speed" class="setting-slider" label="tracks" min="0.5" max="4" pin step="0.5" tab-index="-1" value$="[[playbackRate]]"></paper-slider>
+              </div>
+            </div>
+          </paper-item>
+          <paper-item>
+            <span class="ellapsed-time" disabled$="[[!mobileSize]]">
+              <span hidden-when="sm md lg xl"><juicy-html html$="[[length]]"></juicy-html></span>
+            </span>
+          </paper-item>
+        </paper-listbox>
+      </paper-menu-button>
+      <paper-tooltip for="settings">settings</paper-tooltip>
+      <template is="dom-if" if="[[allowFullscreen]]">
+        <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]" step="1"></a11y-media-button>
+      </template>
+      </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'a11y-media-controls',
+
+      listeners: {
+        'button-clicked': '_onButtonClick',
+        'change': '_onSettingsChanged'
+      },
+
+      properties: {
+        /* 
+         * fullscreen option 
+         */
+        allowFullscreen: {
+          type: Boolean,
+          value: true,
+        },
+        /* autoplay is an option, 
+         * but generally not recommended for a11y
+         */ 
+        autoplay: {
+          type: Boolean,
+          value: false,
+        },
+        /*
+         * show closed captions
+         */
+        cc: {
+          type: Boolean,
+          value: false,
+        },
+        /* 
+         * is fullscreen mode
+         */
+        fullscreen: {
+          type: Boolean,
+          value: false,
+        },
+        /*
+         * length of video
+         */
+        length: {
+          type: String,
+          value: '',
+        },
+        /* 
+         * looping is not fully supported
+         */
+        loop: {
+          type: Boolean,
+          value: false,
+        },
+        /* 
+         * is audio muted
+         */
+        muted: {
+          type: Boolean,
+          value: false,
+        },
+        /*
+         * size of the media element for responsive styling
+         */
+        responsiveSize: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+        /*
+         * is the size mobile
+         */
+        mobileSize: {
+          type: Boolean,
+          computed: '_testAttribute(responsiveSize,"xs")',
+          notify: true,
+          reflectToAttribute: true
+        },
+        /*
+         * is media playing
+         */
+        playing: {
+          type: String,
+          value: false
+        },
+        /*
+         * playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
+         */
+        playbackRate: {
+          type: Number,
+          value: 1
+        },
+        /*
+         * play/pause button
+         */
+        playPause: {
+          type: Object,
+          computed: '_getPlayPause(playing)'
+        },
+        /*
+         * mute/unmute button
+         */
+        muteUnmute: {
+          type: Object,
+          computed: '_getMuteUnmute(muted)'
+        },
+        /* 
+         * Range is 0 to 100. Default should not be loud enough to overpower screen readers. */
+        volume: {
+          type: Number,
+          value: 70,
+        },
+      },
+      ready: function(){
+        let root = this;
+        // when the tracks dropdown-select changes, update track and CC button
+        root.$.tracks.addEventListener('change',function(e){
+          if (root.__selectedTrack !== null) {
+            if (e.detail.value !== '') {
+              root.fire('select-track',{"control":this,"value":e.detail.value});
+              root.fire('toggle-cc',{"control":this,"value":true});
+            } else {
+              root.fire('toggle-cc',{"control":this,"value":false});
+            }
+          }
+        });
+        // prevent menu from being closed before action is taken
+        root.$.settings.addEventListener('iron-activate', (e) => {
+          if (e.target == root.$.settingslist) e.preventDefault();
+        });
+        // prevent menu from being closed before action is taken
+        root.$.settings.addEventListener('iron-select', (e) => {
+          e.preventDefault();
+        });
+        // when the mute button is in focus, 
+        // add focus class to make the volume slider appear
+        root.$.mute.$.button.onfocus = function(){
+          root.$.volume.classList.add('focus');
+        };
+        // when the mute button is blurred, 
+        // remove focus class to make the volume slider disappear
+        root.$.mute.$.button.onblur = function(){
+          root.$.volume.classList.remove('focus');
+        };
+      },
+      /**
+       * returns true if an attribute is set to a value
+       */ 
+       _testAttribute: function(attr,val){
+        return attr === val;
+      },
+      /* set play/pause button */
+      _getPlayPause: function(playing){
+        return playing ? {'icon': 'av:pause', 'label': 'pause'} : {'icon': 'av:play-arrow', 'label': 'play'};
+      },
+      /* set play/pause button */
+      _getMuteUnmute: function(muted){
+        return muted ? {'icon': 'av:volume-off', 'label': 'unmute'} : {'icon': 'av:volume-up', 'label': 'mute'};
+      },
+      /* determine which button was clicked and act accordingly */
+      _onButtonClick: function(e){
+        this.fire('controls-change',e.detail);
+      },
+      /* determine which button was clicked and act accordingly */
+      _onSettingsChanged: function(e){
+        this.fire('controls-change',e.target);
+      }
+    });
+  </script>
+</dom-module>

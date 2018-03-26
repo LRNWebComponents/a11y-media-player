@@ -33,26 +33,40 @@
           }
           @media screen and (min-width: 900px) {
             .player-and-transcript {
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
+              display: inline-flex;
+              align-items: stretch;
+              width: 100%;
               outline: 1px solid black;
               background: black;
             }
             .player-and-transcript > div {
               width: 50%;
               flex-grow: 1;
+              flex-shrink: 1;
             }
             .player-and-transcript a11y-media-transcript {
-              max-height: 400px;
               background: white;
+              position: absolute;
+              top: 0; left: 0;
+              right: 0; bottom: 0;
+              overflow-y: scroll;
+            }
+            #transcript {
+              position: relative;
+            }
+            #player.totop {
+              position: absolute;
+              top:0;
+              left: 0;
+              width: 200px !important;
+              z-index: 9999;
             }
           }
         </style>
         <template>
           <div class="player-and-transcript">
             <div>
-              <a11y-media-player id="player">
+              <a11y-media-player id="player" class="">
                 <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
                 <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
                 <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
@@ -60,7 +74,9 @@
                 <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
               </a11y-media-player>
             </div>
-            <div><a11y-media-transcript media-id="player" show-timestamps></a11y-media-transcript></div>
+            <div id="transcript">
+              <a11y-media-transcript media-id="player" show-timestamps></a11y-media-transcript>
+            </div>
           </div>
         </template>
       </demo-snippet>

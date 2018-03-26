@@ -1,19 +1,11 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
-<link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
-<link rel="import" href="../paper-item/paper-item.html">
-<link rel="import" href="../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
-<link rel="import" href="../dropdown-select/dropdown-select.html">
 <link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
 <link rel="import" href="screenfull-lib.html">
 <link rel="import" href="a11y-media-play-button.html">
-<link rel="import" href="a11y-media-number-input.html">
-<link rel="import" href="a11y-media-button.html">
+<link rel="import" href="a11y-media-controls.html">
 <link rel="import" href="a11y-media-transcript.html">
 
 <!--
@@ -23,7 +15,7 @@ A LRN element
 @demo demo/index.html
 
 @microcopy - the mental model for this element
- -
+ - a standalone media player
  -
  -
 
@@ -37,32 +29,20 @@ A LRN element
         max-width: 100%;
         --paper-listbox-color: white;
         --paper-listbox-background-color: black;
-      }
-      :host:not([has-captions]) .captions {
-        display: none;
-      }
-      :host[responsive-size="xs"] *[hidden-when*="xs"],
-      :host[responsive-size="sm"] *[hidden-when*="sm"],
-      :host[responsive-size="md"] *[hidden-when*="md"],
-      :host[responsive-size="lg"] *[hidden-when*="lg"],
-      :host[responsive-size="xl"] *[hidden-when*="xl"] {
-        display: none;
-      }
-      :host #controls, 
-      :host #slider, 
-      :host #mediaobject,
-      :host #mediaobject > * {
-        width: 100%;
-      }
-      :host #media {
-        z-index: 1;
-      }
-      :host #player {
         background-color: black;
       }
-      :host #mediaobject {
+      :host #player-inner {
+        z-index: 1;
+      }
+      :host #media {
         padding-top: 56.25%;
         position: relative;
+      }
+      :host #media,
+      :host #media > *, 
+      :host #slider,
+      :host #controls {
+        width: 100%;
       }
       :host #video {
         position: absolute;
@@ -80,71 +60,6 @@ A LRN element
       :host[playing] #playbutton {
         opacity: 0;
       }
-      :host .status {
-        font-size: 85%;
-        padding: 8px 13px 8px;
-        min-width: 120px;
-      }
-      :host .status, 
-      :host paper-icon-button {
-        border: none;
-        background-color: black;
-        color: #bbb;
-        position: relative;
-      }
-      :host .section {
-        position: relative;
-        height: 40px;
-      }
-      :host .section > * {
-        position: absolute;
-      }
-      :host #showvolume {
-        display: inline;
-        position: relative;
-      }
-      :host #showvolume #volume {
-        z-index: 1;
-        position: absolute;
-        left: 0px;
-        top: -8px;
-        width: 0;
-        background: black;
-        overflow: hidden;
-        transition: width 0.5s;
-      }
-      :host #showvolume:active #volume,
-      :host #showvolume:focus #volume,
-      :host #showvolume:hover #volume,
-      :host #showvolume #volume:active,
-      :host #showvolume #volume:focus,
-      :host #showvolume #volume:hover,
-      :host #showvolume #volume.focus {
-        overflow: visible;
-        width: 100px;
-      }
-      :host paper-menu-button {
-        padding: 0;
-      }
-      :host .section > .section-left {
-        left: 0;
-        min-width: 200px;
-      }
-      :host .section > .section-right {
-        right: 0;
-        top: -2px;
-      }
-      :host paper-icon-button:active,
-      :host paper-icon-button:focus,
-      :host paper-icon-button:hover {
-        color: #fff;
-      }
-      :host paper-listbox {
-        padding: 0;
-      }
-      :host paper-item {
-        min-height: 40;
-      } 
       :host paper-toggle-button {
         --paper-toggle-button-unchecked-bar-color:  #eeeeee;
         --paper-toggle-button-unchecked-button-color:  #f8f8f8;
@@ -163,29 +78,10 @@ A LRN element
         --paper-slider-knob-start-color: #eeeeee;
         --paper-slider-knob-end-color: #00eeff;
       }
-      :host #settings dropdown-select {
-        --primary-text-color: white;
-      }
-      :host .setting {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-      }
-      :host .setting-text {
-        min-width: 100px;
-      }
-      :host .setting-control {
-        max-width: 100px;
-      }
-      :host .setting-slider {
-        width: 130px;
-        margin-left: -15px;
-        margin-right: -15px;
-      }
     </style>
     <div id="player">
-      <div id="media">
-        <div id="mediaobject">
+      <div id="player-inner">
+        <div id="media">
           <video 
             autoplay$="[[autoplay]]" 
             id="video" 
@@ -199,73 +95,22 @@ A LRN element
         </div>
       </div>
       <paper-slider id="slider" max$="[[duration]]" pin secondary-progress$="[[buffered]]" value$="[[elapsed]]"></paper-slider>
-      <div id="controls">
-        <div class="section">
-          <div class="section-left">
-            <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:fast-rewind" label="backward"></a11y-media-button>
-            <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
-            <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:fast-forward" label="forward"></a11y-media-button>
-            <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:replay" label="restart"></a11y-media-button>
-            <div id="showvolume">
-              <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
-              <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]"></paper-slider>
-            </div>
-            <span class="status" disabled$="[[mobileSize]]">
-              <span hidden-when="xs"><juicy-html html$="[[__length]]"></juicy-html></span>
-            </span>
-          </div>
-          <div class="section-right">
-            <a11y-media-button class="captions" icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
-            <paper-menu-button id="settings" vertical-align="bottom" ignore-select>
-              <paper-icon-button icon="settings" slot="dropdown-trigger" alt="Settings"></paper-icon-button>
-              <paper-listbox id="settingslist" slot="dropdown-content">
-                <paper-item>
-                  <div class="setting">
-                    <div class="setting-text">Autoplay </div>
-                    <div class="setting-control">
-                      <paper-toggle-button id="autoplay" checked$="[[autoplay]]"></paper-toggle-button>
-                    </div>
-                  </div>
-                </paper-item>
-                <paper-item>
-                  <div class="setting">
-                    <div class="setting-text">Loop </div>
-                    <div class="setting-control">
-                      <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button>
-                    </div>
-                  </div>
-                </paper-item>
-                <paper-item class="captions">
-                  <div class="setting">
-                    <div class="setting-text">Captions</div>
-                    <div class="setting-control">
-                      <dropdown-select id="tracks" no-label-float value="">
-                        <paper-item value="">Off</paper-item>
-                        <template is="dom-repeat" items="{{__tracks}}" as="option">
-                          <paper-item value$="{{option.value}}">{{option.text}}</paper-item>
-                        </template>
-                      </dropdown-select>
-                    </div>
-                  </div>
-                </paper-item>
-                <paper-item>
-                  <div class="setting">
-                    <div class="setting-text">Speed %</div>
-                    <div class="setting-control">
-                      <paper-slider id="speed" class="setting-slider" min="0.5" max="4" pin step="0.5" tab-index="-1" value$="[[playbackRate]]"></paper-slider>
-                    </div>
-                  </div>
-                </paper-item>
-              </paper-listbox>
-            </paper-menu-button>
-            <paper-tooltip for="settings">settings</paper-tooltip>
-            <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]" step="1"></a11y-media-button>
-          </div>
-        </div>
-      </div>
     </div>
-    <div class="status" hidden-when="sm md lg xl"><juicy-html html$="[[__length]]"></juicy-html></div>
-    </div>
+    <a11y-media-controls 
+      allow-fullscreen="[[allowFullscreen]]"
+      autoplay="[[autoplay]]"
+      cc="[[cc]]"
+      fullscreen="[[fullscreen]]" 
+      hide-ellapsed-time$="[[hideEllapsedTime]]"
+      id="controls"
+      length="[[__length]]"
+      loop="[[loop]]"
+      muted="[[muted]]"
+      responsive-size="[[responsiveSize]]"
+      playing="[[playing]]"
+      playback-rate="[[playbackRate]]"
+      volume="[[__volume]]">
+    </a11y-media-controls>
   </template>
 
   <script>
@@ -274,68 +119,76 @@ A LRN element
       is: 'a11y-media-player',
 
       listeners: {
-        'play-button-clicked': 'play',
-        'button-clicked': '_onButtonClick',
-        'change': '_onSettingsChanged'
+        'controls-change': '_onControlsChanged',
+        'play-button-clicked': 'play'
       },
 
       properties: {
-        /* 
+        /** 
          * fullscreen option 
          */
         allowFullscreen: {
           type: Boolean,
           value: true,
         },
-        /* autoplay is an option, 
+        /** 
+         * autoplay is an option, 
          * but generally not recommended for a11y
          */ 
         autoplay: {
           type: Boolean,
           value: false,
         },
-        /*
+        /**
          * buffered video in seconds
          */
         buffered: {
           type: Number,
           value: 0,
         },
-        /*
+        /**
          * show closed captions
          */
         cc: {
           type: Boolean,
           value: false,
         },
-        /*
+        /**
          * duration of video in seconds
          */
         duration: {
           type: Number,
           value: 0,
         },
-        /*
+        /**
          * elapsed time in seconds
          */
         elapsed: {
           type: Number,
           value: 0,
         },
-        /* 
+        /** 
          * is fullscreen mode
          */
         fullscreen: {
           type: Boolean,
           value: false,
         },
-        /* 
-         * The width of the media player. */
+        /** 
+         * The width of the media player. 
+         */
         height: {
           type: String,
           value: 'unset'
         },
-        /*
+        /** 
+         * hide elapsed time 
+         */
+        hideEllapsedTime: {
+          type: Boolean,
+          value: false,
+        },
+        /**
          * language
          */
         lang: {
@@ -343,28 +196,28 @@ A LRN element
           value: 'en',
           reflectToAttribute: true,
         },
-        /*
+        /**
          * length of video
          */
         length: {
           type: String,
           value: '',
         },
-        /* 
+        /** 
          * looping is not fully supported
          */
         loop: {
           type: Boolean,
           value: false,
         },
-        /* 
+        /** 
          * is audio muted
          */
         muted: {
           type: Boolean,
           value: false,
         },
-        /*
+        /**
          * size of the media element for responsive styling
          */
         responsiveSize: {
@@ -372,16 +225,7 @@ A LRN element
           notify: true,
           reflectToAttribute: true
         },
-        /*
-         * is the size mobile
-         */
-        mobileSize: {
-          type: Boolean,
-          computed: '_testAttribute(responsiveSize,"xs")',
-          notify: true,
-          reflectToAttribute: true
-        },
-        /*
+        /**
          * is media playing
          */
         playing: {
@@ -389,99 +233,72 @@ A LRN element
           value: false,
           reflectToAttribute: true
         },
-        /*
+        /**
          * playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
          */
         playbackRate: {
           type: Number,
           value: 1
         },
-        /*
-         * play/pause button
+        /** 
+         * the transcript container. 
          */
-        playPause: {
-          type: Object,
-          computed: '_getPlayPause(playing)'
-        },
-        /*
-         * mute/unmute button
-         */
-        muteUnmute: {
-          type: Object,
-          computed: '_getMuteUnmute(muted)'
-        },
-        /* 
-         * the transcript container. */
         transcript: {
           type: Object,
           value: null,
         },
-        /* 
-         * Range is 0 to 100. Default should not be loud enough to overpower screen readers. */
+        /** 
+         * Range is 0 to 100. Default should not be loud enough to overpower screen readers. 
+         */
         volume: {
           type: Number,
           value: 70,
         },
-        /* 
-         * The width of the media player. */
+        /** 
+         * The width of the media player. 
+         */
         width: {
           type: String,
           value: 'unset'
         },
       },
+      /**
+       * calls responsive-utility to get parent's responsive size
+       */ 
       attached: function(){
         let root = this;
         Polymer.ResponsiveUtility.requestAvailability();
         root.fire('responsive-element',{
           "element": root,
-          "attribute": "responsive-size"
+          "attribute": "responsive-size",
+          "relativeToParent": true
         });
       },
       ready: function(){
-        let root = this, video = this.$.video, tracks = new Array();
+        let root = this, video = root.$.video, tracks = new Array();
         root.__slider = root.$.slider;
+        root.__volume = root.muted ? 0 : Math.max(this.volume,10);
         root.__resumePlaying = false;
         root.__showFullscreen = this.allowFullscreen && screenfull.enabled;
         root.__length = 'Loading...';
+
+        // handles fullscreen
         if(root.__showFullscreen) {
           screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen });
         }
-        //when the tracks dropdown-select changes, update track and CC button
-        root.$.tracks.addEventListener('change',function(e){
-          if (root.__selectedTrack !== null) {
-            if (e.detail.value !== '') {
-              root.selectTrack(e.detail.value);
-              root.toggleCC(true);
-            } else {
-              root.toggleCC(false);
-            }
-          }
-        });
-        //handle dragging with a mouse
-        //when dragging stops, seek to that value and if the video was playing before the dragging, resume it
+        // handles dragging with a mouse
         root.$.slider.addEventListener('dragging-changed', (e) => {
+          // when dragging stops, seeks to that value and 
+          // if the video was playing before the dragging, resumes it
           if (!root.$.slider.dragging) { 
             root.seek(root.$.slider.immediateValue);
             root.__resumePlaying = false;
           }
         });
-        root.$.settings.addEventListener('iron-activate', (e) => {
-          if (e.target == root.$.settingslist) e.preventDefault();
-        });
-        root.$.settings.addEventListener('iron-select', (e) => {
-          e.preventDefault();
-        });
-        root.$.mute.$.button.onfocus = function(){
-          root.$.volume.classList.add('focus');
-          console.log(root.$.volume,'focus',root.$.volume.classList);
-        };
-        root.$.mute.$.button.onblur = function(){
-          root.$.volume.classList.remove('focus');
-          console.log(root.$.volume,'blur',root.$.volume.classList);
-        };
-        //handle slider focus
-        //temporarily pause playback so that a value can be selected, but note if playing should be resumed
+        // handles slider focus
         root.$.slider.addEventListener('focused-changed', (e) => {
+          // temporarily pauses playback so that a value can be selected, 
+          // but notes if playing should be resumed
           if(root.$.slider.focused){
             if (root.playing) root.__resumePlaying = true;
             root.pause();
@@ -490,7 +307,7 @@ A LRN element
             root.__resumePlaying = false;
           }
         });
-        //adjust video width and height based on attributes
+        //adjusts video width and height based on attributes
         if (root.width === 'unset' && root.height === 'unset'){
           root.style.width = '100%';  
         } else if (root.width === 'unset' && root.height !== 'unset') {
@@ -498,19 +315,22 @@ A LRN element
         } else {
           root.style.width = root.width;  
         }
-        //get and convert video duration & adjust aspect ratio based on loaded metadata
-        //get tracks and cues
-        root.$.video.addEventListener('loadedmetadata',function(){
+        // handles loaded metadata
+        video.addEventListener('loadedmetadata',function(){
+          // adjusts aspect ratio
           if (root.width !== 'unset') root.setAttribute('width',root.width);
           if (root.height !== 'unset') root.setAttribute('width',root.height);
-          let aspect = root.$.video.videoHeight/root.$.video.videoWidth * 100;
+          let aspect = video.videoHeight/video.videoWidth * 100;
+          root.$.playbutton.style.paddingTop = aspect+'%';
+          root.$.media.style.paddingTop = aspect+'%';
+          // gets and converts video duration
           root.duration = video.duration > 0 ? video.duration: 0; 
           root.__length = root._convertTime(0)+'/'+root._convertTime(video.duration);
-          root.$.playbutton.style.paddingTop = aspect+'%';
-          root.$.mediaobject.style.paddingTop = aspect+'%';
 
-          //hide the video subtitles and captions and add them to the tracks dropdown-select
+          // hides the video subtitles and captions and adds them to the tracks dropdown-select
           if (video.textTracks.length > 0) root.selectTrack(0);
+          
+          // gets cues from tracks
           for(i in video.textTracks) {
             let cues = {};
             if (video.textTracks[i] !== null) {
@@ -535,7 +355,33 @@ A LRN element
           }
           root.set('__tracks', tracks);
           if (root.transcript !== undefined && root.transcript !== null) {
-            root._getCues(tracks);
+            let complete = 0;
+            for (var i=0 ; i < tracks.length; i++) {
+              let itrack = tracks[i], track = video.textTracks[i], loaded = itrack.cues !== undefined;
+              if(!loaded){
+                track.mode = 'showing';
+                let temp = setInterval(() => {
+                  if (track.cues.length > 0) {
+                    track.mode = 'hidden';
+                    itrack.cues = Object.keys(track.cues).map(function(key) { 
+                      return {
+                        'order': Number(key),
+                        'seek': track.cues[key].startTime,
+                        'start': root._convertTime(track.cues[key].startTime),
+                        'end': root._convertTime(track.cues[key].endTime), 
+                        'text': track.cues[key].text
+                      };
+                    });
+                    complete++;
+                    if (complete === tracks.length && root.transcript !== null) {
+                      root.transcript.setTracks(tracks);
+                      root.transcript.setAttribute('selected-transcript',root.__selectedTrackId);
+                    }
+                    clearInterval(temp);
+                  }
+                },1);
+              }
+            }
           }
         });
         // when transcript is ready associate it with the player
@@ -549,7 +395,7 @@ A LRN element
           }
         });
       },
-      /* 
+      /** 
        * plays the media 
        */
       play: function(e){
@@ -574,31 +420,45 @@ A LRN element
           root.$.video.play();
         }
       },
-      /* 
+      /** 
        * pauses the media 
        */
-      pause: function(e){
+      pause: function(){
         let root = this;
         root.playing = false;
         root.$.video.pause();
         clearInterval(root.__playProgress); //stops updating the slider and length
       },
-      /* 
+      /** 
+       * stops the media 
+       */
+      stop: function(){
+        this.pause();
+        this.seek(0);
+      },
+      /** 
+       * restarts the media 
+       */
+      restart: function(){
+        this.seek(0);
+        this.play();
+      },
+      /** 
        * seeks media backward at a set increment
        */
       rewind: function(amt){
         amt = amt !== undefined ? amt : 1;
         this.seek(Math.max(this.$.video.currentTime - amt,0));
       },
-      /* 
+      /** 
        * seeks media forward at a set increment
        */
       forward: function(amt){
         amt = amt !== undefined ? amt : 1;
         this.seek(Math.min(this.$.video.currentTime + amt,this.$.video.duration));
       },
-      /* 
-       * seek to a specific time 
+      /** 
+       * seeks to a specific time 
        */
       seek: function(time){
         let seekable = this.$.video.seekable;
@@ -609,8 +469,8 @@ A LRN element
           if (this.__resumePlaying) this.play();
         }
       },
-      /* 
-       * select a specific track by index
+      /** 
+       * selects a specific track by index
        */
       selectTrack: function(index){
         for(i in this.$.video.textTracks) {
@@ -627,7 +487,7 @@ A LRN element
           //this.transcript.set('cues', this.__selectedTrack.cues);
         }
       },
-      /* 
+      /** 
        * toggles captions:
        * toggleCC(true) to check the toggle, toggleCC(false) for unchecking, and toggleCC to toggle  
        */
@@ -642,18 +502,44 @@ A LRN element
           this.$.tracks.value = '';
         }
       },
-      /* 
+      /** 
        * toggles mute:
-       * toggleMute(true) to check the toggle, toggleMute(false) for unchecking, and toggleMute to toggle  
+       * toggleMute(true) to check the toggle, 
+       * toggleMute(false) for unchecking, and 
+       * toggleMute to toggle  
        */
       toggleMute: function(mode){
         mode = mode === undefined ? !this.muted : mode;
         this.muted = mode;
-        this.$.volume.value = this.muted ? 0 : Math.max(this.volume,10);
+        this.__volume = this.muted ? 0 : Math.max(this.volume,10);
         this.$.video.volume = this.muted ? 0 : Math.max(this.volume/100,0.1);
         this.$.video.muted = this.muted;
       },
-      /* 
+      /** 
+       * toggles autoplay:
+       * toggleAutoplay(true) to check the toggle, 
+       * toggleAutoplay(false) for unchecking, and 
+       * toggleAutoplay to toggle  
+       */
+      toggleAutoplay: function(mode){
+        mode = mode === undefined ? !this.muted : mode;
+        this.autoplay = mode;
+      },
+      /** 
+       * set volume of media
+       */
+      setVolume: function(value){
+        this.volume = value !== null ? value : 70;
+        this.$.video.volume = this.volume !== null ? value/100 : 0.7;
+        this.muted = value === null || value === 0;
+      },
+      /** 
+       * set speed/playback rate of media
+       */
+      setPlaybackRate: function(value){
+        this.$.video.playbackRate = value !== null ? value : 1;
+      },
+      /** 
        * toggles looping:
        * toggleLoop(true) to check the toggle, toggleLoop(false) for unchecking, and toggleLoop to toggle  
        */
@@ -663,44 +549,8 @@ A LRN element
         this.$.video.muted = this.loop;
       },
       /**
-       * gets cue data from a track
-       */ 
-      _getCues: function(tracks){
-        let root = this, video = root.$.video, complete = 0;
-        for (var i=0 ; i < tracks.length; i++) {
-          let itrack = tracks[i], track = video.textTracks[i], loaded = itrack.cues !== undefined;
-          if(!loaded){
-            track.mode = 'showing';
-            let temp = setInterval(() => {
-              if (track.cues.length > 0) {
-                track.mode = 'hidden';
-                itrack.cues = Object.keys(track.cues).map(function(key) { 
-                  return {
-                    'order': Number(key),
-                    'seek': track.cues[key].startTime,
-                    'start': root._convertTime(track.cues[key].startTime),
-                    'end': root._convertTime(track.cues[key].endTime), 
-                    'text': track.cues[key].text
-                  };
-                });
-                complete++;
-                if (complete === tracks.length && root.transcript !== null) {
-                  root.transcript.setTracks(tracks);
-                  this.transcript.setAttribute('selected-transcript',this.__selectedTrackId);
-                }
-                clearInterval(temp);
-              }
-            },1);
-          }
-        }
-      },
-      /**
-       * returns true if an attribute is set to a value
-       */ 
-       _testAttribute: function(attr,val){
-        return attr === val;
-      },
-      /* set play/pause button */
+       * set play/pause button 
+       */
       _convertTime: function(val,max){
         max = max === undefined ? val : max;
         let a = (val) => { return val < 10 ? '0' + val : val; }, 
@@ -709,66 +559,34 @@ A LRN element
         d = (val) => { return Math.floor(max/3600) > 0 ? a(Math.round(val)) : a(Math.floor(val))+'.'+c(a(Math.round(val*10))) };
         return b(val,3600)+':'+b(val%3600,60)+':'+d(val%60);
       },
-      /* set play/pause button */
-      _getPlayPause: function(playing){
-        return playing ? {'icon': 'av:pause', 'label': 'pause'} : {'icon': 'av:play-arrow', 'label': 'play'};
-      },
-      /* set play/pause button */
-      _getMuteUnmute: function(muted){
-        return muted ? {'icon': 'av:volume-off', 'label': 'unmute'} : {'icon': 'av:volume-up', 'label': 'mute'};
-      },
-      /* seeks to slider position when slider is dragged */
-      _onSliderChange: function(slider){
-        this.seek(slider.value);
-      },
-      /* resume updating value via playback */
-      _onDraggingChange: function(root){
-        if(root.$.slider.dragging){
-          root.$.slider.addEventListener('value-changed',root._onSliderChange(root.$.slider));
-        } else {
-          this.seek(e.target.value);
-          root.$.slider.removeEventListener('value-changed',root._onSliderChange(root.$.slider));
-        }
-        this.__dragging = root.$.slider.dragging; 
-      },
-      /* determine which button was clicked and act accordingly */
-      _onButtonClick: function(e){
-        console.log(e);
-        if (e.detail.label === 'backward') {
+      /**
+       * determine which button was clicked and act accordingly 
+       */
+       _onControlsChanged: function(e){
+        let action = e.detail.label !== undefined ? e.detail.label : e.detail.id;
+        if (action === 'backward') {
           this.rewind(this.$.video.duration/20);
-        } else if (e.detail.label === 'closed captions') {
+        } else if (action === 'closed captions' || action === 'captions') {
           this.toggleCC();
-        } else if (e.detail.label === 'forward') {
+        } else if (action === 'forward') {
           this.forward(this.$.video.duration/20);
-        } else if (e.detail.label === 'full screen') {
+        } else if (action === 'full screen') {
           screenfull.toggle(this);
-        } else if (e.detail.label === 'loop') {
+        } else if (action === 'loop') {
           this.toggleLoop();
-        } else if (e.detail.label === 'mute' || e.detail.label === 'unmute') {
+        } else if (action === 'mute' || action === 'unmute') {
           this.toggleMute();
-        } else if (e.detail.label === 'pause') {
+        } else if (action === 'pause') {
           this.pause();
-        } else if (e.detail.label === 'play') {
+        } else if (action === 'play') {
           this.play();
-        } else if (e.detail.label === 'restart') {
+        } else if (action === 'restart') {
           this.seek(0);
           this.play();
-        }
-      },
-      /* determine which button was clicked and act accordingly */
-      _onSettingsChanged: function(e){
-        if (e.target === this.$.autoplay) {
-          this.$.video.autoplay = e.target.checked;
-        } else if (e.target === this.$.captions) { //todo
-          this.toggleCC();
-        } else if (e.target === this.$.loop) {
-          this.toggleLoop();
-        } else if (e.target === this.$.volume) {
-          this.volume = this.$.volume.value !== null ? this.$.volume.value : 70;
-          this.$.video.volume = this.volume !== null ? this.volume/100 : 0.7;
-          this.muted = this.$.volume.value !== null && this.$.volume.value === 0;
-        } else if (e.target === this.$.speed) {
-          this.$.video.playbackRate = e.target.value !== null ? e.target.value : 1;
+        } else if (action === 'speed') {
+          this.setPlaybackRate(e.detail.value);
+        } else if (action === 'volume') {
+          this.setVolume(e.detail.value);
         }
       }
     });
