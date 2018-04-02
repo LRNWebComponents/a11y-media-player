@@ -25,15 +25,13 @@ A LRN element
 
 <dom-module id="a11y-media-controls">
   <template>
-    <style>
+    <style is="custom-style">
       :host {
         display: block;
         width: 100%;
         max-width: 100%;
         position: relative;
         height: 40px;
-        --paper-listbox-color: white;
-        --paper-listbox-background-color: black;
       }
       :host > #controls-left {
         position: absolute;
@@ -51,43 +49,45 @@ A LRN element
       :host paper-icon-button:active,
       :host paper-icon-button:focus,
       :host paper-icon-button:hover {
-        color: #fff;
+        color: var(--a11y-media-text-color, #f8f8f8);
       }
       :host paper-listbox {
         padding: 0;
+        @apply(--a11y-media-listbox);
       }
       :host paper-item {
         min-height: 40;
       } 
       :host paper-toggle-button {
-        --paper-toggle-button-unchecked-bar-color:  #eeeeee;
-        --paper-toggle-button-unchecked-button-color:  #f8f8f8;
-        --paper-toggle-button-checked-bar-color:  #00fffd;
-        --paper-toggle-button-checked-button-color:  #00eeff;
+        --paper-toggle-button-unchecked-bar-color: var(--a11y-media-text-color, #f8f8f8);
+        --paper-toggle-button-unchecked-button-color: var(--a11y-media-text-color, #f8f8f8);
+        --paper-toggle-button-checked-bar-color: var(--a11y-media-accent-text-color, #00eeff);
+        --paper-toggle-button-checked-button-color: var(--a11y-media-accent-text-color, #00eeff);
       }
       :host paper-slider {
         z-index: 3;
         --paper-slider-knob-start-border-color: transparent;
         --paper-slider-knob-end-border-color: transparent;
-        --paper-slider-active-color: #00fffd;
-        --paper-slider-secondary-color: #4E7373;
-        --paper-slider-pin-color: #444;
-        --paper-slider-pin-start-color: #444;
-        --paper-slider-knob-color: #00eeff;
-        --paper-slider-knob-start-color: #eeeeee;
-        --paper-slider-knob-end-color: #00eeff;
+        --paper-slider-active-color: var(--a11y-media-accent-text-color, #00eeff);
+        --paper-slider-secondary-color: var(--a11y-media-faded-accent-color,#4E7373);
+        --paper-slider-pin-color: var(--a11y-media-faded-bg-color, #444444);
+        --paper-slider-pin-start-color: var(--a11y-media-faded-bg-color, #444444);
+        --paper-slider-knob-color: var(--a11y-media-accent-text-color, #00eeff);
+        --paper-slider-knob-start-color: var(--a11y-media-text-color,#ffffff);
+        --paper-slider-knob-end-color: var(--a11y-media-accent-text-color, #00eeff);
       }
       :host .ellapsed-time, 
       :host paper-icon-button {
         border: none;
-        background-color: black;
-        color: #bbb;
+        background-color: var(--a11y-media-bg-color, #000000);
+        color: var(--a11y-media-text-disabled, #bbbbbb);;
         position: relative;
       }
       :host .ellapsed-time {
         font-size: 85%;
+      }
+      :host .ellapsed-time.control-bar {
         padding: 8px 13px 8px;
-        min-width: 120px;
       }
       :host[hide-ellapsed-time] .ellapsed-time {
         display: none;
@@ -103,7 +103,7 @@ A LRN element
         display: none;
       }
       :host dropdown-select {
-        --primary-text-color: white;
+        --primary-text-color: var(--a11y-media-text-hover, #ffffff);
       }
       :host .setting {
         display: flex;
@@ -128,10 +128,10 @@ A LRN element
       :host #volume {
         z-index: 1;
         position: absolute;
-        left: 0px;
+        left: 35px;
         top: -8px;
         width: 0;
-        background: black;
+        background: var(--a11y-media-bg-color, #000000);
         overflow: hidden;
         transition: width 0.5s;
       }
@@ -155,7 +155,7 @@ A LRN element
         <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
         <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]"></paper-slider>
       </div>
-      <span class="ellapsed-time" disabled$="[[mobileSize]]">
+      <span class="ellapsed-time control-bar" disabled$="[[mobileSize]]">
         <span hidden-when="xs"><juicy-html html$="[[length]]"></juicy-html></span>
       </span>
     </div>
@@ -194,7 +194,7 @@ A LRN element
             </div>
           </paper-item>
           <paper-item>
-            <span class="ellapsed-time" disabled$="[[!mobileSize]]">
+            <span class="ellapsed-time settings-menu" disabled$="[[!mobileSize]]">
               <span hidden-when="sm md lg xl"><juicy-html html$="[[length]]"></juicy-html></span>
             </span>
           </paper-item>

@@ -19,33 +19,58 @@ A LRN element
       :host {
         display: block;
         z-index: 2;
+        transition: opacity 0.5s;  
+      }
+      :host:active,
+      :host:focus,
+      :host:hover {
+        cursor: pointer;
+      }
+      :host[disabled],
+      :host[playing] {
+        cursor: unset;
+        opacity: 0;
       }
       :host, 
+      :host #background, 
       :host #button {
         width: 100%;
         position: absolute;
         top: 0;
         left: 0;
       }
+      :host #background, 
       :host #button {
         height: 100%;
         padding:0;
         margin: 0;
         border: none;
-        background: rgba(200,200,200,0.5);
       }
-      :host #button:active,
-      :host #button:focus,
-      :host #button:hover {
-        cursor: pointer;
-        outline: 1px solid blue;
+      :host #background {
+        @apply(--a11y-media-play-button-background);
+      }
+      :host:active #background,
+      :host:focus #background,
+      :host:hover #background {
+        opacity: 0.7;
+        @apply(--a11y-media-play-button-focused-background);
+      }
+      :host #button {
+        background: transparent;
+      }
+      :host #arrow {
+        @apply(--a11y-media-play-button-arrow);
+      }
+      :host #text {
+        @apply(--a11y-media-play-button-text);
       }
     </style>
+    <div id="background"></div>
     <button id="button" aria-hidden="true" tabindex="-1" disabled$="[[disabled]]" controls="video">
       <svg id="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"  width="30%" height="30%" opacity="0.7">
         <g>
-          <polygon points="30,20 30,180 170,100" fill="#000000" stroke="#ffffff" stroke-width="15px"/>
-          <text x="50" y="115" fill="#ffffff" font-size="30px">Play</text>
+          <polygon id="arrow" points="30,20 30,180 170,100" fill="#000000" stroke="#ffffff" stroke-width="15px"/>
+          <text id="text" x="50" y="115" fill="#ffffff" font-size="30px">Play</text>
         </g>
       </svg>
     </button>

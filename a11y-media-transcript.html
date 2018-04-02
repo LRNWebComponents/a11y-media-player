@@ -17,19 +17,44 @@ A LRN element
 
 <dom-module id="a11y-media-transcript">
   <template>
-    <style>
+    <style is="custom-style">
       :host {
         display: block;
-        padding: 0 15px;
+        padding: 15px;
         overflow-y: scroll; 
+        background-color: var(--a11y-media-transcript-bg-color,#ffffff);
+        @apply(--a11y-media-transcript);
       }
-      :host .transcript-from-track:not([active]) {
+      :host #tracks-inner {
+        width: 100%;
         display: none;
       }
+      :host #tracks-inner[active] {
+        display: block;
+      }
+      :host[hideTimestamps] #tracks-inner[active] {
+        display: table;
+      }
+      :host a11y-media-transcript-cue {
+        --a11y-cue-text: {
+          color: var(--a11y-media-transcript-text-color, #000000);
+          @apply(--a11y-media-transcript-cue);
+        }
+        --a11y-focused-cue: {
+          font-weight: bold;
+          color: var(--a11y-media-transcript-focused-cue-text, --a11y-media-transcript-text-color);
+          background-color: var(--a11y-media-transcript-focused-cue-bg, #ffffff);
+          @apply(--a11y-media-transcript-focused-cue);
+        }
+        --a11y-active-cue: {
+          color: var(--a11y-media-transcript-active-cue-text, --a11y-media-transcript-text-color);
+          background-color: var(--a11y-media-transcript-active-cue-bg, #ccfffd);
+          @apply(--a11y-media-transcript-active-cue);
+        }
+      }
     </style>
-    <p>Transcript</p>
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
-      <div class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
+      <div id="tracks-inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
         <template is="dom-repeat" items="[[track.cues]]" as="cue">
           <a11y-media-transcript-cue 
             active-cues$="[[activeCues]]"
@@ -37,7 +62,7 @@ A LRN element
             order$="[[cue.order]]"
             disable-interactive$="[[disableInteractive]]" 
             controls$="[[mediaId]]" 
-            show-timestamps$="[[showTimestamps]]" >
+            hide-timestamps$="[[hideTimestamps]]" >
           </a11y-media-transcript-cue>
         </template>
       </div>
@@ -80,7 +105,7 @@ A LRN element
         /* 
          * show cue's start and end time 
          */
-        showTimestamps: {
+        hideTimestamps: {
           type: Boolean,
           value: false,
         },

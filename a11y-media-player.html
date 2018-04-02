@@ -27,9 +27,9 @@ A LRN element
       :host {
         display: block;
         max-width: 100%;
-        --paper-listbox-color: white;
-        --paper-listbox-background-color: black;
-        background-color: black;
+        color:  var(--a11y-media-text-color, #ffffff);
+        background-color: var(--a11y-media-bg-color,#000000);
+        @apply(--ally-media-player);
       }
       :host #player-inner {
         z-index: 1;
@@ -49,34 +49,43 @@ A LRN element
         top: 0;
         left: 0;
       }
-      :host #playbutton {
+      :host #controls {
+        --a11y-media-listbox: {
+          --paper-listbox-color: --a11y-media-text-color;
+          --paper-listbox-background-color: --a11y-media-bg-color;
+        };
+      }
+      :host a11y-media-play-button {
         padding-top: 56.25%;
-        opacity: 1;
-        -webkit-transition: opacity 0.5s;
-        -moz-transition: opacity 0.5s;
-        transition: opacity 0.5s;
-      }
-      :host #playbutton[disabled], 
-      :host[playing] #playbutton {
-        opacity: 0;
-      }
-      :host paper-toggle-button {
-        --paper-toggle-button-unchecked-bar-color:  #eeeeee;
-        --paper-toggle-button-unchecked-button-color:  #f8f8f8;
-        --paper-toggle-button-checked-bar-color:  #00fffd;
-        --paper-toggle-button-checked-button-color:  #00eeff;
+        --a11y-media-play-button-background: {
+          background: var(--a11y-play-button-bg-color,--a11y-media-bg-color);
+          opacity: 0.5;
+          transition: opacity 0.5s;
+        };
+        --a11y-media-play-button-background: {
+          opacity: 0.7;
+        };
+        --a11y-media-play-button-arrow: {
+          stroke: var(--a11y-play-button-stroke-color, --a11y-media-text-color);
+          fill: var(--a11y-play-button-bg-color, --a11y-media-bg-color);
+        };
+        --a11y-media-play-button-text: {
+          fill: var(--a11y-play-button-text-color, --a11y-media-text-color);
+        };
+        @apply(--ally-media-play-button);
       }
       :host paper-slider {
         z-index: 3;
         --paper-slider-knob-start-border-color: transparent;
         --paper-slider-knob-end-border-color: transparent;
-        --paper-slider-active-color: #00fffd;
-        --paper-slider-secondary-color: #4E7373;
-        --paper-slider-pin-color: #444;
-        --paper-slider-pin-start-color: #444;
-        --paper-slider-knob-color: #00eeff;
-        --paper-slider-knob-start-color: #eeeeee;
-        --paper-slider-knob-end-color: #00eeff;
+        --paper-slider-active-color: var(--a11y-media-accent-text-color, #00eeff);
+        --paper-slider-secondary-color: var(--a11y-media-faded-accent-color,#4E7373);
+        --paper-slider-pin-color: var(--a11y-media-faded-bg-color, #444444);
+        --paper-slider-pin-start-color: --a11y-media-faded-bg-color;
+        --paper-slider-knob-color: --a11y-media-accent-text-color;
+        --paper-slider-knob-start-color: --a11y-media-text-color;
+        --paper-slider-knob-end-color: --a11y-media-accent-text-color;
+        @apply(--ally-media-slider);
       }
     </style>
     <div id="player">
@@ -91,10 +100,16 @@ A LRN element
             <slot></slot>
             HTML5 video not supported 
           </video>
-          <a11y-media-play-button id="playbutton"></a11y-media-play-button>
+          <a11y-media-play-button id="playbutton" playing$="[[playing]]"></a11y-media-play-button>
         </div>
       </div>
-      <paper-slider id="slider" max$="[[duration]]" pin secondary-progress$="[[buffered]]" value$="[[elapsed]]"></paper-slider>
+      <paper-slider 
+        id="slider" 
+        max$="[[duration]]" 
+        pin 
+        secondary-progress$="[[buffered]]" 
+        value$="[[elapsed]]">
+      </paper-slider>
     </div>
     <a11y-media-controls 
       allow-fullscreen="[[allowFullscreen]]"
@@ -325,7 +340,7 @@ A LRN element
           root.$.media.style.paddingTop = aspect+'%';
           // gets and converts video duration
           root.duration = video.duration > 0 ? video.duration: 0; 
-          root.__length = root._convertTime(0)+'/'+root._convertTime(video.duration);
+          root.__length = root._convertTime(0,video.duration)+'/'+root._convertTime(video.duration);
 
           // hides the video subtitles and captions and adds them to the tracks dropdown-select
           if (video.textTracks.length > 0) root.selectTrack(0);
@@ -367,8 +382,8 @@ A LRN element
                       return {
                         'order': Number(key),
                         'seek': track.cues[key].startTime,
-                        'start': root._convertTime(track.cues[key].startTime),
-                        'end': root._convertTime(track.cues[key].endTime), 
+                        'start': root._convertTime(track.cues[key].startTime,video.duration),
+                        'end': root._convertTime(track.cues[key].endTime,video.duration), 
                         'text': track.cues[key].text
                       };
                     });
@@ -433,6 +448,13 @@ A LRN element
        * stops the media 
        */
       stop: function(){
+        this.pause();
+        this.seek(0);
+      },
+      /** 
+       * stops the media 
+       */
+      show: function(){
         this.pause();
         this.seek(0);
       },
@@ -554,10 +576,9 @@ A LRN element
       _convertTime: function(val,max){
         max = max === undefined ? val : max;
         let a = (val) => { return val < 10 ? '0' + val : val; }, 
-        b = (val,i) => { return Math.floor(max/i) > 0 ? a(Math.floor(val/i)) : '00' },
+        b = (val,i,none) => { return max >= i ? a(Math.floor(val/i))+':' : none },
         c = (val) => { return val < 100 ? val+'0' : val };
-        d = (val) => { return Math.floor(max/3600) > 0 ? a(Math.round(val)) : a(Math.floor(val))+'.'+c(a(Math.round(val*10))) };
-        return b(val,3600)+':'+b(val%3600,60)+':'+d(val%60);
+        return b(val,3600,'')+b(val%3600,60,'00:')+a(Math.round(val%60));
       },
       /**
        * determine which button was clicked and act accordingly 

@@ -27,23 +27,23 @@ A LRN element
         margin: 0;
         padding: 8px;
         border: none;
-        background-color: black;
-        color: #bbb;
+        background-color: var(--a11y-media-bg-color,#000000);
+        color: var(--a11y-media-text-disabled, #bbbbbb);
         transition: color 0.25s;
       }
       :host:active #button,
       :host:focus #button,
       :host:hover #button {
-        color: #fff;
+        color: var(--a11y-media-text-color, #ffffff);
         cursor: pointer;
       }
       :host[toggle] #button {
-        color: #00fffd;
+        color: var(--a11y-media-accent-text-color, #00eeff);
       }
       :host[toggle]:active #button,
       :host[toggle]:focus #button,
       :host[toggle]:hover #button {
-        color: #bffffe;
+        color: var(--a11y-media-accent-text-hover, #bffffe);
       }
       :host .sr-only {
         position: absolute;
