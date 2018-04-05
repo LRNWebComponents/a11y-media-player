@@ -38,17 +38,17 @@
         </template>
       </demo-snippet> 
       
-      <h3>a11y-media-container demo, with accent color</h3>
+      <h3>a11y-media-container demo, with accent color and no timestamps</h3>
       <demo-snippet>
         <template>
           <style is="custom-style">
             #accent {
               --a11y-media-accent-color: #aaff00;
-              --a11y-media-faded-accent-color: #85c700;
+              --a11y-media-faded-accent-color: #6c9f00;
               --a11y-media-transcript-active-cue-bg: #aaff00;
             }
           </style>
-          <a11y-media-container id="accent">
+          <a11y-media-container id="accent" hide-timestamps>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
