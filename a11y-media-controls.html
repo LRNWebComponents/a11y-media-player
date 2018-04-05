@@ -100,19 +100,18 @@ The controls bar for the a11y-media-player.
         min-width: 100px;
       }
       :host .setting-control {
-        max-width: 100px;
+        max-width: 80px;
       }
       :host .setting-slider {
-        width: 130px;
+        width: 100px;
         margin-left: -15px;
         margin-right: -15px;
-        @apply(--a11y-media-slider);
       }
       :host #speed {
-        --paper-slider-active-color: var(--a11y-media-speed-active-color, --a11y-media-slider-active-color);
-        --paper-slider-knob-color: var(--a11y-media-speed-knob-color, --a11y-media-slider-knob-color);
-        --paper-slider-knob-start-color: var(--a11y-media-speed-knob-start-color, --a11y-media-speed-knob-color);
-        --paper-slider-knob-end-color: var(--a11y-media-speed-knob-end-color,  --a11y-media-speed-knob-color);
+        --paper-slider-active-color: var(--a11y-media-setting-slider-active-color, --a11y-media-slider-active-color);
+        --paper-slider-knob-color: var(--a11y-media-setting-slider-knob-color, --a11y-media-slider-knob-color);
+        --paper-slider-knob-start-color: var(--a11y-media-setting-slider-knob-start-color, --a11y-media-setting-slider-knob-color);
+        --paper-slider-knob-end-color: var(--a11y-media-setting-slider-knob-end-color,  --a11y-media-setting-slider-knob-color);
       }
       :host #showvolume {
         display: inline;
@@ -127,6 +126,9 @@ The controls bar for the a11y-media-player.
         overflow: hidden;
         transition: width 0.5s;
         z-index: 3;
+      }
+      :host #volume,
+      :host #volume2 {
         --paper-slider-active-color: var(--a11y-media-volume-active-color, --a11y-media-slider-active-color);
         --paper-slider-knob-color: var(--a11y-media-volume-knob-color, --a11y-media-slider-knob-color);
         --paper-slider-knob-start-color: var(--a11y-media-volume-knob-start-color, --a11y-media-hover-color, #ffffff);
@@ -150,7 +152,7 @@ The controls bar for the a11y-media-player.
       <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs" icon="av:replay" label="restart"></a11y-media-button>
       <div id="showvolume">
         <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
-        <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]"></paper-slider>
+        <paper-slider hidden-when="xs" id="volume" min="0" max="100" pin step="10" value$="[[volume]]" aria-label="volume %"></paper-slider>
       </div>
       <span class="ellapsed-time control-bar" disabled$="[[mobileSize]]">
         <span hidden-when="xs"><juicy-html html$="[[length]]"></juicy-html></span>
@@ -166,6 +168,14 @@ The controls bar for the a11y-media-player.
               <div class="setting-text">Loop </div>
               <div class="setting-control">
                 <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button>
+              </div>
+            </div>
+          </paper-item>
+          <paper-item hidden-when="sm md lg xl">
+            <div class="setting">
+              <div class="setting-text">Volume %</div>
+              <div class="setting-control">
+                <paper-slider id="volume2" class="setting-slider" label="volume" min="0" max="100" pin step="10" value$="[[volume]]"></paper-slider>
               </div>
             </div>
           </paper-item>

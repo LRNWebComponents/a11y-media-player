@@ -66,11 +66,11 @@ A LRN element
 --a11y-media-volume-knob-end-color: knob color at the end of volume slider, default is --a11y-media-volume-knob-color
 
  Custom styles for player speed slider:
---a11y-media-speed-primary-color: speed slider color, default is #00eeff
---a11y-media-speed-pin-color: color of the pin that shows speed slider value, default is #444444
---a11y-media-speed-knob-color: volume slider knob color, default is #00eeff
---a11y-media-speed-knob-start-color: knob color at the start of speed slider, default is --a11y-media-speed-knob-color
---a11y-media-speed-knob-end-color: knob color at the end of speed slider, default is --a11y-media-speed-knob-color
+--a11y-media-setting-slider-primary-color: speed slider color, default is #00eeff
+--a11y-media-setting-slider-pin-color: color of the pin that shows speed slider value, default is #444444
+--a11y-media-setting-slider-knob-color: volume slider knob color, default is #00eeff
+--a11y-media-setting-slider-knob-start-color: knob color at the start of speed slider, default is --a11y-media-setting-slider-knob-color
+--a11y-media-setting-slider-knob-end-color: knob color at the end of speed slider, default is --a11y-media-setting-slider-knob-color
 -->
 
 <dom-module id="a11y-media-player">
@@ -135,10 +135,10 @@ A LRN element
         --a11y-media-volume-knob-end-color: --a11y-media-volume-knob-color;
         
         /* speed slider */
-        --a11y-media-speed-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #00eeff));
-        --a11y-media-speed-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #00eeff));;
-        --a11y-media-speed-knob-start-color: --a11y-media-speed-knob-color;
-        --a11y-media-speed-knob-end-color: --a11y-media-speed-knob-color;
+        --a11y-media-setting-slider-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #00eeff));
+        --a11y-media-setting-slider-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #00eeff));;
+        --a11y-media-setting-slider-knob-start-color: --a11y-media-setting-slider-knob-color;
+        --a11y-media-setting-slider-knob-end-color: --a11y-media-setting-slider-knob-color;
       }
       :host #video {
         position: absolute;
@@ -266,7 +266,6 @@ A LRN element
         }
         // handles loaded metadata
         video.addEventListener('loadedmetadata',function(){
-          console.log('loadedmetadata',root);
           // adjusts aspect ratio
           if (root.width !== 'unset') root.setAttribute('width',root.width);
           if (root.height !== 'unset') root.setAttribute('width',root.height);
@@ -422,7 +421,6 @@ A LRN element
        * selects a specific track by index
        */
       selectTrack: function(index){
-        console.log('selectTrack',this);
         for(i in this.$.video.textTracks) {
           if (index == i) {
             this.$.video.textTracks[i].mode = 'showing';
@@ -434,8 +432,6 @@ A LRN element
         }
         if (this.__transcript !== null && this.__transcript.tracks !== null) {
           this.__transcript.setAttribute('selected-transcript',this.__selectedTrackId);
-          console.log('set track',this.__transcript.selected-transcript);
-          //this.__transcript.set('cues', this.__selectedTrack.cues);
         }
       },
       /** 
@@ -504,7 +500,6 @@ A LRN element
        */
        _onControlsChanged: function(e){
         let action = e.detail.label !== undefined ? e.detail.label : e.detail.id;
-        console.log(action);
         if (action === 'backward') {
           this.rewind(this.$.video.duration/20);
         } else if (action === 'closed captions' || action === 'captions') {
