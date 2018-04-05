@@ -166,14 +166,14 @@ A set of behaviors for a11y-media components.
     /**
       * calls responsive-utility to get parent's responsive size
       */ 
-    _addResponsiveUtility: function(){
-      let root = this;
-      Polymer.ResponsiveUtility.requestAvailability();
-      root.fire('responsive-element',{
+    _addResponsiveUtility: function(data){
+      let root = this, data2 = data !== undefined ? data : {
         "element": root,
         "attribute": "responsive-size",
-        "relativeToParent": true
-      });
+        "relativeToParent": true,
+      };
+      Polymer.ResponsiveUtility.requestAvailability();
+      root.fire('responsive-element',data2);
     }
   };
 </script>

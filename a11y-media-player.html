@@ -266,7 +266,6 @@ A LRN element
         }
         // handles loaded metadata
         video.addEventListener('loadedmetadata',function(){
-          console.log('loadedmetadata',root);
           // adjusts aspect ratio
           if (root.width !== 'unset') root.setAttribute('width',root.width);
           if (root.height !== 'unset') root.setAttribute('width',root.height);
@@ -422,7 +421,6 @@ A LRN element
        * selects a specific track by index
        */
       selectTrack: function(index){
-        console.log('selectTrack',this);
         for(i in this.$.video.textTracks) {
           if (index == i) {
             this.$.video.textTracks[i].mode = 'showing';
@@ -434,8 +432,6 @@ A LRN element
         }
         if (this.__transcript !== null && this.__transcript.tracks !== null) {
           this.__transcript.setAttribute('selected-transcript',this.__selectedTrackId);
-          console.log('set track',this.__transcript.selected-transcript);
-          //this.__transcript.set('cues', this.__selectedTrack.cues);
         }
       },
       /** 
@@ -504,7 +500,6 @@ A LRN element
        */
        _onControlsChanged: function(e){
         let action = e.detail.label !== undefined ? e.detail.label : e.detail.id;
-        console.log(action);
         if (action === 'backward') {
           this.rewind(this.$.video.duration/20);
         } else if (action === 'closed captions' || action === 'captions') {
