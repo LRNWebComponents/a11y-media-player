@@ -38,7 +38,7 @@
         </template>
       </demo-snippet> 
       
-      <h3>a11y-media-container demo, with accent color and no timestamps</h3>
+      <h3>a11y-media-container demo, with accent color and no timestamps or interactive transcript</h3>
       <demo-snippet>
         <template>
           <style is="custom-style">
@@ -48,7 +48,7 @@
               --a11y-media-transcript-active-cue-bg: #aaff00;
             }
           </style>
-          <a11y-media-container id="accent" hide-timestamps>
+          <a11y-media-container id="accent" hide-timestamps disable-interactive>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>

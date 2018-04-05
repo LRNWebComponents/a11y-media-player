@@ -27,7 +27,12 @@ A LRN element
     muted$="[[muted]]"                          // Is video muted?
     volume$="[[volume]]"                        // The initial volume of the video
     width$="[[width]]">                         // The width of player
-    <slot></slot>                               // The tracks
+                                                // video source and tracks 
+    <source src="/path/to/video.mp4" type="video/mp4">
+    <source src="/path/to/video.webm" type="video/webm">
+    <track label="English" kind="subtitles" srclang="en" src="path/to/subtitles/en.vtt" default>
+    <track label="Deutsch" kind="subtitles" srclang="de" src="path/to/subtitles/de.vtt">
+    <track label="Español" kind="subtitles" srclang="es" src="path/to/subtitles/es.vtt">
   </a11y-media-player>
 
  Basic customization of player:
@@ -99,8 +104,7 @@ A LRN element
         background-color: var(--a11y-media-bg-color, #000000);
         color: var(--a11y-media-color, #bbbbbb);
 
-        /* buttons 
-        --primary-text-color: var(--a11y-media-hover-color, #ffffff);*/
+        /* buttons */
         --a11y-media-settings-menu-color: var(--a11y-media-color, #bbbbbb);
         --a11y-media-settings-menu-bg-color: var(--a11y-media-bg-color, #000000);
         

@@ -56,9 +56,10 @@ A transcript element to pair with a11y-media-player
             active-cues$="[[activeCues]]"
             cue$="[[cue]]"
             order$="[[cue.order]]"
-            disable-interactive$="[[disableInteractive]]" 
+            disabled$="[[disableInteractive]]" 
             controls$="[[mediaId]]" 
-            hide-timestamps$="[[hideTimestamps]]" >
+            hide-timestamps$="[[hideTimestamps]]" 
+            tabindex="[[tabIndex]]">
           </a11y-media-transcript-cue>
         </template>
       </div>
@@ -80,7 +81,7 @@ A transcript element to pair with a11y-media-player
       ],
 
       properties: {
-        /* 
+        /** 
          * array of cues 
          */
         activeCues: {
@@ -89,14 +90,21 @@ A transcript element to pair with a11y-media-player
           reflectToAttribute: true,
           notify: true
         },
-        /* 
+        /** 
          * the id of media
          */
         mediaId: {
           type: String,
           value: null,
         },
-        /* 
+        /** 
+         * tabindex of cues
+         */
+        tabIndex: {
+          type: Number,
+          computed: '_getTabIndex(disableInteractive)',
+        },
+        /** 
          * array of cues 
          */
         tracks: {
@@ -104,33 +112,39 @@ A transcript element to pair with a11y-media-player
           value: null
         },
       },
-      /* 
+      /** 
        * fires an event to let the page know there is a transcript container
        */
       attached: function(){
         this.fire('transcript-ready',this);
       },
-      /* 
+      /** 
        * fires an event when media is associated with the player
        */
       setMedia: function(player){
         this.media = player;
         this.fire('transcript-ready',this);
       },
-      /* 
+      /** 
        * loads tracks from array
        */
       setTracks: function(tracks){
         this.set('tracks',tracks.slice(0));
         this.$.tracks.render();
       },
-      /* 
+      /** 
+       * gets the tab-index of cues based on whether or not interactive cues are disabled
+       */
+      _getTabIndex: function(disableInteractive){
+        return disableInteractive ? -1 : 0;
+      },
+      /** 
        * forwards the listener for transcript cue click to seek accordingly
        */
       _onCueSeek: function(e){
         this.fire('transcript-seek',e.detail);
       },
-      /* 
+      /** 
        * determines if this is the currently selected transcript to show or hide
        */
       _getActiveTranscript: function(track,selected){

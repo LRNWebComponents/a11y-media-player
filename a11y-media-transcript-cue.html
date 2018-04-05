@@ -38,6 +38,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
   <template>
     <style>
       :host {
+        cursor: default;
         display: table-row;
         background-color: #ffffff;
         color: #000000;
@@ -67,9 +68,9 @@ A single cue in a11y-media-transcriptas static text or as an button that control
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
           color: var(--a11y-media-transcript-text-color, #000000);
         }
-        :host:not([disable-interactive]):active,
-        :host:not([disable-interactive]):focus,
-        :host:not([disable-interactive]):hover {
+        :host:not([active]):not([disabled]):active,
+        :host:not([active]):not([disabled]):focus,
+        :host:not([active]):not([disabled]):hover {
           cursor: pointer;
           font-weight: var(--a11y-media-transcript-focused-cue-weight, bold);
           color: var(--a11y-media-transcript-focused-cue-text, --a11y-media-transcript-text-color);
@@ -102,9 +103,9 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       },
 
       properties: {
-        /* 
-         * is cue active 
-         */
+        /** 
+          * is cue active 
+          */
         active: {
           type: Boolean,
           reflectToAttribute: true,
@@ -112,42 +113,47 @@ A single cue in a11y-media-transcriptas static text or as an button that control
           notify: true,
           reflectToAttribute: true
         },
-        /* 
-         * array of currently active cues 
-         */
+        /** 
+          * array of currently active cues 
+          */
         activeCues: {
           type: Array,
           value: null,
           notify: true
         },
-        /* 
-         * disable interactive mode that makes the transcript clickable 
-         */
-        disableInteractive: {
-          type: Boolean,
-          value: false,
-        },
-        /* 
-         * array of cue data 
-         */
+        /** 
+          * array of cue data 
+          */
         cue: {
           type: Array,
           value: null
         },
+        /** 
+          * disable interactive mode that makes the transcript clickable 
+          */
+        disabled: {
+          type: Boolean,
+          value: false,
+        },
       },
       ready: function(){
-        if(!this.disableInteractive) {
+        if(!this.disabled) {
           this.__target = this;
           this.setAttribute('aria-role','button');
-          this.setAttribute('tabindex','0');
           this.setAttribute('controls',this.mediaId);
         }
       },
+      /**
+        * gets the active cue for styling
+        */
       _getActiveCue: function(cue,cues){
         return cues.includes(cue.order.toString());
       },
+      /**
+        * fires click event
+        */
       _onClick: function(e){
-        if(!this.disableInteractive) {
+        if(!this.disabled) {
           this.fire('cue-seek',this);
         }
       },
