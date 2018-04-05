@@ -20,36 +20,44 @@ A LRN element
   <template>
     <style>
       :host {
+        display: block;
         outline: 1px solid black;
       }
-      :host:not([responsive-size*="s"]) {
-        display: inline-flex;
-        align-items: stretch;
-        width: 100%;
-        outline: 1px solid;
-        outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
-        background-color: var(--a11y-media-transcript-bg-color, #ffffff);
+      @media screen {
+        :host:not([responsive-size*="s"]) {
+          display: inline-flex;
+          align-items: stretch;
+          width: 100%;
+          outline: 1px solid;
+          outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
+          background-color: var(--a11y-media-transcript-bg-color, #ffffff);
+        }
+        :host:not([responsive-size*="s"]) > div {
+          width: 50%;
+          flex-grow: 1;
+          flex-shrink: 1;
+        }
+        :host:not([responsive-size*="s"]) #transcript {
+          position: absolute;
+          top: 0; left: 0;
+          right: 0; bottom: 0;
+          overflow-y: scroll;
+        }
+        :host:not([responsive-size*="s"]) #transcript-outer {
+          position: relative;
+        }
+        :host:not([responsive-size*="s"]) #player.totop {
+          position: absolute;
+          top:0;
+          left: 0;
+          width: 200px !important;
+          z-index: 9999;
+        }
       }
-      :host:not([responsive-size*="s"]) > div {
-        width: 50%;
-        flex-grow: 1;
-        flex-shrink: 1;
-      }
-      :host:not([responsive-size*="s"]) #transcript {
-        position: absolute;
-        top: 0; left: 0;
-        right: 0; bottom: 0;
-        overflow-y: scroll;
-      }
-      :host:not([responsive-size*="s"]) #transcript-outer {
-        position: relative;
-      }
-      :host:not([responsive-size*="s"]) #player.totop {
-        position: absolute;
-        top:0;
-        left: 0;
-        width: 200px !important;
-        z-index: 9999;
+      @media print {
+        :host {
+          border: 1px solid black; 
+        }
       }
     </style>
     <div id="player-outer">

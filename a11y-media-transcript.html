@@ -39,6 +39,15 @@ A transcript element to pair with a11y-media-player
       :host[hideTimestamps] #tracks-inner[active] {
         display: table;
       }
+      @media print {
+        :host {
+          background-color: #ffffff;
+        }
+        :host::before {
+          content: 'Transcript:';
+          font-size: 120%;
+        }
+      }
     </style>
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
       <div id="tracks-inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">

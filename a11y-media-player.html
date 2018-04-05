@@ -151,6 +151,22 @@ A LRN element
           fill: var(--a11y-play-button-text-color, #ffffff);
         };
       }
+      @media print {
+        :host {
+          color: #000000;
+          background-color: #f0f0f0;
+          padding: 15px;
+          width: auto;
+        }
+        :host > * {
+          display: none;
+        }
+        :host:before {
+          display: block;
+          content: '(Interactive Media)';
+          font-style: italic;
+        }
+      }
     </style>
     <div id="player">
       <div id="player-inner">
