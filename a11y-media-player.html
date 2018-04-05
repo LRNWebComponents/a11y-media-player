@@ -200,6 +200,7 @@ A LRN element
       autoplay$="[[autoplay]]"
       cc$="[[cc]]"
       fullscreen$="[[fullscreen]]" 
+      has-captions$="[[hasCaptions]]"
       hide-elapsed-time$="[[hideElapsedTime]]"
       id="controls"
       length="[[__length]]"
@@ -297,7 +298,10 @@ A LRN element
           root.__length = root._convertTime(0,video.duration)+'/'+root._convertTime(video.duration);
 
           // hides the video subtitles and captions and adds them to the tracks dropdown-select
-          if (video.textTracks.length > 0) root.selectTrack(0);
+          if (video.textTracks.length > 0) {
+            root.hasCaptions = true;
+            root.selectTrack(0);
+          }
           
           // gets cues from tracks
           for(i in video.textTracks) {
@@ -323,6 +327,8 @@ A LRN element
             }
           }
           root.set('__tracks', tracks);
+          root.$.controls.setTracks(tracks);
+
           if (root.__transcript !== undefined && root.__transcript !== null) {
             let complete = 0;
             for (var i=0 ; i < tracks.length; i++) {
@@ -357,12 +363,22 @@ A LRN element
         document.body.addEventListener('transcript-ready',function(e){
           if(root.getAttribute('id') === e.detail.mediaId || root === e.detail.media) {
             root.__transcript = e.detail;
-            if (root.__tracks !== undefined) root.__transcript.setTracks(tracks);
+            if (root.__tracks !== undefined) {
+              root.__transcript.setTracks(tracks);
+              root.$.controls.setTracks(tracks);
+            }
             root.__transcript.addEventListener('cue-seek',function(e){
               root.seek(e.detail.cue.seek);
             });
           }
         });
+      },
+      /** 
+       * loads tracks from array
+       */
+      setTracks: function(tracks){
+        this.set('tracks',tracks.slice(0));
+        this.$.tracks.render();
       },
       /** 
        * plays the media 

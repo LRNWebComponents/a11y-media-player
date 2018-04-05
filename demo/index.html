@@ -11,7 +11,7 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../a11y-media-player.html">
-    <link rel="import" href="../a11y-media-container.html">
+    <link rel="import" href="../a11y-media-group.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
     </style>
@@ -25,20 +25,20 @@
   <body>
     <div class="vertical-section-container centered">
         
-      <h3>a11y-media-container demo</h3>
+      <h3>a11y-media-group demo</h3>
       <demo-snippet>
         <template>
-          <a11y-media-container>
+          <a11y-media-group>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-container>
+          </a11y-media-group>
         </template>
       </demo-snippet> 
       
-      <h3>a11y-media-container demo, with accent color and no timestamps or interactive transcript</h3>
+      <h3>a11y-media-group demo, with accent color and no timestamps or interactive transcript</h3>
       <demo-snippet>
         <template>
           <style is="custom-style">
@@ -48,17 +48,17 @@
               --a11y-media-transcript-active-cue-bg: #aaff00;
             }
           </style>
-          <a11y-media-container id="accent" hide-timestamps disable-interactive>
+          <a11y-media-group id="accent" hide-timestamps disable-interactive>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-container>
+          </a11y-media-group>
         </template>
       </demo-snippet> 
 
-      <h3>a11y-media-container demo, customized</h3>
+      <h3>a11y-media-group demo, customized</h3>
       <demo-snippet>
         <p>Transcript can be located anywhere, even in a different <tt>&lt;div/&gt;</tt>.</p>
         <template>
@@ -77,13 +77,13 @@
               --a11y-play-button-focus-arrow-focus-bg-color: #ff0000;
             }
           </style>
-          <a11y-media-container id="custom1">
+          <a11y-media-group id="custom1">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-container>
+          </a11y-media-group>
         </template>
       </demo-snippet>
       

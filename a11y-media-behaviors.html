@@ -35,9 +35,16 @@ A set of behaviors for a11y-media components.
         value: false,
       },
       /** 
-        * is fullscreen mode
+        * Is fullscreen mode?
         */
       fullscreen: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * Does the player have tracks?
+        */
+      hasCaptions: {
         type: Boolean,
         value: false,
       },
@@ -49,14 +56,14 @@ A set of behaviors for a11y-media components.
         value: 'unset'
       },
       /** 
-        * hide elapsed time 
+        * Hide elapsed time?
         */
       hideElapsedTime: {
         type: Boolean,
         value: false,
       },
       /**
-        * language
+        * Language
         */
       lang: {
         type: String,
@@ -64,14 +71,14 @@ A set of behaviors for a11y-media components.
         reflectToAttribute: true,
       },
       /** 
-        * looping is not fully supported
+        * Loop the video?
         */
       loop: {
         type: Boolean,
         value: false,
       },
       /*
-        * is the size mobile
+        * Is the size mobile?
         */
       mobileSize: {
         type: Boolean,
@@ -80,33 +87,40 @@ A set of behaviors for a11y-media components.
         reflectToAttribute: true
       },
       /** 
-        * is audio muted
+        * Is audio muted?
         */
       muted: {
         type: Boolean,
         value: false,
       },
       /**
-        * playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
+        * Playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
         */
       playbackRate: {
         type: Number,
         value: 1
       },
       /**
-        * is media playing
+        * Is media playing?
         */
       playing: {
         type: Boolean,
         value: false
       },
       /**
-        * size of the a11y media element for responsive styling
+        * Size of the a11y media element for responsive styling
         */
       responsiveSize: {
         type: String,
         notify: true,
         reflectToAttribute: true
+      },
+      /** 
+        * array of tracks and cues
+        */
+      tracks: {
+        type: Array,
+        value: null
       },
       /** 
         * Range is 0 to 100. Default should not be loud enough to overpower screen readers. 

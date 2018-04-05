@@ -33,6 +33,10 @@ The controls bar for the a11y-media-player.
         max-width: 100%;
         position: relative;
         height: 40px;
+        --paper-listbox: {
+          background-color: var(--a11y-media-button-bg-color, --a11y-media-bg-color);
+          color: var(--a11y-media-button-color, --a11y-media-color);
+        };
       }
       :host > #controls-left {
         position: absolute;
@@ -58,6 +62,8 @@ The controls bar for the a11y-media-player.
       }
       :host paper-listbox {
         padding: 0;
+      }
+      :host dropdown-select {
         color: var(--a11y-media-settings-menu-color, #ffffff);
         background-color: var(--a11y-media-settings-menu-bg-color, #000000);
       }
@@ -192,7 +198,7 @@ The controls bar for the a11y-media-player.
               <div class="setting-control">
                 <dropdown-select id="tracks" no-label-float value="" label="tracks">
                   <paper-item value="">Off</paper-item>
-                  <template is="dom-repeat" items="{{__tracks}}" as="option">
+                  <template is="dom-repeat" items="{{tracks}}" as="option">
                     <paper-item value$="{{option.value}}">{{option.text}}</paper-item>
                   </template>
                 </dropdown-select>
@@ -298,6 +304,12 @@ The controls bar for the a11y-media-player.
         root.$.mute.$.button.onblur = function(){
           root.$.volume.classList.remove('focus');
         };
+      },
+      /** 
+       * loads tracks from array
+       */
+      setTracks: function(tracks){
+        this.set('tracks',tracks.slice(0));
       },
       /** 
         * set play/pause button 
