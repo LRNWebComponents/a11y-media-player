@@ -47,6 +47,10 @@ The controls bar for the a11y-media-player.
       :host paper-menu-button {
         padding: 0;
       }
+      :host paper-icon-button {
+        background-color: var(--a11y-media-button-bg-color, --a11y-media-bg-color);
+        color: var(--a11y-media-button-color, --a11y-media-color);
+      }
       :host paper-icon-button:active,
       :host paper-icon-button:focus,
       :host paper-icon-button:hover {
@@ -105,7 +109,10 @@ The controls bar for the a11y-media-player.
         @apply(--a11y-media-slider);
       }
       :host #speed {
-        @apply(--a11y-media-speed);
+        --paper-slider-active-color: var(--a11y-media-speed-active-color, --a11y-media-slider-active-color);
+        --paper-slider-knob-color: var(--a11y-media-speed-knob-color, --a11y-media-slider-knob-color);
+        --paper-slider-knob-start-color: var(--a11y-media-speed-knob-start-color, --a11y-media-speed-knob-color);
+        --paper-slider-knob-end-color: var(--a11y-media-speed-knob-end-color,  --a11y-media-speed-knob-color);
       }
       :host #showvolume {
         display: inline;
@@ -120,7 +127,10 @@ The controls bar for the a11y-media-player.
         overflow: hidden;
         transition: width 0.5s;
         z-index: 3;
-        @apply(--a11y-media-volume);
+        --paper-slider-active-color: var(--a11y-media-volume-active-color, --a11y-media-slider-active-color);
+        --paper-slider-knob-color: var(--a11y-media-volume-knob-color, --a11y-media-slider-knob-color);
+        --paper-slider-knob-start-color: var(--a11y-media-volume-knob-start-color, --a11y-media-hover-color, #ffffff);
+        --paper-slider-knob-end-color: var(--a11y-media-volume-knob-end-color,  --a11y-media-volume-knob-color);
       }
       :host #volume:active,
       :host #volume:focus,
@@ -211,13 +221,6 @@ The controls bar for the a11y-media-player.
       
       properties: {
         /**
-          * is media playing
-          */
-        playing: {
-          type: Boolean,
-          value: false
-        },
-        /**
           * play/pause button
           */
         playPause: {
@@ -269,12 +272,6 @@ The controls bar for the a11y-media-player.
         root.$.mute.$.button.onblur = function(){
           root.$.volume.classList.remove('focus');
         };
-      },
-      /**
-        * returns true if an attribute is set to a value
-        */ 
-       _testAttribute: function(attr,val){
-        return attr === val;
       },
       /** 
         * set play/pause button 

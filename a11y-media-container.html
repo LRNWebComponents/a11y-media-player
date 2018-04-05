@@ -1,9 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-player.html">
 
 <!--
-`a11y-media-player-with-transcript`
+`a11y-media-container`
 A LRN element
 
 @demo demo/index.html
@@ -15,7 +16,7 @@ A LRN element
 
 -->
 
-<dom-module id="a11y-media-player-with-transcript">
+<dom-module id="a11y-media-container">
   <template>
     <style>
       :host {
@@ -25,8 +26,9 @@ A LRN element
         display: inline-flex;
         align-items: stretch;
         width: 100%;
-        outline: 1px solid black;
-        background: black;
+        outline: 1px solid;
+        outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
+        background-color: var(--a11y-media-transcript-bg-color, #ffffff);
       }
       :host:not([responsive-size*="s"]) > div {
         width: 50%;
@@ -34,7 +36,6 @@ A LRN element
         flex-shrink: 1;
       }
       :host:not([responsive-size*="s"]) #transcript {
-        background: white;
         position: absolute;
         top: 0; left: 0;
         right: 0; bottom: 0;
@@ -73,7 +74,6 @@ A LRN element
         disable-interactive$="[[disableInteractive]]"
         hide-timestamps$="[[hideTimestamps]]"
         id="transcript" 
-        media-id="player"
         selected-transcript$="[[selectedTranscript]]">
       </a11y-media-transcript>
     </div>
@@ -82,18 +82,19 @@ A LRN element
   <script>
     Polymer({
 
-      is: 'a11y-media-player-with-transcript',
+      is: 'a11y-media-container',
       
       behaviors: [
-        a11yMediaBehaviors.PropertiesBehaviors, 
+        a11yMediaBehaviors.PlayerBehaviors, 
         a11yMediaBehaviors.TranscriptBehaviors,
         a11yMediaBehaviors.UtilityFunctions
       ],
-      
       /**
         * calls responsive-utility to get parent's responsive size
         */ 
       attached: function(){
+        let root = this;
+        root.$.transcript.setMedia(root.$.player);
         this._addResponsiveUtility();
       }
     });

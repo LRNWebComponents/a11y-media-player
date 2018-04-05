@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-transcript-cue.html">
@@ -16,20 +17,6 @@ A transcript element to pair with a11y-media-player
     media-id=""                                     // The id of the player
     selected-transcript$="[[selectedTranscript]]">  // The index of the current track
   </a11y-media-transcript>
- 
-  Custom styles for transcript:
-  --a11y-media-transcript-bg-color: background color of the transcript, default is #ffffff
-  --a11y-media-transcript-text-color: color of the transcript text, default is #000000
-  
-  Custom styles for focused cue:
-  --a11y-media-transcript-focused-cue-text: color of the focused cue text, default is --a11y-media-transcript-text-color
-  --a11y-media-transcript-focused-cue-bg: background color of the focused cue, default is --a11y-media-transcript-bg-color
-  --a11y-media-transcript-focused-cue-weight: font-weight of the focused cue, default is bold
-  
-  Custom styles for active cue:
-  --a11y-media-transcript-active-cue-text: color of the active cue text, default is --a11y-media-transcript-text-color
-  --a11y-media-transcript-active-cue-bg: background color of the active cue, default is #ccfffd
-  --a11y-media-transcript-active-cue-weight: font-weight of the active cue, default is normal
 
 -->
 
@@ -40,8 +27,7 @@ A transcript element to pair with a11y-media-player
         display: block;
         padding: 15px;
         overflow-y: scroll; 
-        background-color: var(--a11y-media-transcript-bg-color,#ffffff);
-        @apply(--a11y-media-transcript);
+        background-color: var(--a11y-media-transcript-bg-color, #ffffff);
       }
       :host #tracks-inner {
         width: 100%;
@@ -52,19 +38,6 @@ A transcript element to pair with a11y-media-player
       }
       :host[hideTimestamps] #tracks-inner[active] {
         display: table;
-      }
-      :host a11y-media-transcript-cue {
-        color: var(--a11y-media-transcript-text-color, #000000);
-        --a11y-media-transcript-focused-cue: {
-          font-weight: var(--a11y-media-transcript-focused-cue-weight, bold);
-          color: var(--a11y-media-transcript-focused-cue-text, --a11y-media-transcript-text-color);
-          background-color: var(--a11y-media-transcript-focused-cue-bg, #ffffff);
-        }
-        --a11y-media-transcript-active-cue: {
-          font-weight: var(--a11y-media-transcript-active-cue-weight, normal);
-          color: var(--a11y-media-transcript-active-cue-text, --a11y-media-transcript-text-color);
-          background-color: var(--a11y-media-transcript-active-cue-bg, #ccfffd);
-        }
       }
     </style>
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
@@ -92,7 +65,10 @@ A transcript element to pair with a11y-media-player
         'cue-seek': '_onCueSeek',
       },
       
-      behaviors: [a11yMediaBehaviors.TranscriptBehaviors],
+      behaviors: [
+        a11yMediaBehaviors.TranscriptBehaviors, 
+        a11yMediaBehaviors.UtilityFunctions
+      ],
 
       properties: {
         /* 
@@ -120,9 +96,16 @@ A transcript element to pair with a11y-media-player
         },
       },
       /* 
-       * fires an event to let player object know there is a transcript container
+       * fires an event to let the page know there is a transcript container
        */
       attached: function(){
+        this.fire('transcript-ready',this);
+      },
+      /* 
+       * fires an event when media is associated with the player
+       */
+      setMedia: function(player){
+        this.media = player;
         this.fire('transcript-ready',this);
       },
       /* 

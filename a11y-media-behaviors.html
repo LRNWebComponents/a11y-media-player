@@ -94,6 +94,13 @@ A set of behaviors for a11y-media components.
         value: 1
       },
       /**
+        * is media playing
+        */
+      playing: {
+        type: Boolean,
+        value: false
+      },
+      /**
         * size of the a11y media element for responsive styling
         */
       responsiveSize: {
@@ -115,6 +122,12 @@ A set of behaviors for a11y-media components.
         type: String,
         value: 'unset'
       }
+    },
+    /**
+      * returns true if an attribute is set to a value
+      */ 
+      _testAttribute: function(attr,val){
+      return attr === val;
     }
   };
   window.a11yMediaBehaviors.TranscriptBehaviors = {
@@ -132,6 +145,13 @@ A set of behaviors for a11y-media components.
       hideTimestamps: {
         type: Boolean,
         value: false,
+      },
+      /* 
+        * show cue's start and end time 
+        */
+      media: {
+        type: Object,
+        value: {},
       },
       /* 
         * selected transcript track id

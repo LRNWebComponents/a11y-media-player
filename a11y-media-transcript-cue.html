@@ -18,13 +18,19 @@ A single cue in a11y-media-transcriptas static text or as an button that control
     hide-timestamps$="[[hideTimestamps]]" >         // Hide cue timestamp?
   </a11y-media-transcript-cue>
 
-  Custom Styles:
-  --a11y-media-transcript-focused-cue {
-    // css for focused cue
-  }
-  --a11y-media-transcript-focused-cue {
-    // css for active cue
-  }
+  Custom styles:
+  --a11y-media-transcript-bg-color: background color of the transcript, default is #ffffff
+  --a11y-media-transcript-text-color: color of the transcript text, default is #000000
+  
+  Custom styles for focused cue:
+  --a11y-media-transcript-focused-cue-text: color of the focused cue text, default is --a11y-media-transcript-text-color
+  --a11y-media-transcript-focused-cue-bg: background color of the focused cue, default is --a11y-media-transcript-bg-color
+  --a11y-media-transcript-focused-cue-weight: font-weight of the focused cue, default is bold
+  
+  Custom styles for active cue:
+  --a11y-media-transcript-active-cue-text: color of the active cue text, default is --a11y-media-transcript-text-color
+  --a11y-media-transcript-active-cue-bg: background color of the active cue, default is #ccfffd
+  --a11y-media-transcript-active-cue-weight: font-weight of the active cue, default is normal
 
 -->
 
@@ -33,6 +39,8 @@ A single cue in a11y-media-transcriptas static text or as an button that control
     <style>
       :host {
         display: table-row;
+        background-color: var(--a11y-media-transcript-bg-color, #ffffff);
+        color: var(--a11y-media-transcript-text-color, #000000);
       }
       :host[hide-timestamps] {
         display: inline;
@@ -41,10 +49,14 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       :host:not([disable-interactive]):focus,
       :host:not([disable-interactive]):hover {
         cursor: pointer;
-        @apply(--a11y-media-transcript-focused-cue);
+        font-weight: var(--a11y-media-transcript-focused-cue-weight, bold);
+        color: var(--a11y-media-transcript-focused-cue-text, --a11y-media-transcript-text-color);
+        background-color: var(--a11y-media-transcript-focused-cue-bg, #ffffff);
       }
       :host[active] {
-        @apply(--a11y-media-transcript-a11y-active-cue);
+        font-weight: var(--a11y-media-transcript-active-cue-weight, normal);
+        color: var(--a11y-media-transcript-active-cue-text, --a11y-media-transcript-text-color);
+        background-color: var(--a11y-media-transcript-active-cue-bg, #ccfffd);
       }
       :host #text {
         display: table-cell;

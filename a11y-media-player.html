@@ -30,50 +30,47 @@ A LRN element
     <slot></slot>                               // The tracks
   </a11y-media-player>
 
- Custom styles for player:
- --a11y-media-bg-color: text color, default is #000000
- --a11y-media-text-color: background color, default is #bbbbbb
- --a11y-media-hover-color: text color on hover, default is #ffffff
-
- Custom styles for the giant play button overlay:
- --a11y-play-button-bg-color: overlay background color, default is #000000
- --a11y-play-button-border-color: arrow stroke color, default is #ffffff
- --a11y-play-button-bg-color: arrow stroke color, default is #000000
- --a11y-play-button-text-color: arrow text color, default is #ffffff
+ Basic customization of player:
+--a11y-media-text-color: text color, default is #bbbbbb
+--a11y-media-bg-color: background color, default is #000000
+--a11y-media-faded-bg-color: a subtler version of background color, default is #444444
+--a11y-media-hover-color: text color on hover, default is #ffffff
+--a11y-media-accent-color: an accent color, default is #00eeff
+--a11y-media-faded-accent-color: a subtler version of accent color, default is #4E7373
  
  Custom styles for player buttons:
- --a11y-media-button-color: button text color, default is --a11y-media-text-color
- --a11y-media-button-bg-color: button background color, default is --a11y-media-bg-color
- --a11y-media-button-hover-color: button text color when focused/hovered, default is --a11y-media-hover-color
- --a11y-media-button-hover-bg-color: button background color when focused/hovered, default is --a11y-media-bg-color
+--a11y-media-button-color: button text color, default is --a11y-media-text-color
+--a11y-media-button-bg-color: button background color, default is --a11y-media-bg-color
+--a11y-media-button-hover-color: button text color when focused/hovered, default is --a11y-media-hover-color
+--a11y-media-button-hover-bg-color: button background color when focused/hovered, default is --a11y-media-bg-color
  
  Custom styles for player settings menu:
- --a11y-media-settings-menu-color: settings menu text color, default is --a11y-media-text-color
- --a11y-media-settings-menu-bg-color: settings menu background color, default is --a11y-media-bg-color
+--a11y-media-settings-menu-color: settings menu text color, default is --a11y-media-text-color
+--a11y-media-settings-menu-bg-color: settings menu background color, default is --a11y-media-bg-color
  
  Custom styles for player toggle buttons:
- --a11y-toggle-off-color: color of toggle button when off, default is #f8f8f8
- --a11y-toggle-on-color: color of toggle button when on, default is #00eeff
+--a11y-toggle-off-color: color of toggle button when off, default is #f8f8f8
+--a11y-toggle-on-color: color of toggle button when on, default is --a11y-media-accent-color
  
  Custom styles for player slider buttons:
- --a11y-media-slider-primary-color: primary slider color, default is #00eeff
- --a11y-media-slider-buffer-color: slider buffer color, default is #4E7373
- --a11y-media-slider-pin-color: color of the pin that shows slider value, default is #444444
- --a11y-media-slider-knob-color: slider knob color, default is #00eeff
+--a11y-media-slider-primary-color: primary slider color, default is --a11y-media-accent-color
+--a11y-media-slider-buffer-color: slider buffer color, default is --a11y-media-faded-accent-color
+--a11y-media-slider-pin-color: color of the pin that shows slider value, default is #444444
+--a11y-media-slider-knob-color: slider knob color, default is --a11y-media-accent-color
 
  Custom styles for player volume slider:
- --a11y-media-volume-primary-color: volume slider color, default is #00eeff
- --a11y-media-volume-pin-color: color of the pin that shows volume slider value, default is #444444
- --a11y-media-volume-knob-color: volume slider knob color, default is #00eeff
- --a11y-media-volume-knob-start-color: knob color at the start of volume slider, default is --a11y-media-hover-color
- --a11y-media-volume-knob-end-color: knob color at the end of volume slider, default is --a11y-media-volume-knob-color
+--a11y-media-volume-primary-color: volume slider color, default is #00eeff
+--a11y-media-volume-pin-color: color of the pin that shows volume slider value, default is #444444
+--a11y-media-volume-knob-color: volume slider knob color, default is #00eeff
+--a11y-media-volume-knob-start-color: knob color at the start of volume slider, default is --a11y-media-hover-color
+--a11y-media-volume-knob-end-color: knob color at the end of volume slider, default is --a11y-media-volume-knob-color
 
  Custom styles for player speed slider:
- --a11y-media-speed-primary-color: speed slider color, default is #00eeff
- --a11y-media-speed-pin-color: color of the pin that shows speed slider value, default is #444444
- --a11y-media-speed-knob-color: volume slider knob color, default is #00eeff
- --a11y-media-speed-knob-start-color: knob color at the start of speed slider, default is --a11y-media-speed-knob-color
- --a11y-media-speed-knob-end-color: knob color at the end of speed slider, default is --a11y-media-speed-knob-color
+--a11y-media-speed-primary-color: speed slider color, default is #00eeff
+--a11y-media-speed-pin-color: color of the pin that shows speed slider value, default is #444444
+--a11y-media-speed-knob-color: volume slider knob color, default is #00eeff
+--a11y-media-speed-knob-start-color: knob color at the start of speed slider, default is --a11y-media-speed-knob-color
+--a11y-media-speed-knob-end-color: knob color at the end of speed slider, default is --a11y-media-speed-knob-color
 -->
 
 <dom-module id="a11y-media-player">
@@ -98,52 +95,50 @@ A LRN element
       :host #controls {
         width: 100%;
       }
-      :host paper-slider, :host #controls {
+      :host, :host #controls {
         background-color: var(--a11y-media-bg-color, #000000);
         color: var(--a11y-media-color, #bbbbbb);
+
+        /* buttons 
+        --primary-text-color: var(--a11y-media-hover-color, #ffffff);*/
         --a11y-media-settings-menu-color: var(--a11y-media-color, #bbbbbb);
         --a11y-media-settings-menu-bg-color: var(--a11y-media-bg-color, #000000);
-        --primary-text-color: var(--a11y-media-hover-color, #ffffff);
-        --paper-toggle-button-unchecked-bar-color: var(--a11y-toggle-off-color, #f8f8f8);
-        --paper-toggle-button-unchecked-button-color: var(--a11y-toggle-off-color, #f8f8f8);
-        --paper-toggle-button-checked-bar-color: var(--a11y-media-toggle-on-color, #00eeff);
-        --paper-toggle-button-checked-button-color: var(--a11y-media-toggle-on-color, #00eeff);
-        --paper-slider-active-color: var(--a11y-media-slider-primary-color, #00eeff);
-        --paper-slider-secondary-color: var(--a11y-media-slider-buffer-color, #4E7373);
-        --paper-slider-pin-color: var(--a11y-media-slider-pin-color, #444444);
-        --paper-slider-pin-start-color: var(--a11y-media-slider-pin-color, #444444);
-        --paper-slider-pin-end-color:  var(--a11y-media-slider-pin-color, #444444);
-        --paper-slider-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-slider-primary-color, #00eeff));
-        --paper-slider-knob-start-border-color: transparent;
-        --paper-slider-knob-end-border-color: transparent;
-        --paper-slider-knob-start-color: transparent;
-        --paper-slider-knob-end-color: transparent;
-        --a11y-media-volume: {
-          --paper-slider-active-color: var(--a11y-media-volume-active-color, --a11y-media-slider-active-color);
-          --paper-slider-pin-color: var(--a11y-media-volume-pin-color, --a11y-media-slider-pin-color);
-          --paper-slider-pin-start-color: var(--a11y-media-volume-pin-color, --a11y-media-slider-pin-color);
-          --paper-slider-pin-end-color: var(--a11y-media-volume-pin-color, --a11y-media-slider-pin-color);
-          --paper-slider-knob-color: var(--a11y-media-volume-knob-color, --a11y-media-slider-knob-color);
-          --paper-slider-knob-start-color: var(--a11y-media-volume-knob-start-color, var(--a11y-media-hover-color, #ffffff));
-          --paper-slider-knob-end-color: var(--a11y-media-volume-knob-end-color,  --a11y-media-volume-knob-color);
-        };
-        --a11y-media-speed: {
-          --paper-slider-active-color: var(--a11y-media-speed-active-color, --a11y-media-slider-active-color);
-          --paper-slider-pin-color: var(--a11y-media-speed-pin-color, --a11y-media-slider-pin-color);
-          --paper-slider-pin-start-color: var(--a11y-media-speed-pin-color, --a11y-media-slider-pin-color);
-          --paper-slider-pin-end-color: var(--a11y-media-speed-pin-color, --a11y-media-slider-pin-color);
-          --paper-slider-knob-color: var(--a11y-media-speed-knob-color, --a11y-media-slider-knob-color);
-          --paper-slider-knob-start-color: var(--a11y-media-speed-knob-start-color, --a11y-media-speed-knob-color);
-          --paper-slider-knob-end-color: var(--a11y-media-speed-knob-end-color,  --a11y-media-speed-knob-color);
-        };
-        --a11y-media-button: {
-          background-color: var(--a11y-media-button-bg-color, var(--a11y-media-bg-color, #000000));
-          color: var(--a11y-media-button-color, var(--a11y-media-color, #bbbbbb));
-        };
-        --a11y-media-button-hover: {
-          background-color: var(--a11y-media-button-hover-bg-color, var(--a11y-media-bg-color, #000000));
-          color: var(--a11y-media-button-hover-color, var(--a11y-media-hover-color, #ffffff));
-        };
+        
+        /* buttons */
+        --a11y-media-button-bg-color: var(--a11y-media-bg-color, #000000);
+        --a11y-media-button-color: var(--a11y-media-color, #bbbbbb);
+        --a11y-media-button-hover-bg-color: var(--a11y-media-bg-color, #000000);
+        --a11y-media-button-hover-color: var(--a11y-media-hover-color, #ffffff);
+        
+        /* toggle button */
+        --paper-toggle-button-unchecked-bar-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #bbbbbb));
+        --paper-toggle-button-unchecked-button-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #bbbbbb));
+        --paper-toggle-button-checked-bar-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color, #00eeff));
+        --paper-toggle-button-checked-button-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color, #00eeff));
+        
+        /* slider */
+        --paper-slider-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #00eeff));
+        --paper-slider-secondary-color: var(--a11y-media-slider-buffer-color, var(--a11y-media-faded-accent-color, #4E7373));
+        --paper-slider-pin-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #444444));
+        --paper-slider-pin-start-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #444444));
+        --paper-slider-pin-end-color:  var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #444444));
+        --paper-slider-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #00eeff));
+        --paper-slider-knob-start-border-color: var(--a11y-media-bg-color, #000000);
+        --paper-slider-knob-end-border-color: var(--a11y-media-bg-color, #000000);
+        --paper-slider-knob-start-color: var(--a11y-media-bg-color, #000000);
+        --paper-slider-knob-end-color: var(--a11y-media-bg-color, #000000);
+        
+        /* volume slider */
+        --a11y-media-volume-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #00eeff));
+        --a11y-media-volume-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #00eeff));;
+        --a11y-media-volume-knob-start-color: var(--a11y-media-hover-color, #ffffff);
+        --a11y-media-volume-knob-end-color: --a11y-media-volume-knob-color;
+        
+        /* speed slider */
+        --a11y-media-speed-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #00eeff));
+        --a11y-media-speed-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #00eeff));;
+        --a11y-media-speed-knob-start-color: --a11y-media-speed-knob-color;
+        --a11y-media-speed-knob-end-color: --a11y-media-speed-knob-color;
       }
       :host #video {
         position: absolute;
@@ -152,13 +147,6 @@ A LRN element
       }
       :host a11y-media-play-button {
         padding-top: 56.25%;
-        --a11y-media-play-button-background: {
-          background: var(--a11y-play-button-bg-color, #000000);
-        };
-        --a11y-media-play-button-arrow: {
-          stroke: var(--a11y-play-button-border-color, #ffffff);
-          fill: var(--a11y-play-button-bg-color, #000000);
-        };
         --a11y-media-play-button-text: {
           fill: var(--a11y-play-button-text-color, #ffffff);
         };
@@ -278,6 +266,7 @@ A LRN element
         }
         // handles loaded metadata
         video.addEventListener('loadedmetadata',function(){
+          console.log('loadedmetadata',root);
           // adjusts aspect ratio
           if (root.width !== 'unset') root.setAttribute('width',root.width);
           if (root.height !== 'unset') root.setAttribute('width',root.height);
@@ -347,7 +336,7 @@ A LRN element
         });
         // when transcript is ready associate it with the player
         document.body.addEventListener('transcript-ready',function(e){
-          if(root.getAttribute('id') === e.detail.mediaId) {
+          if(root.getAttribute('id') === e.detail.mediaId || root === e.detail.media) {
             root.__transcript = e.detail;
             if (root.__tracks !== undefined) root.__transcript.setTracks(tracks);
             root.__transcript.addEventListener('cue-seek',function(e){
@@ -363,14 +352,12 @@ A LRN element
         let root = this, video = root.$.video;
         root.__playing = true;
         if (e === undefined || e.detail === root.$.playbutton) {
-          root.$.playbutton.setAttribute('disabled',true);
           // while playing, update the slider and length
           root.__playProgress = setInterval(() => {
             root.__elapsed = video.currentTime > 0 ? video.currentTime : 0;
             root.__length = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
             // if the video reaches the end and is not set to loop, stop
             if(root.__elapsed === root.__duration && !root.loop){
-              root.$.playbutton.removeAttribute('disabled');
               root.__playing = false;
               clearInterval(root.__playProgress);
             }
@@ -388,7 +375,8 @@ A LRN element
         let root = this;
         root.__playing = false;
         root.$.video.pause();
-        clearInterval(root.__playProgress); //stops updating the slider and length
+        //stop updating the slider and length
+        clearInterval(root.__playProgress); 
       },
       /** 
        * stops the media 
@@ -434,6 +422,7 @@ A LRN element
        * selects a specific track by index
        */
       selectTrack: function(index){
+        console.log('selectTrack',this);
         for(i in this.$.video.textTracks) {
           if (index == i) {
             this.$.video.textTracks[i].mode = 'showing';
@@ -445,6 +434,7 @@ A LRN element
         }
         if (this.__transcript !== null && this.__transcript.tracks !== null) {
           this.__transcript.setAttribute('selected-transcript',this.__selectedTrackId);
+          console.log('set track',this.__transcript.selected-transcript);
           //this.__transcript.set('cues', this.__selectedTrack.cues);
         }
       },

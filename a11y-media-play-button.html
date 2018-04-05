@@ -12,19 +12,17 @@ A giant play button that overlays the media in a11y-media-player
     playing$="[[__playing]]">   // Is the media currently playing?
   </a11y-media-play-button>
 
-  Custom styles: 
-  --a11y-media-play-button-background {
-    // css for button background
-  }
-  --a11y-media-play-button-focused-background {
-    // css for button background when focused
-  } 
-  --a11y-media-play-button-arrow {
-    // css for button arrow icon
-  }
-  --a11y-media-play-button-text {
-    // css for button text
-  }
+Custom styles:
+--a11y-play-button-bg-color: overlay background color, default is #000000
+--a11y-play-button-arrow-text-color: arrow text color, default is #ffffff
+--a11y-play-button-arrow-border-color: arrow stroke color, default is --a11y-play-button-arrow-border-color
+--a11y-play-button-arrow-bg-color: arrow stroke color, default is --a11y-play-button-bg-color
+
+Custom focus styles:
+--a11y-play-button-focus-bg-color: overlay background color, default is --a11y-play-button-bg-color
+--a11y-play-button-focus-arrow-text-color: arrow text color, default is --a11y-play-button-arrow-text-color
+--a11y-play-button-focus-arrow-border-color: arrow stroke color, default is --a11y-play-button-arrow-border-color
+--a11y-play-button-focus-arrow-bg-color: arrow stroke color, default is --a11y-play-button-arrow-bg-color
 
 -->
 
@@ -64,22 +62,34 @@ A giant play button that overlays the media in a11y-media-player
       :host #background {
         opacity: 0.5;
         transition: opacity 0.5s;
-        @apply(--a11y-media-play-button-background);
+        background: var(--a11y-play-button-bg-color, #000000);
       }
       :host:active #background,
       :host:focus #background,
       :host:hover #background {
+        background: var(--a11y-play-button-focus-bg-color, --a11y-play-button-bg-color);
         opacity: 0.7;
-        @apply(--a11y-media-play-button-focused-background);
       }
       :host #button {
         background: transparent;
       }
       :host #arrow {
-        @apply(--a11y-media-play-button-arrow);
+        stroke: var(--a11y-play-button-arrow-border-color, var(--a11y-play-button-text-color, #ffffff));
+        fill: var(--a11y-play-button-arrow-bg-color, var(--a11y-play-button-bg-color, #000000));
+      }
+      :host:active #arrow,
+      :host:focus #arrow,
+      :host:hover #arrow {
+        stroke: var(--a11y-play-button-focus-arrow-border-color, --a11y-play-button-arrow-border-color);
+        fill: var(--a11y-play-button-focus-arrow-focus-bg-color, --a11y-play-button-bg-color);
       }
       :host #text {
-        @apply(--a11y-media-play-button-text);
+        fill: var(--a11y-play-button-text-color, #ffffff);
+      }
+      :host:active #text,
+      :host:focus #text,
+      :host:hover #text {
+        fill: var(--a11y-play-button-focus-text-color, --a11y-play-button-text-color);
       }
     </style>
     <div id="background"></div>
@@ -110,15 +120,21 @@ A giant play button that overlays the media in a11y-media-player
          */
          label: {
           type: String,
-          value: 'play',
+          computed: '_getLabel(playing)'
         },
         /**
          * is button disabled
          */
          disabled: {
           type: Boolean,
-          value: false,
+          value: false
         },
+      },
+      /**
+        * get label based on whether or not the video is playing
+        */
+      _getLabel: function(playing){
+        return playing ? 'pause' : 'play';
       },
       /**
         * handle button tap

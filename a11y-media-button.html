@@ -29,13 +29,15 @@ A button used in a11y-media-controls
         padding: 8px;
         border: none;
         transition: color 0.25s;
-        @apply(--a11y-media-button);
+        background-color: var(--a11y-media-button-bg-color, --a11y-media-bg-color);
+        color: var(--a11y-media-button-color, --a11y-media-color);
       }
       :host:active #button,
       :host:focus #button,
       :host:hover #button {
         cursor: pointer;
-        @apply(--a11y-media-button-hover);
+        background-color: var(--a11y-media-button-hover-bg-color, --a11y-media-bg-color);
+        color: var(--a11y-media-button-hover-color, --a11y-media-hover-color);
       }
       :host .sr-only {
         position: absolute;

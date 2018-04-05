@@ -11,7 +11,8 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../a11y-media-player.html">
-    <link rel="import" href="../a11y-media-player-with-transcript.html">
+    <link rel="import" href="../a11y-media-player-only.html">
+    <link rel="import" href="../a11y-media-container.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
     </style>
@@ -25,51 +26,65 @@
   <body>
     <div class="vertical-section-container centered">
         
-      <h3>a11y-media-player-with-transcript demo</h3>
+      <h3>a11y-media-container demo</h3>
       <demo-snippet>
         <template>
-          <a11y-media-player-with-transcript>
+          <a11y-media-container>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-player-with-transcript>
+          </a11y-media-container>
+        </template>
+      </demo-snippet> 
+      
+      <h3>a11y-media-container demo, with accent color</h3>
+      <demo-snippet>
+        <template>
+          <style is="custom-style">
+            #accent {
+              --a11y-media-accent-color: #aaff00;
+              --a11y-media-faded-accent-color: #85c700;
+              --a11y-media-transcript-active-cue-bg: #aaff00;
+            }
+          </style>
+          <a11y-media-container id="accent">
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
+            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
+            <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
+            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
+          </a11y-media-container>
         </template>
       </demo-snippet> 
 
-      <h3>a11y-media-player-with-transcript demo, customized</h3>
+      <h3>a11y-media-container demo, customized</h3>
       <demo-snippet>
         <p>Transcript can be located anywhere, even in a different <tt>&lt;div/&gt;</tt>.</p>
         <template>
           <style is="custom-style">
             #custom1 {
-              --a11y-media-bg-color: #eeeeee;
-              --a11y-media-text-color: #880000;
+              --a11y-media-accent-color: #ff0000;
               --a11y-media-hover-color: #ff0000;
-              --a11y-play-button-bg-color: #880000;
-              --a11y-media-button-hover-color: #ff0000;
-              --a11y-toggle-on-color: #ff0000;
-              --a11y-media-slider-primary-color: #ff0000;
-              --a11y-media-slider-buffer-color: #ff8888;
-              --a11y-media-slider-knob-color: #ff0000;
-            }
-            #transcript2 > a11y-media-transcript {
-              --a11y-media-transcript-active-cue-bg: #ffffbb;
-              --a11y-media-transcript-active-cue-text: #111111;
-              --a11y-media-transcript-focused-cue: {
-                font-weight: unset;
-                background-color: #eeeeee;
-              }
+              --a11y-media-faded-accent-color: #ff8888;
+              --a11y-media-bg-color: #000000;
+              --a11y-media-transcript-bg-color: #111111;
+              --a11y-media-transcript-text-color: #ffffff;
+              --a11y-media-transcript-active-cue-bg: #ff0000;
+              --a11y-media-transcript-focused-cue-bg: #111111;
+              --a11y-media-transcript-focused-cue-weight: normal;
+              --a11y-media-transcript-focused-cue-text: #ff0000;
+              --a11y-play-button-focus-arrow-focus-bg-color: #ff0000;
             }
           </style>
-          <a11y-media-player-with-transcript id="custom1">
+          <a11y-media-container id="custom1">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-player-with-transcript>
+          </a11y-media-container>
         </template>
       </demo-snippet>
       
@@ -99,16 +114,17 @@
         <template>
           <style is="custom-style">
             #light {
-              --a11y-media-bg-color: #ffffff;
+              --a11y-media-bg-color: #eeeeee;
+              --a11y-media-color: #000000;
+              --a11y-media-accent-color: #f00090;
+              --a11y-media-hover-color: #f00090;
+              --a11y-media-faded-accent-color: #ffb1d7;
               --a11y-media-faded-bg-color: #bbbbbb;
-              --a11y-media-text-color: #000000;
-              --a11y-media-text-disabled: #666666;
-              --a11y-media-accent-text-color: #ff0000;
-              --a11y-media-faded-accent-color: #880000;
-              --a11y-media-accent-text-hover: #ff6666;
-              --a11y-play-button-stroke-color: #ffffff;
-              --a11y-play-button-text-color: #ffffff;
-              --a11y-play-button-bg-color: #880000;
+              --a11y-play-button-bg-color: #bbbbbb;
+              --a11y-play-button-arrow-bg-color: #000000;
+              --a11y-play-button-focus-bg-color: #000000;
+              --a11y-media-transcript-active-cue-bg: #ffa4d2;
+              --a11y-play-button-focus-arrow-focus-bg-color: #f00090;
               width: 200px;
             }
           </style>
