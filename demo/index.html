@@ -11,6 +11,7 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../a11y-media-player.html">
+    <link rel="import" href="../a11y-media-player-with-transcript.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
     </style>
@@ -24,53 +25,36 @@
   <body>
     <div class="vertical-section-container centered">
         
-      <h3>a11y-media-player demo with tracks</h3>
+      <h3>a11y-media-player-with-transcript demo</h3>
+      <demo-snippet>
+        <template>
+          <a11y-media-player-with-transcript>
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
+            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
+            <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
+            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
+          </a11y-media-player-with-transcript>
+        </template>
+      </demo-snippet> 
+
+      <h3>a11y-media-player-with-transcript demo, customized</h3>
       <demo-snippet>
         <p>Transcript can be located anywhere, even in a different <tt>&lt;div/&gt;</tt>.</p>
-        <style>
-          .player-and-transcript {
-            outline: 1px solid black;
-          }
-          @media screen and (min-width: 900px) {
-            .player-and-transcript {
-              display: inline-flex;
-              align-items: stretch;
-              width: 100%;
-              outline: 1px solid black;
-              background: black;
-            }
-            .player-and-transcript > div {
-              width: 50%;
-              flex-grow: 1;
-              flex-shrink: 1;
-            }
-            .player-and-transcript a11y-media-transcript {
-              background: white;
-              position: absolute;
-              top: 0; left: 0;
-              right: 0; bottom: 0;
-              overflow-y: scroll;
-            }
-            #transcript {
-              position: relative;
-            }
-            #player.totop {
-              position: absolute;
-              top:0;
-              left: 0;
-              width: 200px !important;
-              z-index: 9999;
-            }
-          }
-        </style>
         <template>
           <style is="custom-style">
-            #player {
-              --a11y-media-accent-text-color: #ff0000;
-              --a11y-media-faded-accent-color: #880000;
-              --a11y-media-accent-text-hover: #ff6666;
+            #custom1 {
+              --a11y-media-bg-color: #eeeeee;
+              --a11y-media-text-color: #880000;
+              --a11y-media-hover-color: #ff0000;
+              --a11y-play-button-bg-color: #880000;
+              --a11y-media-button-hover-color: #ff0000;
+              --a11y-toggle-on-color: #ff0000;
+              --a11y-media-slider-primary-color: #ff0000;
+              --a11y-media-slider-buffer-color: #ff8888;
+              --a11y-media-slider-knob-color: #ff0000;
             }
-            #transcript > a11y-media-transcript {
+            #transcript2 > a11y-media-transcript {
               --a11y-media-transcript-active-cue-bg: #ffffbb;
               --a11y-media-transcript-active-cue-text: #111111;
               --a11y-media-transcript-focused-cue: {
@@ -79,20 +63,13 @@
               }
             }
           </style>
-          <div class="player-and-transcript">
-            <div>
-              <a11y-media-player id="player">
-                <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
-                <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
-                <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
-                <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
-                <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-              </a11y-media-player>
-            </div>
-            <div id="transcript">
-              <a11y-media-transcript media-id="player" hide-timestamps></a11y-media-transcript>
-            </div>
-          </div>
+          <a11y-media-player-with-transcript id="custom1">
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
+            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
+            <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
+            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
+          </a11y-media-player-with-transcript>
         </template>
       </demo-snippet>
       
@@ -132,9 +109,10 @@
               --a11y-play-button-stroke-color: #ffffff;
               --a11y-play-button-text-color: #ffffff;
               --a11y-play-button-bg-color: #880000;
+              width: 200px;
             }
           </style>
-          <a11y-media-player id="light" width="400px">
+          <a11y-media-player id="light" width="200px">
             <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm"> 
             <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg"> 
             <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">

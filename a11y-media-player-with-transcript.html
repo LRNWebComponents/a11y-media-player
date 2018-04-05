@@ -1,0 +1,101 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="a11y-media-behaviors.html">
+<link rel="import" href="a11y-media-player.html">
+
+<!--
+`a11y-media-player-with-transcript`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+ - a standalone media player
+ -
+ -
+
+-->
+
+<dom-module id="a11y-media-player-with-transcript">
+  <template>
+    <style>
+      :host {
+        outline: 1px solid black;
+      }
+      :host:not([responsive-size*="s"]) {
+        display: inline-flex;
+        align-items: stretch;
+        width: 100%;
+        outline: 1px solid black;
+        background: black;
+      }
+      :host:not([responsive-size*="s"]) > div {
+        width: 50%;
+        flex-grow: 1;
+        flex-shrink: 1;
+      }
+      :host:not([responsive-size*="s"]) #transcript {
+        background: white;
+        position: absolute;
+        top: 0; left: 0;
+        right: 0; bottom: 0;
+        overflow-y: scroll;
+      }
+      :host:not([responsive-size*="s"]) #transcript-outer {
+        position: relative;
+      }
+      :host:not([responsive-size*="s"]) #player.totop {
+        position: absolute;
+        top:0;
+        left: 0;
+        width: 200px !important;
+        z-index: 9999;
+      }
+    </style>
+    <div id="player-outer">
+      <a11y-media-player 
+        id="player"
+        autoplay$="[[autoplay]]"
+        cc$="[[cc]]"
+        disableFullscreen$="[[disableFullscreen]]"
+        fullscreen$="[[fullscreen]]"
+        height$="[[height]]"
+        hide-elapsed-time$="[[hideElapsedTime]]"
+        lang$="[[lang]]"
+        loop$="[[loop]]"
+        muted$="[[muted]]"
+        volume$="[[volume]]"
+        width$="[[width]]">
+        <slot></slot>
+      </a11y-media-player>
+    </div>
+    <div id="transcript-outer">
+      <a11y-media-transcript 
+        disable-interactive$="[[disableInteractive]]"
+        hide-timestamps$="[[hideTimestamps]]"
+        id="transcript" 
+        media-id="player"
+        selected-transcript$="[[selectedTranscript]]">
+      </a11y-media-transcript>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'a11y-media-player-with-transcript',
+      
+      behaviors: [
+        a11yMediaBehaviors.PropertiesBehaviors, 
+        a11yMediaBehaviors.TranscriptBehaviors,
+        a11yMediaBehaviors.UtilityFunctions
+      ],
+      
+      /**
+        * calls responsive-utility to get parent's responsive size
+        */ 
+      attached: function(){
+        this._addResponsiveUtility();
+      }
+    });
+  </script>
+</dom-module>

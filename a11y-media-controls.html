@@ -8,11 +8,12 @@
 <link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../dropdown-select/dropdown-select.html">
 <link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
+<link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-button.html">
 
 <!--
 `a11y-media-controls`
-A LRN element
+The controls bar for the a11y-media-player.
 
 @demo demo/index.html
 
@@ -49,38 +50,22 @@ A LRN element
       :host paper-icon-button:active,
       :host paper-icon-button:focus,
       :host paper-icon-button:hover {
-        color: var(--a11y-media-text-color, #f8f8f8);
+        color: var(--a11y-media-hover-color, #f8f8f8);
       }
       :host paper-listbox {
         padding: 0;
-        @apply(--a11y-media-listbox);
+        color: var(--a11y-media-settings-menu-color, #ffffff);
+        background-color: var(--a11y-media-settings-menu-bg-color, #000000);
       }
       :host paper-item {
         min-height: 40;
       } 
-      :host paper-toggle-button {
-        --paper-toggle-button-unchecked-bar-color: var(--a11y-media-text-color, #f8f8f8);
-        --paper-toggle-button-unchecked-button-color: var(--a11y-media-text-color, #f8f8f8);
-        --paper-toggle-button-checked-bar-color: var(--a11y-media-accent-text-color, #00eeff);
-        --paper-toggle-button-checked-button-color: var(--a11y-media-accent-text-color, #00eeff);
-      }
       :host paper-slider {
-        z-index: 3;
-        --paper-slider-knob-start-border-color: transparent;
-        --paper-slider-knob-end-border-color: transparent;
-        --paper-slider-active-color: var(--a11y-media-accent-text-color, #00eeff);
-        --paper-slider-secondary-color: var(--a11y-media-faded-accent-color,#4E7373);
-        --paper-slider-pin-color: var(--a11y-media-faded-bg-color, #444444);
-        --paper-slider-pin-start-color: var(--a11y-media-faded-bg-color, #444444);
-        --paper-slider-knob-color: var(--a11y-media-accent-text-color, #00eeff);
-        --paper-slider-knob-start-color: var(--a11y-media-text-color,#ffffff);
-        --paper-slider-knob-end-color: var(--a11y-media-accent-text-color, #00eeff);
+        @apply(--a11y-media-slider);
       }
       :host .ellapsed-time, 
       :host paper-icon-button {
         border: none;
-        background-color: var(--a11y-media-bg-color, #000000);
-        color: var(--a11y-media-text-disabled, #bbbbbb);;
         position: relative;
       }
       :host .ellapsed-time {
@@ -102,9 +87,6 @@ A LRN element
       :host:not([has-captions]) .captions {
         display: none;
       }
-      :host dropdown-select {
-        --primary-text-color: var(--a11y-media-text-hover, #ffffff);
-      }
       :host .setting {
         display: flex;
         justify-content: space-between;
@@ -120,6 +102,10 @@ A LRN element
         width: 130px;
         margin-left: -15px;
         margin-right: -15px;
+        @apply(--a11y-media-slider);
+      }
+      :host #speed {
+        @apply(--a11y-media-speed);
       }
       :host #showvolume {
         display: inline;
@@ -131,9 +117,10 @@ A LRN element
         left: 35px;
         top: -8px;
         width: 0;
-        background: var(--a11y-media-bg-color, #000000);
         overflow: hidden;
         transition: width 0.5s;
+        z-index: 3;
+        @apply(--a11y-media-volume);
       }
       :host #volume:active,
       :host #volume:focus,
@@ -201,7 +188,7 @@ A LRN element
         </paper-listbox>
       </paper-menu-button>
       <paper-tooltip for="settings">settings</paper-tooltip>
-      <template is="dom-if" if="[[allowFullscreen]]">
+      <template is="dom-if" if="[[!disableFullscreen]]">
         <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]" step="1"></a11y-media-button>
       </template>
       </div>
@@ -212,112 +199,44 @@ A LRN element
 
       is: 'a11y-media-controls',
 
+      behaviors: [
+        a11yMediaBehaviors.PlayerBehaviors, 
+        a11yMediaBehaviors.UtilityFunctions
+      ],
+
       listeners: {
         'button-clicked': '_onButtonClick',
         'change': '_onSettingsChanged'
       },
-
+      
       properties: {
-        /* 
-         * fullscreen option 
-         */
-        allowFullscreen: {
-          type: Boolean,
-          value: true,
-        },
-        /* autoplay is an option, 
-         * but generally not recommended for a11y
-         */ 
-        autoplay: {
-          type: Boolean,
-          value: false,
-        },
-        /*
-         * show closed captions
-         */
-        cc: {
-          type: Boolean,
-          value: false,
-        },
-        /* 
-         * is fullscreen mode
-         */
-        fullscreen: {
-          type: Boolean,
-          value: false,
-        },
-        /*
-         * length of video
-         */
-        length: {
-          type: String,
-          value: '',
-        },
-        /* 
-         * looping is not fully supported
-         */
-        loop: {
-          type: Boolean,
-          value: false,
-        },
-        /* 
-         * is audio muted
-         */
-        muted: {
-          type: Boolean,
-          value: false,
-        },
-        /*
-         * size of the media element for responsive styling
-         */
-        responsiveSize: {
-          type: String,
-          notify: true,
-          reflectToAttribute: true
-        },
-        /*
-         * is the size mobile
-         */
-        mobileSize: {
-          type: Boolean,
-          computed: '_testAttribute(responsiveSize,"xs")',
-          notify: true,
-          reflectToAttribute: true
-        },
-        /*
-         * is media playing
-         */
+        /**
+          * is media playing
+          */
         playing: {
-          type: String,
+          type: Boolean,
           value: false
         },
-        /*
-         * playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
-         */
-        playbackRate: {
-          type: Number,
-          value: 1
-        },
-        /*
-         * play/pause button
-         */
+        /**
+          * play/pause button
+          */
         playPause: {
           type: Object,
           computed: '_getPlayPause(playing)'
         },
-        /*
-         * mute/unmute button
-         */
+        /**
+          * mute/unmute button
+          */
         muteUnmute: {
           type: Object,
           computed: '_getMuteUnmute(muted)'
-        },
-        /* 
-         * Range is 0 to 100. Default should not be loud enough to overpower screen readers. */
-        volume: {
-          type: Number,
-          value: 70,
-        },
+        }
+      },
+      /**
+        * calls responsive-utility to get parent's responsive size
+        */ 
+      attached: function(){
+        this._addResponsiveUtility();
       },
       ready: function(){
         let root = this;
@@ -352,24 +271,32 @@ A LRN element
         };
       },
       /**
-       * returns true if an attribute is set to a value
-       */ 
+        * returns true if an attribute is set to a value
+        */ 
        _testAttribute: function(attr,val){
         return attr === val;
       },
-      /* set play/pause button */
+      /** 
+        * set play/pause button 
+        */
       _getPlayPause: function(playing){
         return playing ? {'icon': 'av:pause', 'label': 'pause'} : {'icon': 'av:play-arrow', 'label': 'play'};
       },
-      /* set play/pause button */
+      /** 
+        * set play/pause button 
+        */
       _getMuteUnmute: function(muted){
         return muted ? {'icon': 'av:volume-off', 'label': 'unmute'} : {'icon': 'av:volume-up', 'label': 'mute'};
       },
-      /* determine which button was clicked and act accordingly */
+      /** 
+        * determine which button was clicked and act accordingly 
+        */
       _onButtonClick: function(e){
         this.fire('controls-change',e.detail);
       },
-      /* determine which button was clicked and act accordingly */
+      /** 
+        * determine which button was clicked and act accordingly 
+        */
       _onSettingsChanged: function(e){
         this.fire('controls-change',e.target);
       }

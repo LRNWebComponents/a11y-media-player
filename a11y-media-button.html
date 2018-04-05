@@ -2,10 +2,11 @@
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icons/av-icons.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="a11y-media-behaviors.html">
 
 <!--
 `a11y-media-button`
-A LRN element
+A button used in a11y-media-controls
 
 @demo demo/index.html
 
@@ -27,23 +28,14 @@ A LRN element
         margin: 0;
         padding: 8px;
         border: none;
-        background-color: var(--a11y-media-bg-color,#000000);
-        color: var(--a11y-media-text-disabled, #bbbbbb);
         transition: color 0.25s;
+        @apply(--a11y-media-button);
       }
       :host:active #button,
       :host:focus #button,
       :host:hover #button {
-        color: var(--a11y-media-text-color, #ffffff);
         cursor: pointer;
-      }
-      :host[toggle] #button {
-        color: var(--a11y-media-accent-text-color, #00eeff);
-      }
-      :host[toggle]:active #button,
-      :host[toggle]:focus #button,
-      :host[toggle]:hover #button {
-        color: var(--a11y-media-accent-text-hover, #bffffe);
+        @apply(--a11y-media-button-hover);
       }
       :host .sr-only {
         position: absolute;
@@ -65,6 +57,8 @@ A LRN element
 
       is: 'a11y-media-button',
 
+      behaviors: [a11yMediaBehaviors.PlayerBehaviors],
+
       listeners: {
         'button.tap': '_buttonTap'
       },
@@ -75,21 +69,14 @@ A LRN element
          */
         icon: {
           type: String,
-          value: null,
-        },
-        /*
-         * iron-icon type
-         */
-        icon: {
-          type: String,
-          value: null,
+          value: null
         },
         /*
          * button label
          */
          label: {
           type: String,
-          value: null,
+          value: null
         },
       },
       // sets target for a11y keys
@@ -99,9 +86,7 @@ A LRN element
       // lets player know this button was clicked
       _buttonTap: function(){
         this.fire('button-clicked',this);
-      }
-
-
+      },
     });
   </script>
 </dom-module>

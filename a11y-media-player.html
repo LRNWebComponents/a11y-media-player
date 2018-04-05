@@ -1,9 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
-<link rel="import" href="../responsive-utility/responsive-utility.html">
-<link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
 <link rel="import" href="screenfull-lib.html">
+<link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-play-button.html">
 <link rel="import" href="a11y-media-controls.html">
 <link rel="import" href="a11y-media-transcript.html">
@@ -15,21 +14,76 @@ A LRN element
 @demo demo/index.html
 
 @microcopy - the mental model for this element
- - a standalone media player
- -
- -
 
+  <a11y-media-player 
+    autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
+    cc$="[[cc]]"                                // Are closed captions toggled?
+    disableFullscreen$="[[disableFullscreen]]"  // Is full screen mode disabled?
+    fullscreen$="[[fullscreen]]"                // Is full screen mode toggled on?
+    height$="[[height]]"                        // The height of player
+    hide-elapsed-time$="[[hideElapsedTime]]"    // Is elapsed time hidden?
+    lang$="[[lang]]"                            // The language of the media
+    loop$="[[loop]]"                            // Is video on a loop?
+    muted$="[[muted]]"                          // Is video muted?
+    volume$="[[volume]]"                        // The initial volume of the video
+    width$="[[width]]">                         // The width of player
+    <slot></slot>                               // The tracks
+  </a11y-media-player>
+
+ Custom styles for player:
+ --a11y-media-bg-color: text color, default is #000000
+ --a11y-media-text-color: background color, default is #bbbbbb
+ --a11y-media-hover-color: text color on hover, default is #ffffff
+
+ Custom styles for the giant play button overlay:
+ --a11y-play-button-bg-color: overlay background color, default is #000000
+ --a11y-play-button-border-color: arrow stroke color, default is #ffffff
+ --a11y-play-button-bg-color: arrow stroke color, default is #000000
+ --a11y-play-button-text-color: arrow text color, default is #ffffff
+ 
+ Custom styles for player buttons:
+ --a11y-media-button-color: button text color, default is --a11y-media-text-color
+ --a11y-media-button-bg-color: button background color, default is --a11y-media-bg-color
+ --a11y-media-button-hover-color: button text color when focused/hovered, default is --a11y-media-hover-color
+ --a11y-media-button-hover-bg-color: button background color when focused/hovered, default is --a11y-media-bg-color
+ 
+ Custom styles for player settings menu:
+ --a11y-media-settings-menu-color: settings menu text color, default is --a11y-media-text-color
+ --a11y-media-settings-menu-bg-color: settings menu background color, default is --a11y-media-bg-color
+ 
+ Custom styles for player toggle buttons:
+ --a11y-toggle-off-color: color of toggle button when off, default is #f8f8f8
+ --a11y-toggle-on-color: color of toggle button when on, default is #00eeff
+ 
+ Custom styles for player slider buttons:
+ --a11y-media-slider-primary-color: primary slider color, default is #00eeff
+ --a11y-media-slider-buffer-color: slider buffer color, default is #4E7373
+ --a11y-media-slider-pin-color: color of the pin that shows slider value, default is #444444
+ --a11y-media-slider-knob-color: slider knob color, default is #00eeff
+
+ Custom styles for player volume slider:
+ --a11y-media-volume-primary-color: volume slider color, default is #00eeff
+ --a11y-media-volume-pin-color: color of the pin that shows volume slider value, default is #444444
+ --a11y-media-volume-knob-color: volume slider knob color, default is #00eeff
+ --a11y-media-volume-knob-start-color: knob color at the start of volume slider, default is --a11y-media-hover-color
+ --a11y-media-volume-knob-end-color: knob color at the end of volume slider, default is --a11y-media-volume-knob-color
+
+ Custom styles for player speed slider:
+ --a11y-media-speed-primary-color: speed slider color, default is #00eeff
+ --a11y-media-speed-pin-color: color of the pin that shows speed slider value, default is #444444
+ --a11y-media-speed-knob-color: volume slider knob color, default is #00eeff
+ --a11y-media-speed-knob-start-color: knob color at the start of speed slider, default is --a11y-media-speed-knob-color
+ --a11y-media-speed-knob-end-color: knob color at the end of speed slider, default is --a11y-media-speed-knob-color
 -->
 
 <dom-module id="a11y-media-player">
   <template>
-    <style>
+    <style is="custom-style">
       :host {
         display: block;
         max-width: 100%;
         color:  var(--a11y-media-text-color, #ffffff);
         background-color: var(--a11y-media-bg-color,#000000);
-        @apply(--ally-media-player);
       }
       :host #player-inner {
         z-index: 1;
@@ -44,48 +98,70 @@ A LRN element
       :host #controls {
         width: 100%;
       }
+      :host paper-slider, :host #controls {
+        background-color: var(--a11y-media-bg-color, #000000);
+        color: var(--a11y-media-color, #bbbbbb);
+        --a11y-media-settings-menu-color: var(--a11y-media-color, #bbbbbb);
+        --a11y-media-settings-menu-bg-color: var(--a11y-media-bg-color, #000000);
+        --primary-text-color: var(--a11y-media-hover-color, #ffffff);
+        --paper-toggle-button-unchecked-bar-color: var(--a11y-toggle-off-color, #f8f8f8);
+        --paper-toggle-button-unchecked-button-color: var(--a11y-toggle-off-color, #f8f8f8);
+        --paper-toggle-button-checked-bar-color: var(--a11y-media-toggle-on-color, #00eeff);
+        --paper-toggle-button-checked-button-color: var(--a11y-media-toggle-on-color, #00eeff);
+        --paper-slider-active-color: var(--a11y-media-slider-primary-color, #00eeff);
+        --paper-slider-secondary-color: var(--a11y-media-slider-buffer-color, #4E7373);
+        --paper-slider-pin-color: var(--a11y-media-slider-pin-color, #444444);
+        --paper-slider-pin-start-color: var(--a11y-media-slider-pin-color, #444444);
+        --paper-slider-pin-end-color:  var(--a11y-media-slider-pin-color, #444444);
+        --paper-slider-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-slider-primary-color, #00eeff));
+        --paper-slider-knob-start-border-color: transparent;
+        --paper-slider-knob-end-border-color: transparent;
+        --paper-slider-knob-start-color: transparent;
+        --paper-slider-knob-end-color: transparent;
+        --a11y-media-volume: {
+          --paper-slider-active-color: var(--a11y-media-volume-active-color, --a11y-media-slider-active-color);
+          --paper-slider-pin-color: var(--a11y-media-volume-pin-color, --a11y-media-slider-pin-color);
+          --paper-slider-pin-start-color: var(--a11y-media-volume-pin-color, --a11y-media-slider-pin-color);
+          --paper-slider-pin-end-color: var(--a11y-media-volume-pin-color, --a11y-media-slider-pin-color);
+          --paper-slider-knob-color: var(--a11y-media-volume-knob-color, --a11y-media-slider-knob-color);
+          --paper-slider-knob-start-color: var(--a11y-media-volume-knob-start-color, var(--a11y-media-hover-color, #ffffff));
+          --paper-slider-knob-end-color: var(--a11y-media-volume-knob-end-color,  --a11y-media-volume-knob-color);
+        };
+        --a11y-media-speed: {
+          --paper-slider-active-color: var(--a11y-media-speed-active-color, --a11y-media-slider-active-color);
+          --paper-slider-pin-color: var(--a11y-media-speed-pin-color, --a11y-media-slider-pin-color);
+          --paper-slider-pin-start-color: var(--a11y-media-speed-pin-color, --a11y-media-slider-pin-color);
+          --paper-slider-pin-end-color: var(--a11y-media-speed-pin-color, --a11y-media-slider-pin-color);
+          --paper-slider-knob-color: var(--a11y-media-speed-knob-color, --a11y-media-slider-knob-color);
+          --paper-slider-knob-start-color: var(--a11y-media-speed-knob-start-color, --a11y-media-speed-knob-color);
+          --paper-slider-knob-end-color: var(--a11y-media-speed-knob-end-color,  --a11y-media-speed-knob-color);
+        };
+        --a11y-media-button: {
+          background-color: var(--a11y-media-button-bg-color, var(--a11y-media-bg-color, #000000));
+          color: var(--a11y-media-button-color, var(--a11y-media-color, #bbbbbb));
+        };
+        --a11y-media-button-hover: {
+          background-color: var(--a11y-media-button-hover-bg-color, var(--a11y-media-bg-color, #000000));
+          color: var(--a11y-media-button-hover-color, var(--a11y-media-hover-color, #ffffff));
+        };
+      }
       :host #video {
         position: absolute;
         top: 0;
         left: 0;
       }
-      :host #controls {
-        --a11y-media-listbox: {
-          --paper-listbox-color: --a11y-media-text-color;
-          --paper-listbox-background-color: --a11y-media-bg-color;
-        };
-      }
       :host a11y-media-play-button {
         padding-top: 56.25%;
         --a11y-media-play-button-background: {
-          background: var(--a11y-play-button-bg-color,--a11y-media-bg-color);
-          opacity: 0.5;
-          transition: opacity 0.5s;
-        };
-        --a11y-media-play-button-background: {
-          opacity: 0.7;
+          background: var(--a11y-play-button-bg-color, #000000);
         };
         --a11y-media-play-button-arrow: {
-          stroke: var(--a11y-play-button-stroke-color, --a11y-media-text-color);
-          fill: var(--a11y-play-button-bg-color, --a11y-media-bg-color);
+          stroke: var(--a11y-play-button-border-color, #ffffff);
+          fill: var(--a11y-play-button-bg-color, #000000);
         };
         --a11y-media-play-button-text: {
-          fill: var(--a11y-play-button-text-color, --a11y-media-text-color);
+          fill: var(--a11y-play-button-text-color, #ffffff);
         };
-        @apply(--ally-media-play-button);
-      }
-      :host paper-slider {
-        z-index: 3;
-        --paper-slider-knob-start-border-color: transparent;
-        --paper-slider-knob-end-border-color: transparent;
-        --paper-slider-active-color: var(--a11y-media-accent-text-color, #00eeff);
-        --paper-slider-secondary-color: var(--a11y-media-faded-accent-color,#4E7373);
-        --paper-slider-pin-color: var(--a11y-media-faded-bg-color, #444444);
-        --paper-slider-pin-start-color: --a11y-media-faded-bg-color;
-        --paper-slider-knob-color: --a11y-media-accent-text-color;
-        --paper-slider-knob-start-color: --a11y-media-text-color;
-        --paper-slider-knob-end-color: --a11y-media-accent-text-color;
-        @apply(--ally-media-slider);
       }
     </style>
     <div id="player">
@@ -100,29 +176,29 @@ A LRN element
             <slot></slot>
             HTML5 video not supported 
           </video>
-          <a11y-media-play-button id="playbutton" playing$="[[playing]]"></a11y-media-play-button>
+          <a11y-media-play-button id="playbutton" playing$="[[__playing]]"></a11y-media-play-button>
         </div>
       </div>
       <paper-slider 
         id="slider" 
-        max$="[[duration]]" 
+        max$="[[__duration]]" 
         pin 
-        secondary-progress$="[[buffered]]" 
-        value$="[[elapsed]]">
+        secondary-progress$="[[__buffered]]" 
+        value$="[[__elapsed]]">
       </paper-slider>
     </div>
     <a11y-media-controls 
-      allow-fullscreen="[[allowFullscreen]]"
-      autoplay="[[autoplay]]"
-      cc="[[cc]]"
-      fullscreen="[[fullscreen]]" 
-      hide-ellapsed-time$="[[hideEllapsedTime]]"
+      allow-fullscreen$="[[allowFullscreen]]"
+      autoplay$="[[autoplay]]"
+      cc$="[[cc]]"
+      fullscreen$="[[fullscreen]]" 
+      hide-elapsed-time$="[[hideElapsedTime]]"
       id="controls"
       length="[[__length]]"
-      loop="[[loop]]"
-      muted="[[muted]]"
+      loop$="[[loop]]"
+      muted$="[[muted]]"
       responsive-size="[[responsiveSize]]"
-      playing="[[playing]]"
+      playing$="[[__playing]]"
       playback-rate="[[playbackRate]]"
       volume="[[__volume]]">
     </a11y-media-controls>
@@ -135,167 +211,37 @@ A LRN element
 
       listeners: {
         'controls-change': '_onControlsChanged',
-        'play-button-clicked': 'play'
+        'play-button-tapped': 'play'
+      },
+      
+      behaviors: [
+        a11yMediaBehaviors.PlayerBehaviors, 
+        a11yMediaBehaviors.UtilityFunctions
+      ],
+      
+      properties: {
+        //
       },
 
-      properties: {
-        /** 
-         * fullscreen option 
-         */
-        allowFullscreen: {
-          type: Boolean,
-          value: true,
-        },
-        /** 
-         * autoplay is an option, 
-         * but generally not recommended for a11y
-         */ 
-        autoplay: {
-          type: Boolean,
-          value: false,
-        },
-        /**
-         * buffered video in seconds
-         */
-        buffered: {
-          type: Number,
-          value: 0,
-        },
-        /**
-         * show closed captions
-         */
-        cc: {
-          type: Boolean,
-          value: false,
-        },
-        /**
-         * duration of video in seconds
-         */
-        duration: {
-          type: Number,
-          value: 0,
-        },
-        /**
-         * elapsed time in seconds
-         */
-        elapsed: {
-          type: Number,
-          value: 0,
-        },
-        /** 
-         * is fullscreen mode
-         */
-        fullscreen: {
-          type: Boolean,
-          value: false,
-        },
-        /** 
-         * The width of the media player. 
-         */
-        height: {
-          type: String,
-          value: 'unset'
-        },
-        /** 
-         * hide elapsed time 
-         */
-        hideEllapsedTime: {
-          type: Boolean,
-          value: false,
-        },
-        /**
-         * language
-         */
-        lang: {
-          type: String,
-          value: 'en',
-          reflectToAttribute: true,
-        },
-        /**
-         * length of video
-         */
-        length: {
-          type: String,
-          value: '',
-        },
-        /** 
-         * looping is not fully supported
-         */
-        loop: {
-          type: Boolean,
-          value: false,
-        },
-        /** 
-         * is audio muted
-         */
-        muted: {
-          type: Boolean,
-          value: false,
-        },
-        /**
-         * size of the media element for responsive styling
-         */
-        responsiveSize: {
-          type: String,
-          notify: true,
-          reflectToAttribute: true
-        },
-        /**
-         * is media playing
-         */
-        playing: {
-          type: String,
-          value: false,
-          reflectToAttribute: true
-        },
-        /**
-         * playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
-         */
-        playbackRate: {
-          type: Number,
-          value: 1
-        },
-        /** 
-         * the transcript container. 
-         */
-        transcript: {
-          type: Object,
-          value: null,
-        },
-        /** 
-         * Range is 0 to 100. Default should not be loud enough to overpower screen readers. 
-         */
-        volume: {
-          type: Number,
-          value: 70,
-        },
-        /** 
-         * The width of the media player. 
-         */
-        width: {
-          type: String,
-          value: 'unset'
-        },
-      },
       /**
-       * calls responsive-utility to get parent's responsive size
-       */ 
+        * initializes slider metadata
+        */
+      created: function(){
+      },
+
+      /**
+        * calls responsive-utility to get parent's responsive size
+        */ 
       attached: function(){
-        let root = this;
-        Polymer.ResponsiveUtility.requestAvailability();
-        root.fire('responsive-element',{
-          "element": root,
-          "attribute": "responsive-size",
-          "relativeToParent": true
-        });
+        this._addResponsiveUtility();
       },
       ready: function(){
         let root = this, video = root.$.video, tracks = new Array();
+        root.__length = 'Loading...';
         root.__slider = root.$.slider;
         root.__volume = root.muted ? 0 : Math.max(this.volume,10);
         root.__resumePlaying = false;
         root.__showFullscreen = this.allowFullscreen && screenfull.enabled;
-        root.__length = 'Loading...';
 
         // handles fullscreen
         if(root.__showFullscreen) {
@@ -315,7 +261,7 @@ A LRN element
           // temporarily pauses playback so that a value can be selected, 
           // but notes if playing should be resumed
           if(root.$.slider.focused){
-            if (root.playing) root.__resumePlaying = true;
+            if (root.__playing) root.__resumePlaying = true;
             root.pause();
           } else {
             root.seek(root.$.slider.value);
@@ -339,7 +285,7 @@ A LRN element
           root.$.playbutton.style.paddingTop = aspect+'%';
           root.$.media.style.paddingTop = aspect+'%';
           // gets and converts video duration
-          root.duration = video.duration > 0 ? video.duration: 0; 
+          root.__duration = video.duration > 0 ? video.duration: 0; 
           root.__length = root._convertTime(0,video.duration)+'/'+root._convertTime(video.duration);
 
           // hides the video subtitles and captions and adds them to the tracks dropdown-select
@@ -359,8 +305,8 @@ A LRN element
                   'value': i
                 });
                 track.oncuechange = function(e){
-                  if (root.transcript !== undefined && root.transcript !== null) {
-                    root.transcript.activeCues = Object.keys(e.currentTarget.activeCues).map(function(key) { 
+                  if (root.__transcript !== undefined && root.__transcript !== null) {
+                    root.__transcript.activeCues = Object.keys(e.currentTarget.activeCues).map(function(key) { 
                       return e.currentTarget.activeCues[key].id;
                     });
                   }
@@ -369,7 +315,7 @@ A LRN element
             }
           }
           root.set('__tracks', tracks);
-          if (root.transcript !== undefined && root.transcript !== null) {
+          if (root.__transcript !== undefined && root.__transcript !== null) {
             let complete = 0;
             for (var i=0 ; i < tracks.length; i++) {
               let itrack = tracks[i], track = video.textTracks[i], loaded = itrack.cues !== undefined;
@@ -388,9 +334,9 @@ A LRN element
                       };
                     });
                     complete++;
-                    if (complete === tracks.length && root.transcript !== null) {
-                      root.transcript.setTracks(tracks);
-                      root.transcript.setAttribute('selected-transcript',root.__selectedTrackId);
+                    if (complete === tracks.length && root.__transcript !== null) {
+                      root.__transcript.setTracks(tracks);
+                      root.__transcript.setAttribute('selected-transcript',root.__selectedTrackId);
                     }
                     clearInterval(temp);
                   }
@@ -402,9 +348,9 @@ A LRN element
         // when transcript is ready associate it with the player
         document.body.addEventListener('transcript-ready',function(e){
           if(root.getAttribute('id') === e.detail.mediaId) {
-            root.transcript = e.detail;
-            if (root.__tracks !== undefined) root.transcript.setTracks(tracks);
-            root.transcript.addEventListener('cue-seek',function(e){
+            root.__transcript = e.detail;
+            if (root.__tracks !== undefined) root.__transcript.setTracks(tracks);
+            root.__transcript.addEventListener('cue-seek',function(e){
               root.seek(e.detail.cue.seek);
             });
           }
@@ -415,21 +361,21 @@ A LRN element
        */
       play: function(e){
         let root = this, video = root.$.video;
+        root.__playing = true;
         if (e === undefined || e.detail === root.$.playbutton) {
           root.$.playbutton.setAttribute('disabled',true);
-          root.playing = true;
           // while playing, update the slider and length
           root.__playProgress = setInterval(() => {
-            root.elapsed = video.currentTime > 0 ? video.currentTime : 0;
+            root.__elapsed = video.currentTime > 0 ? video.currentTime : 0;
             root.__length = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
             // if the video reaches the end and is not set to loop, stop
-            if(root.elapsed == root.duration && !root.loop){
+            if(root.__elapsed === root.__duration && !root.loop){
               root.$.playbutton.removeAttribute('disabled');
-              root.playing = false;
+              root.__playing = false;
               clearInterval(root.__playProgress);
             }
             //updated buffered section of the slider
-            root.buffered = video.buffered.length > 0 ? video.buffered.end(0) : root.elapsed;
+            root.__buffered = video.buffered.length > 0 ? video.buffered.end(0) : root.__elapsed;
           }, 1);
 
           root.$.video.play();
@@ -440,7 +386,7 @@ A LRN element
        */
       pause: function(){
         let root = this;
-        root.playing = false;
+        root.__playing = false;
         root.$.video.pause();
         clearInterval(root.__playProgress); //stops updating the slider and length
       },
@@ -448,13 +394,6 @@ A LRN element
        * stops the media 
        */
       stop: function(){
-        this.pause();
-        this.seek(0);
-      },
-      /** 
-       * stops the media 
-       */
-      show: function(){
         this.pause();
         this.seek(0);
       },
@@ -486,7 +425,7 @@ A LRN element
         let seekable = this.$.video.seekable;
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
           this.$.video.currentTime = time;
-          this.elapsed = time;
+          this.__elapsed = time;
           this.__length = this._convertTime(this.$.video.currentTime,this.$.video.duration) +'/'+ this._convertTime(this.$.video.duration);
           if (this.__resumePlaying) this.play();
         }
@@ -504,9 +443,9 @@ A LRN element
             this.$.video.textTracks[i].mode = 'hidden';
           }
         }
-        if (this.transcript !== null && this.transcript.tracks !== null) {
-          this.transcript.setAttribute('selected-transcript',this.__selectedTrackId);
-          //this.transcript.set('cues', this.__selectedTrack.cues);
+        if (this.__transcript !== null && this.__transcript.tracks !== null) {
+          this.__transcript.setAttribute('selected-transcript',this.__selectedTrackId);
+          //this.__transcript.set('cues', this.__selectedTrack.cues);
         }
       },
       /** 
@@ -571,20 +510,11 @@ A LRN element
         this.$.video.muted = this.loop;
       },
       /**
-       * set play/pause button 
-       */
-      _convertTime: function(val,max){
-        max = max === undefined ? val : max;
-        let a = (val) => { return val < 10 ? '0' + val : val; }, 
-        b = (val,i,none) => { return max >= i ? a(Math.floor(val/i))+':' : none },
-        c = (val) => { return val < 100 ? val+'0' : val };
-        return b(val,3600,'')+b(val%3600,60,'00:')+a(Math.round(val%60));
-      },
-      /**
        * determine which button was clicked and act accordingly 
        */
        _onControlsChanged: function(e){
         let action = e.detail.label !== undefined ? e.detail.label : e.detail.id;
+        console.log(action);
         if (action === 'backward') {
           this.rewind(this.$.video.duration/20);
         } else if (action === 'closed captions' || action === 'captions') {
@@ -609,6 +539,16 @@ A LRN element
         } else if (action === 'volume') {
           this.setVolume(e.detail.value);
         }
+      },
+      /**
+        * set play/pause button 
+        */
+      _convertTime: function(val,max){
+        max = max === undefined ? val : max;
+        let a = (val) => { return val < 10 ? '0' + val : val; }, 
+        b = (val,i,none) => { return max >= i ? a(Math.floor(val/i))+':' : none },
+        c = (val) => { return val < 100 ? val+'0' : val };
+        return b(val,3600,'')+b(val%3600,60,'00:')+a(Math.round(val%60));
       }
     });
   </script>

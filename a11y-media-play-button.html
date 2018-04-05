@@ -1,15 +1,30 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="a11y-media-behaviors.html">
 
 <!--
 `a11y-media-play-button`
-A LRN element
+A giant play button that overlays the media in a11y-media-player
 
 @demo demo/index.html
 
 @microcopy - the mental model for this element
- -
- -
- -
+  <a11y-media-play-button
+    playing$="[[__playing]]">   // Is the media currently playing?
+  </a11y-media-play-button>
+
+  Custom styles: 
+  --a11y-media-play-button-background {
+    // css for button background
+  }
+  --a11y-media-play-button-focused-background {
+    // css for button background when focused
+  } 
+  --a11y-media-play-button-arrow {
+    // css for button arrow icon
+  }
+  --a11y-media-play-button-text {
+    // css for button text
+  }
 
 -->
 
@@ -47,6 +62,8 @@ A LRN element
         border: none;
       }
       :host #background {
+        opacity: 0.5;
+        transition: opacity 0.5s;
         @apply(--a11y-media-play-button-background);
       }
       :host:active #background,
@@ -80,20 +97,22 @@ A LRN element
     Polymer({
 
       is: 'a11y-media-play-button',
+      
+      behaviors: [a11yMediaBehaviors.PlayerBehaviors],
 
       listeners: {
-        'button.tap': '_playMedia'
+        'button.tap': '_buttonTap'
       },
 
       properties: {
-        /*
+        /**
          * button label
          */
          label: {
           type: String,
           value: 'play',
         },
-        /*
+        /**
          * is button disabled
          */
          disabled: {
@@ -101,12 +120,12 @@ A LRN element
           value: false,
         },
       },
-      //if the button is clicked, let the player know
-      _playMedia: function(){
-        this.fire('play-button-clicked',this);
-      }
-
-
+      /**
+        * handle button tap
+        */
+      _buttonTap: function(){
+        this.fire('controls-change',this);
+      },
     });
   </script>
 </dom-module>

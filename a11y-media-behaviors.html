@@ -1,0 +1,160 @@
+<link rel="import" href="../responsive-utility/responsive-utility.html">
+<!--
+`a11y-media-behaviors`
+A set of behaviors for a11y-media components.
+@microcopy - the mental model for this element
+ - 
+ - 
+-->
+
+<script>
+  window.a11yMediaBehaviors = window.a11yMediaBehaviors || {};
+  // ensure we have consistent reporting of haxBodyProperties
+  window.a11yMediaBehaviors.PlayerBehaviors = {
+    properties: {
+      /** 
+        * autoplay is an option, 
+        * but generally not recommended for a11y
+        */ 
+      autoplay: {
+        type: Boolean,
+        value: false,
+      },
+      /**
+        * show closed captions
+        */
+      cc: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * disable fullscreen option 
+        */
+      disableFullscreen: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * is fullscreen mode
+        */
+      fullscreen: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * The width of the media player. 
+        */
+      height: {
+        type: String,
+        value: 'unset'
+      },
+      /** 
+        * hide elapsed time 
+        */
+      hideElapsedTime: {
+        type: Boolean,
+        value: false,
+      },
+      /**
+        * language
+        */
+      lang: {
+        type: String,
+        value: 'en',
+        reflectToAttribute: true,
+      },
+      /** 
+        * looping is not fully supported
+        */
+      loop: {
+        type: Boolean,
+        value: false,
+      },
+      /*
+        * is the size mobile
+        */
+      mobileSize: {
+        type: Boolean,
+        computed: '_testAttribute(responsiveSize,"xs")',
+        notify: true,
+        reflectToAttribute: true
+      },
+      /** 
+        * is audio muted
+        */
+      muted: {
+        type: Boolean,
+        value: false,
+      },
+      /**
+        * playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
+        */
+      playbackRate: {
+        type: Number,
+        value: 1
+      },
+      /**
+        * size of the a11y media element for responsive styling
+        */
+      responsiveSize: {
+        type: String,
+        notify: true,
+        reflectToAttribute: true
+      },
+      /** 
+        * Range is 0 to 100. Default should not be loud enough to overpower screen readers. 
+        */
+      volume: {
+        type: Number,
+        value: 70,
+      },
+      /** 
+        * The width of the media player. 
+        */
+      width: {
+        type: String,
+        value: 'unset'
+      }
+    }
+  };
+  window.a11yMediaBehaviors.TranscriptBehaviors = {
+    properties: {
+      /* 
+        * disable interactive mode that makes the transcript clickable 
+        */
+      disableInteractive: {
+        type: Boolean,
+        value: false,
+      },
+      /* 
+        * show cue's start and end time 
+        */
+      hideTimestamps: {
+        type: Boolean,
+        value: false,
+      },
+      /* 
+        * selected transcript track id
+        */
+      selectedTranscript: {
+        type: String,
+        value: '0',
+      }
+    }
+  };
+  window.a11yMediaBehaviors.UtilityFunctions = {
+    /**
+      * calls responsive-utility to get parent's responsive size
+      */ 
+    _addResponsiveUtility: function(){
+      let root = this;
+      Polymer.ResponsiveUtility.requestAvailability();
+      root.fire('responsive-element',{
+        "element": root,
+        "attribute": "responsive-size",
+        "relativeToParent": true
+      });
+    }
+  };
+</script>
+
