@@ -7,6 +7,7 @@
 <link rel="import" href="a11y-media-controls.html">
 <link rel="import" href="a11y-media-transcript.html">
 
+
 <!--
 `a11y-media-player`
 A LRN element
@@ -94,6 +95,9 @@ A LRN element
         padding-top: 56.25%;
         position: relative;
       }
+      :host[no-height] #media {
+        display: none;
+      }
       :host #media,
       :host #media > *, 
       :host #slider,
@@ -174,17 +178,36 @@ A LRN element
     </style>
     <div id="player">
       <div id="player-inner">
-        <div id="media">
-          <video 
-            autoplay$="[[autoplay]]" 
-            id="video" 
-            loop$="[[loop]]" 
-            muted$="[[muted]]" 
-            preload="metadata">
-            <slot></slot>
-            HTML5 video not supported 
-          </video>
-          <a11y-media-play-button id="playbutton" playing$="[[__playing]]"></a11y-media-play-button>
+        <div id="media" hidden$="[[noHeight]]">
+          <!--template is="dom-if" if="[[!audioOnly]]"-->
+            <video 
+              autoplay$="[[autoplay]]" 
+              id="video" 
+              loop$="[[loop]]" 
+              muted$="[[muted]]" 
+              preload="metadata">
+              <slot></slot>
+              HTML5 video not supported 
+            </video>
+          <!--/template>
+          <template is="dom-if" if="[[audioOnly]]">
+            <audio 
+              autoplay$="[[autoplay]]" 
+              id="video" 
+              loop$="[[loop]]" 
+              muted$="[[muted]]" 
+              preload="metadata">
+              <slot></slot>
+              HTML5 video not supported 
+          </audio>
+          </template-->
+          <a11y-media-play-button 
+            audio-only$="[[audioOnly]]" 
+            hidden$="[[noHeight]]"
+            id="playbutton" 
+            playing$="[[__playing]]"
+            thumbnail-src$="[[thumbnailSrc]]">
+          </a11y-media-play-button>
         </div>
       </div>
       <paper-slider 
@@ -289,7 +312,7 @@ A LRN element
         video.addEventListener('loadedmetadata',function(){
           // adjusts aspect ratio
           if (root.width !== 'unset') root.setAttribute('width',root.width);
-          if (root.height !== 'unset') root.setAttribute('width',root.height);
+          if (root.height !== 'unset') root.setAttribute('height',root.height);
           let aspect = video.videoHeight/video.videoWidth * 100;
           root.$.playbutton.style.paddingTop = aspect+'%';
           root.$.media.style.paddingTop = aspect+'%';
@@ -340,11 +363,11 @@ A LRN element
                     track.mode = 'hidden';
                     itrack.cues = Object.keys(track.cues).map(function(key) { 
                       return {
-                        'order': Number(key),
-                        'seek': track.cues[key].startTime,
-                        'start': root._convertTime(track.cues[key].startTime,video.duration),
-                        'end': root._convertTime(track.cues[key].endTime,video.duration), 
-                        'text': track.cues[key].text
+                        "order": Number(key),
+                        "seek": track.cues[key].startTime,
+                        "start": root._convertTime(track.cues[key].startTime,video.duration),
+                        "end": root._convertTime(track.cues[key].endTime,video.duration), 
+                        "text": track.cues[key].text
                       };
                     });
                     complete++;
@@ -375,11 +398,11 @@ A LRN element
       },
       /** 
        * loads tracks from array
-       */
       setTracks: function(tracks){
         this.set('tracks',tracks.slice(0));
         this.$.tracks.render();
       },
+       */
       /** 
        * plays the media 
        */
@@ -466,7 +489,7 @@ A LRN element
             this.$.video.textTracks[i].mode = 'hidden';
           }
         }
-        if (this.__transcript !== null && this.__transcript.tracks !== null) {
+        if (this.__transcript !== undefined && this.__transcript !== null && this.__transcript.tracks !== null) {
           this.__transcript.setAttribute('selected-transcript',this.__selectedTrackId);
         }
       },

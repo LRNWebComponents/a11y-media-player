@@ -47,33 +47,33 @@ Basic customization:
   <template>
     <style>
       :host {  
+        width: 100%;
         display: block;
         outline: 1px solid black;
       }
       @media screen {
-        :host:not([responsive-size*="s"]) {
+        :host:not([no-height]):not([responsive-size*="s"]) {
           display: inline-flex;
           align-items: stretch;
-          width: 100%;
           outline: 1px solid;
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
         }
-        :host:not([responsive-size*="s"]) > div {
+        :host:not([no-height]):not([responsive-size*="s"]) > div {
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
         }
-        :host:not([responsive-size*="s"]) #transcript {
+        :host:not([no-height]):not([responsive-size*="s"]) #transcript {
           position: absolute;
           top: 0; left: 0;
           right: 0; bottom: 0;
           overflow-y: scroll;
         }
-        :host:not([responsive-size*="s"]) #transcript-outer {
+        :host:not([no-height]):not([responsive-size*="s"]) #transcript-outer {
           position: relative;
         }
-        :host:not([responsive-size*="s"]) #player.totop {
+        :host:not([no-height]):not([responsive-size*="s"]) #player.totop {
           position: absolute;
           top:0;
           left: 0;
@@ -98,8 +98,11 @@ Basic customization:
         height$="[[height]]"
         hide-elapsed-time$="[[hideElapsedTime]]"
         lang$="[[lang]]"
-        loop$="[[loop]]"
-        muted$="[[muted]]"
+        loop$="[[loop]]" 
+        audio-only$="[[audioOnly]]"
+        no-height$="[[noHeight]]"
+        muted$="[[muted]]" 
+        thumbnail-src$="[[thumbnailSrc]]"
         volume$="[[volume]]"
         width$="[[width]]">
         <slot></slot>

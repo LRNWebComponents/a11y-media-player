@@ -137,6 +137,7 @@ The controls bar for the a11y-media-player.
         --paper-slider-knob-color: var(--a11y-media-volume-knob-color, --a11y-media-slider-knob-color);
         --paper-slider-knob-start-color: var(--a11y-media-volume-knob-start-color, --a11y-media-hover-color, #ffffff);
         --paper-slider-knob-end-color: var(--a11y-media-volume-knob-end-color,  --a11y-media-volume-knob-color);
+        background-color: var(--a11y-media-settings-menu-bg-color, #000000);
       }
       :host #volume:active,
       :host #volume:focus,
@@ -148,13 +149,6 @@ The controls bar for the a11y-media-player.
         overflow: visible;
         width: 100px;
       }
-      :host[responsive-size="xs"] #volume {
-        left: -27px;
-        top: -26px;
-        background-color: var(--a11y-media-button-bg-color, --a11y-media-bg-color);
-        transform: rotate(270deg);
-        transition: width 0.5s, left 0.5s, top 0.5s;
-      }
       :host[responsive-size="xs"] #volume:active,
       :host[responsive-size="xs"] #volume:focus,
       :host[responsive-size="xs"] #volume:hover,
@@ -162,8 +156,8 @@ The controls bar for the a11y-media-player.
       :host[responsive-size="xs"] #showvolume:active #volume,
       :host[responsive-size="xs"] #showvolume:focus #volume,
       :host[responsive-size="xs"] #showvolume:hover #volume {
-        left: -74px;
-        top: -69px;
+        top: -35px
+        border-radius: 0.25em;
       }
     </style>
     <div id="controls-left">
@@ -222,7 +216,9 @@ The controls bar for the a11y-media-player.
       </paper-menu-button>
       <paper-tooltip for="settings">settings</paper-tooltip>
       <template is="dom-if" if="[[!disableFullscreen]]">
-        <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]" step="1"></a11y-media-button>
+        <template is="dom-if" if="[[!noHeight]]">
+          <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]" step="1"></a11y-media-button>
+        </template>
       </template>
       </div>
   </template>

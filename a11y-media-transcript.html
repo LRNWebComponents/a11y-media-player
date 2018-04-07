@@ -130,7 +130,7 @@ A transcript element to pair with a11y-media-player
        */
       setTracks: function(tracks){
         this.set('tracks',tracks.slice(0));
-        this.$.tracks.render();
+        if (this.tracks !== undefined && this.tracks.length > 0) this.$.tracks.render();
       },
       /** 
        * gets the tab-index of cues based on whether or not interactive cues are disabled

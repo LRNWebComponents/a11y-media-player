@@ -146,8 +146,8 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       /**
         * gets the active cue for styling
         */
-      _getActiveCue: function(cue,cues){
-        return cues.includes(cue.order.toString());
+      _getActiveCue: function(cue,activeCues){
+        return ((activeCues !== null) && activeCues.includes(cue.order.toString())) ? true : false;
       },
       /**
         * fires click event

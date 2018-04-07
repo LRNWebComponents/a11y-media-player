@@ -13,6 +13,14 @@ A set of behaviors for a11y-media components.
   window.a11yMediaBehaviors.PlayerBehaviors = {
     properties: {
       /** 
+        * Is this an audio file?
+        */ 
+      audioOnly: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true,
+      },
+      /** 
         * autoplay is an option, 
         * but generally not recommended for a11y
         */ 
@@ -94,6 +102,14 @@ A set of behaviors for a11y-media components.
         value: false,
       },
       /**
+        * Is it an audio player with no thumbnail?
+        */
+      noHeight: {
+        type: Boolean,
+        computed: '_getNoHeight(audioOnly,thumbnailSrc)',
+        reflectToAttribute: true
+      },
+      /**
         * Playback rate where 1 is normal speed, 0.5 is half-speed, and 2 is double speed
         */
       playbackRate: {
@@ -113,6 +129,14 @@ A set of behaviors for a11y-media components.
       responsiveSize: {
         type: String,
         notify: true,
+        reflectToAttribute: true
+      },
+      /**
+        * Source of optional thumbnail image
+        */
+      thumbnailSrc: {
+        type: String,
+        value: null,
         reflectToAttribute: true
       },
       /** 
@@ -136,6 +160,13 @@ A set of behaviors for a11y-media components.
         type: String,
         value: 'unset'
       }
+    },
+    /**
+      * returns true if an attribute is set to a value
+      */ 
+    _getNoHeight: function(audioOnly,thumbnailSrc){
+      console.log(audioOnly,thumbnailSrc, audioOnly && thumbnailSrc === null);
+      return audioOnly && (thumbnailSrc === null || thumbnailSrc === undefined);
     },
     /**
       * returns true if an attribute is set to a value

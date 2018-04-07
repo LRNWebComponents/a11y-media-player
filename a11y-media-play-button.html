@@ -34,14 +34,12 @@ Custom focus styles:
         z-index: 2;
         transition: opacity 0.5s;  
       }
-      :host:active,
-      :host:focus,
-      :host:hover {
+      :host:hover,
+      :host:hover * {
         cursor: pointer;
       }
-      :host[disabled],
-      :host[playing] {
-        cursor: unset;
+      :host:not([audio-only])[disabled],
+      :host:not([audio-only])[playing] {
         opacity: 0;
       }
       :host, 
@@ -70,15 +68,25 @@ Custom focus styles:
         background: var(--a11y-play-button-focus-bg-color, --a11y-play-button-bg-color);
         opacity: 0.7;
       }
+      :host[thumbnail-src] #background,
+      :host[thumbnail-src]:hover #background {
+        opacity: 1;
+      }
       :host #button {
         background: transparent;
+        transition: opacity 0.5s;
+      }
+      :host[thumbnail-src]:hover #button {
+        opacity: 0.5;
+      }
+      :host[audio-only][playing] #button {
+        opacity: 0;
       }
       :host #arrow {
         stroke: var(--a11y-play-button-arrow-border-color, var(--a11y-play-button-text-color, #ffffff));
         fill: var(--a11y-play-button-arrow-bg-color, var(--a11y-play-button-bg-color, #000000));
+        
       }
-      :host:active #arrow,
-      :host:focus #arrow,
       :host:hover #arrow {
         stroke: var(--a11y-play-button-focus-arrow-border-color, --a11y-play-button-arrow-border-color);
         fill: var(--a11y-play-button-focus-arrow-focus-bg-color, --a11y-play-button-bg-color);
@@ -86,13 +94,11 @@ Custom focus styles:
       :host #text {
         fill: var(--a11y-play-button-text-color, #ffffff);
       }
-      :host:active #text,
-      :host:focus #text,
       :host:hover #text {
         fill: var(--a11y-play-button-focus-text-color, --a11y-play-button-text-color);
       }
     </style>
-    <div id="background"></div>
+    <div id="background" style$="[[thumbnailCSS]]"></div>
     <button id="button" aria-hidden="true" tabindex="-1" disabled$="[[disabled]]" controls="video">
       <svg id="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"  width="30%" height="30%" opacity="0.7">
         <g>
@@ -115,6 +121,14 @@ Custom focus styles:
       },
 
       properties: {
+        
+        /**
+         * Thumbnail image as background CSS
+         */
+         thumbnailCSS: {
+          type: String,
+          computed: '_getThumbnailCSS(thumbnailSrc)'
+        },
         /**
          * button label
          */
@@ -129,6 +143,12 @@ Custom focus styles:
           type: Boolean,
           value: false
         },
+      },
+      /**
+        * get label based on whether or not the video is playing
+        */
+        _getThumbnailCSS: function(thumbnailSrc){
+          return thumbnailSrc != null ? 'background-image: url('+thumbnailSrc+'); background-size: cover;' : null;
       },
       /**
         * get label based on whether or not the video is playing
