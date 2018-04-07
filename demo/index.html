@@ -97,7 +97,13 @@
       <h3>a11y-media-group as audio</h3>
       <demo-snippet>
         <template>
-          <a11y-media-group audio-only hide-timestamps>
+          <style is="custom-style">
+            #audiogroup {
+              --a11y-media-transcript-focused-cue-bg: #cccccc;
+              --a11y-media-transcript-focused-cue-weight: normal;
+            }
+          </style>
+          <a11y-media-group id="audiogroup" audio-only hide-timestamps>
             <source src="http://personal.psu.edu/lnm105/stclair.wav" type="audio/wav">
             <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
           </a11y-media-group>
