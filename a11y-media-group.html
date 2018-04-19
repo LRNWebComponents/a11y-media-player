@@ -49,6 +49,9 @@ Basic customization:
       :host {  
         width: 100%;
         display: block;
+        outline: 1px solid #bbbbbb;
+      }
+      :host[dark] {  
         outline: 1px solid black;
       }
       @media screen {
@@ -56,8 +59,11 @@ Basic customization:
           display: inline-flex;
           align-items: stretch;
           outline: 1px solid;
-          outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
+          outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#bbbbbb));
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
+        }
+        :host[dark]:not([no-height]):not([responsive-size*="s"]) {
+          outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
         }
         :host:not([no-height]):not([responsive-size*="s"]) > div {
           width: 50%;
@@ -92,7 +98,8 @@ Basic customization:
       <a11y-media-player 
         id="player"
         autoplay$="[[autoplay]]"
-        cc$="[[cc]]"
+        cc$="[[cc]]" 
+        dark$="[[dark]]"
         disableFullscreen$="[[disableFullscreen]]"
         fullscreen$="[[fullscreen]]"
         height$="[[height]]"

@@ -85,6 +85,10 @@ A LRN element
       :host {
         display: block;
         max-width: 100%;
+        color:  var(--a11y-media-text-color, #000000);
+        background-color: var(--a11y-media-bg-color,#eeeeee);
+      }
+      :host[dark] {
         color:  var(--a11y-media-text-color, #ffffff);
         background-color: var(--a11y-media-bg-color,#000000);
       }
@@ -105,12 +109,60 @@ A LRN element
         width: 100%;
       }
       :host, :host #controls {
+        background-color: var(--a11y-media-bg-color, #eeeeee);
+        color: var(--a11y-media-color, #666666);
+
+        /* buttons */
+        --a11y-media-settings-menu-color: var(--a11y-media-color, #666666);
+        --a11y-media-settings-menu-bg-color: var(--a11y-media-bg-color, #eeeeee);
+        --a11y-media-settings-menu-hover-color: var(--a11y-media-hover-color, #000000);
+        --a11y-media-settings-menu-hover-bg-color: var(--a11y-media-hover-bg-color, #eeeeee);
+        
+        /* buttons */
+        --a11y-media-button-bg-color: var(--a11y-media-bg-color, #eeeeee);
+        --a11y-media-button-color: var(--a11y-media-color, #666666);
+        --a11y-media-button-hover-bg-color: var(--a11y-media-bg-color, #eeeeee);
+        --a11y-media-button-hover-color: var(--a11y-media-hover-color, #000000);
+        
+        /* toggle button */
+        --paper-toggle-button-unchecked-bar-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #666666));
+        --paper-toggle-button-unchecked-button-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #666666));
+        --paper-toggle-button-checked-bar-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color, #007ce9));
+        --paper-toggle-button-checked-button-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color, #007ce9));
+        
+        /* slider */
+        --paper-slider-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #007ce9));
+        --paper-slider-secondary-color: var(--a11y-media-slider-buffer-color, var(--a11y-media-faded-accent-color, #66a8e1));
+        --paper-slider-pin-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #aaaaaa));
+        --paper-slider-pin-start-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #aaaaaa));
+        --paper-slider-pin-end-color:  var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #aaaaaa));
+        --paper-slider-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #007ce9));
+        --paper-slider-knob-start-border-color: var(--a11y-media-bg-color, #eeeeee);
+        --paper-slider-knob-end-border-color: var(--a11y-media-bg-color, #eeeeee);
+        --paper-slider-knob-start-color: var(--a11y-media-bg-color, #eeeeee);
+        --paper-slider-knob-end-color: var(--a11y-media-bg-color, #eeeeee);
+        
+        /* volume slider */
+        --a11y-media-volume-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #007ce9));
+        --a11y-media-volume-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #007ce9));
+        --a11y-media-volume-knob-start-color: var(--a11y-media-hover-color, #000000);
+        --a11y-media-volume-knob-end-color: --a11y-media-volume-knob-color;
+        
+        /* speed slider */
+        --a11y-media-speed-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #007ce9));
+        --a11y-media-speed-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #007ce9));
+        --a11y-media-speed-knob-start-color: --a11y-media-speed-knob-color;
+        --a11y-media-speed-knob-end-color: --a11y-media-speed-knob-color;
+      }
+      :host[dark], :host[dark] #controls {
         background-color: var(--a11y-media-bg-color, #000000);
         color: var(--a11y-media-color, #bbbbbb);
 
         /* buttons */
         --a11y-media-settings-menu-color: var(--a11y-media-color, #bbbbbb);
         --a11y-media-settings-menu-bg-color: var(--a11y-media-bg-color, #000000);
+        --a11y-media-settings-menu-hover-color: var(--a11y-media-hover-color, #ffffff);
+        --a11y-media-settings-menu-hover-bg-color: var(--a11y-media-hover-bg-color, #000000);
         
         /* buttons */
         --a11y-media-button-bg-color: var(--a11y-media-bg-color, #000000);
@@ -156,9 +208,17 @@ A LRN element
       :host a11y-media-play-button {
         padding-top: 56.25%;
         --a11y-media-play-button-text: {
+          fill: var(--a11y-play-button-text-color, #000000);
+        };
+      }
+
+      :host[dark] a11y-media-play-button {
+        --a11y-media-play-button-text: {
           fill: var(--a11y-play-button-text-color, #ffffff);
         };
       }
+
+
       @media print {
         :host {
           color: #000000;

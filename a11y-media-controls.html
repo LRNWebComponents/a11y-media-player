@@ -51,21 +51,22 @@ The controls bar for the a11y-media-player.
       :host paper-menu-button {
         padding: 0;
       }
-      :host paper-icon-button {
+      :host paper-icon-button,
+      :host dropdown-select {
         background-color: var(--a11y-media-button-bg-color, --a11y-media-bg-color);
         color: var(--a11y-media-button-color, --a11y-media-color);
       }
       :host paper-icon-button:active,
       :host paper-icon-button:focus,
-      :host paper-icon-button:hover {
-        color: var(--a11y-media-hover-color, #f8f8f8);
+      :host paper-icon-button:hover,
+      :host dropdown-select:active, 
+      :host dropdown-select:focus,
+      :host dropdown-select:hover {
+        background-color: var(--a11y-media-button-hover-bg-color, --a11y-media-hover-bg-color);
+        color: var(--a11y-media-button-hover-color, --a11y-media-hover-color);
       }
       :host paper-listbox {
         padding: 0;
-      }
-      :host dropdown-select {
-        color: var(--a11y-media-settings-menu-color, #ffffff);
-        background-color: var(--a11y-media-settings-menu-bg-color, #000000);
       }
       :host paper-item {
         min-height: 40;
@@ -135,9 +136,9 @@ The controls bar for the a11y-media-player.
         z-index: 3;
         --paper-slider-active-color: var(--a11y-media-volume-active-color, --a11y-media-slider-active-color);
         --paper-slider-knob-color: var(--a11y-media-volume-knob-color, --a11y-media-slider-knob-color);
-        --paper-slider-knob-start-color: var(--a11y-media-volume-knob-start-color, --a11y-media-hover-color, #ffffff);
+        --paper-slider-knob-start-color: var(--a11y-media-volume-knob-start-color, --a11y-media-hover-color);
         --paper-slider-knob-end-color: var(--a11y-media-volume-knob-end-color,  --a11y-media-volume-knob-color);
-        background-color: var(--a11y-media-settings-menu-bg-color, #000000);
+        background-color: var(--a11y-media-button-bg-color, --a11y-media-bg-color)
       }
       :host #volume:active,
       :host #volume:focus,
