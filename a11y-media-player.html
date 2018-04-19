@@ -401,7 +401,6 @@ A LRN element
                 });
                 track.oncuechange = function(e){
                   if (root.__transcript !== undefined && root.__transcript !== null) {
-                    console.log(e.currentTarget.activeCues,e.currentTarget.activeCues[0].track);
                     root.__transcript.activeCues = Object.keys(e.currentTarget.activeCues).map(function(key) { 
                       return e.currentTarget.activeCues[key].id;
                     });
@@ -431,7 +430,6 @@ A LRN element
                         "text": track.cues[key].text
                       };
                     });
-                    console.log(itrack.cues);
                     complete++;
                     if (complete === tracks.length && root.__transcript !== null) {
                       root.__transcript.setTracks(tracks);
