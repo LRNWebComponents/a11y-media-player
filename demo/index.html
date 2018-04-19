@@ -74,7 +74,6 @@
               --a11y-media-accent-color: #ff0000;
               --a11y-media-hover-color: #ff0000;
               --a11y-media-faded-accent-color: #ff8888;
-              --a11y-media-bg-color: #000000;
               --a11y-media-transcript-bg-color: #111111;
               --a11y-media-transcript-text-color: #ffffff;
               --a11y-media-transcript-active-cue-bg: #ff0000;
@@ -84,7 +83,7 @@
               --a11y-play-button-focus-arrow-focus-bg-color: #ff0000;
             }
           </style>
-          <a11y-media-group id="custom1">
+          <a11y-media-group id="custom1" dark>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
@@ -139,15 +138,9 @@
           <template>
             <style is="custom-style">
               #light {
-                --a11y-media-bg-color: #eeeeee;
-                --a11y-media-color: #000000;
                 --a11y-media-accent-color: #f00090;
                 --a11y-media-hover-color: #f00090;
                 --a11y-media-faded-accent-color: #ffb1d7;
-                --a11y-media-faded-bg-color: #bbbbbb;
-                --a11y-play-button-bg-color: #bbbbbb;
-                --a11y-play-button-arrow-bg-color: #000000;
-                --a11y-play-button-focus-bg-color: #000000;
                 --a11y-media-transcript-active-cue-bg: #ffa4d2;
                 --a11y-play-button-focus-arrow-focus-bg-color: #f00090;
                 width: 200px;
