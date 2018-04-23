@@ -5,7 +5,6 @@
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../dropdown-select/dropdown-select.html">
 <link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
 <link rel="import" href="a11y-media-behaviors.html">
@@ -74,18 +73,18 @@ The controls bar for the a11y-media-player.
       :host paper-slider {
         @apply(--a11y-media-slider);
       }
-      :host .ellapsed-time, 
+      :host .play-status, 
       :host paper-icon-button {
         border: none;
         position: relative;
       }
-      :host .ellapsed-time {
+      :host .play-status {
         font-size: 85%;
       }
-      :host .ellapsed-time.control-bar {
+      :host .play-status.control-bar {
         padding: 8px 13px 8px;
       }
-      :host[hide-ellapsed-time] .ellapsed-time {
+      :host[hide-play-status] .play-status {
         display: none;
       }
       :host[responsive-size="xs"] *[hidden-when*="xs"],
@@ -170,8 +169,8 @@ The controls bar for the a11y-media-player.
         <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
         <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]"></paper-slider>
       </div>
-      <span class="ellapsed-time control-bar" disabled$="[[mobileSize]]">
-        <span hidden-when="xs sm"><juicy-html html$="[[length]]"></juicy-html></span>
+      <span class="play-status control-bar" disabled$="[[mobileSize]]">
+        <span id="statbar" hidden-when="xs sm"></span>
       </span>
     </div>
     <div id="controls-right">
@@ -209,8 +208,8 @@ The controls bar for the a11y-media-player.
             </div>
           </paper-item>
           <paper-item>
-            <span class="ellapsed-time settings-menu" disabled$="[[!mobileSize]]">
-              <span hidden-when="md lg xl"><juicy-html html$="[[length]]"></juicy-html></span>
+            <span class="play-status settings-menu" disabled$="[[!mobileSize]]">
+              <span id="statmenu" hidden-when="md lg xl"></span>
             </span>
           </paper-item>
         </paper-listbox>
@@ -301,6 +300,13 @@ The controls bar for the a11y-media-player.
         root.$.mute.$.button.onblur = function(){
           root.$.volume.classList.remove('focus');
         };
+      },
+      /** 
+       * updates the time/length
+       */
+      setStatus: function(time){
+        this.$.statbar.innerHTML = time;
+        this.$.statmenu.innerHTML = time;
       },
       /** 
        * loads tracks from array

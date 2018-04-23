@@ -13,6 +13,14 @@ A set of behaviors for a11y-media components.
   window.a11yMediaBehaviors.PlayerBehaviors = {
     properties: {
       /** 
+        * Accent color on controls. Default is blue.
+        */ 
+      accentColor: {
+        type: String,
+        value: null,
+        reflectToAttribute: true,
+      },
+      /** 
         * Is this an audio file?
         */ 
       audioOnly: {
@@ -173,7 +181,6 @@ A set of behaviors for a11y-media components.
       * returns true if an attribute is set to a value
       */ 
     _getNoHeight: function(audioOnly,thumbnailSrc){
-      console.log(audioOnly,thumbnailSrc, audioOnly && thumbnailSrc === null);
       return audioOnly && (thumbnailSrc === null || thumbnailSrc === undefined);
     },
     /**
@@ -185,6 +192,14 @@ A set of behaviors for a11y-media components.
   };
   window.a11yMediaBehaviors.TranscriptBehaviors = {
     properties: {
+      /** 
+        * Accent color on controls. Default is blue.
+        */ 
+      accentColor: {
+        type: String,
+        value: null,
+        reflectToAttribute: true,
+      },
       /* 
         * disable interactive mode that makes the transcript clickable 
         */

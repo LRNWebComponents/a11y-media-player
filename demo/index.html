@@ -45,17 +45,10 @@
         </template>
       </demo-snippet> 
       
-      <h3>a11y-media-group demo, with accent color and no timestamps or interactive transcript</h3>
+      <h3>a11y-media-group demo, dark, with no timestamps or interactive transcript</h3>
       <demo-snippet>
         <template>
-          <style is="custom-style">
-            #accent {
-              --a11y-media-accent-color: #aaff00;
-              --a11y-media-faded-accent-color: #6c9f00;
-              --a11y-media-transcript-active-cue-bg: #aaff00;
-            }
-          </style>
-          <a11y-media-group id="accent" hide-timestamps disable-interactive dark>
+          <a11y-media-group hide-timestamps disable-interactive dark>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
@@ -69,21 +62,7 @@
       <demo-snippet>
         <p>Transcript can be located anywhere, even in a different <tt>&lt;div/&gt;</tt>.</p>
         <template>
-          <style is="custom-style">
-            #custom1 {
-              --a11y-media-accent-color: #ff0000;
-              --a11y-media-hover-color: #ff0000;
-              --a11y-media-faded-accent-color: #ff8888;
-              --a11y-media-transcript-bg-color: #111111;
-              --a11y-media-transcript-text-color: #ffffff;
-              --a11y-media-transcript-active-cue-bg: #ff0000;
-              --a11y-media-transcript-focused-cue-bg: #111111;
-              --a11y-media-transcript-focused-cue-weight: normal;
-              --a11y-media-transcript-focused-cue-text: #ff0000;
-              --a11y-play-button-focus-arrow-focus-bg-color: #ff0000;
-            }
-          </style>
-          <a11y-media-group id="custom1" dark>
+          <a11y-media-group accent-color="red" dark>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
@@ -96,13 +75,7 @@
       <h3>a11y-media-group as audio</h3>
       <demo-snippet>
         <template>
-          <style is="custom-style">
-            #audiogroup {
-              --a11y-media-transcript-focused-cue-bg: #cccccc;
-              --a11y-media-transcript-focused-cue-weight: normal;
-            }
-          </style>
-          <a11y-media-group id="audiogroup" audio-only hide-timestamps>
+          <a11y-media-group accent-color="purple" audio-only hide-timestamps>
             <source src="http://personal.psu.edu/lnm105/stclair.wav" type="audio/wav">
             <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
           </a11y-media-group>
@@ -114,7 +87,7 @@
         <h3>Basic a11y-media-player demo</h3>
         <demo-snippet>
           <template>
-            <a11y-media-player>
+            <a11y-media-player accent-color="lime" dark>
               <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm"> 
               <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg"> 
               <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
@@ -126,7 +99,7 @@
         <h3>a11y-media-player as audio</h3>
         <demo-snippet>
           <template>
-            <a11y-media-player thumbnail-src="samples/stclair.jpg" audio-only width="200px">
+            <a11y-media-player accent-color="cyan" thumbnail-src="samples/stclair.jpg" audio-only width="200px" dark>
               <source src="http://personal.psu.edu/lnm105/stclair.wav" type="audio/wav">
               <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
             </a11y-media-player>
@@ -138,15 +111,11 @@
           <template>
             <style is="custom-style">
               #light {
-                --a11y-media-accent-color: #f00090;
-                --a11y-media-hover-color: #f00090;
-                --a11y-media-faded-accent-color: #ffb1d7;
-                --a11y-media-transcript-active-cue-bg: #ffa4d2;
-                --a11y-play-button-focus-arrow-focus-bg-color: #f00090;
+                --a11y-play-button-focus-arrow-focus-bg-color: #f50057;
                 width: 200px;
               }
             </style>
-            <a11y-media-player id="light" width="200px">
+            <a11y-media-player accent-color="red" id="light" width="200px">
               <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm"> 
               <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg"> 
               <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">

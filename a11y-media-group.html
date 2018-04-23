@@ -12,9 +12,11 @@ A responsive group of player and transcript.
 @microcopy - the mental model for this element
  
   <a11y-media-group
-                                                    // For player & controls: 
+                                                    // For player & controls:
+    accent-color$="[[accentColor]]"                 // Accent color for controls, inlcuding cues. Default is null. 
     autoplay$="[[autoplay]]"                        // Is player set to autoplay (not recommended for a11y)?
     cc$="[[cc]]"                                    // Are closed captions toggled?
+    dark$="[[dark]]"                                // Is the color scheme dark? Default is light.   
     disableFullscreen$="[[disableFullscreen]]"      // Is full screen mode disabled?
     fullscreen$="[[fullscreen]]"                    // Is full screen mode toggled on?
     height$="[[height]]"                            // The height of player
@@ -97,6 +99,7 @@ Basic customization:
     <div id="player-outer">
       <a11y-media-player 
         id="player"
+        accent-color$="[[accentColor]]"
         autoplay$="[[autoplay]]"
         cc$="[[cc]]" 
         dark$="[[dark]]"
@@ -117,6 +120,7 @@ Basic customization:
     </div>
     <div id="transcript-outer">
       <a11y-media-transcript 
+        accent-color$="[[accentColor]]"
         disable-interactive$="[[disableInteractive]]"
         hide-timestamps$="[[hideTimestamps]]"
         id="transcript" 

@@ -17,8 +17,15 @@ A LRN element
 @microcopy - the mental model for this element
 
   <a11y-media-player 
+    accent-color$="[[accentColor]]"             // Optional accent color for controls, 
+                                                // using the following materialize colors: 
+                                                // red, pink, purple, deep-purple, indigo, blue, 
+                                                // light blue, cyan, teal, green, light green, lime, 
+                                                // yellow, amber, orange, deep-orange, and brown. 
+                                                // Default is null. 
     autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
     cc$="[[cc]]"                                // Are closed captions toggled?
+    dark$="[[dark]]"                            // Is the color scheme dark? Default is light.    
     disableFullscreen$="[[disableFullscreen]]"  // Is full screen mode disabled?
     fullscreen$="[[fullscreen]]"                // Is full screen mode toggled on?
     height$="[[height]]"                        // The height of player
@@ -41,7 +48,7 @@ A LRN element
 --a11y-media-bg-color: background color, default is #000000
 --a11y-media-faded-bg-color: a subtler version of background color, default is #444444
 --a11y-media-hover-color: text color on hover, default is #ffffff
---a11y-media-accent-color: an accent color, default is #00eeff
+--a11y-media-accent-color: an accent color, default is #00b0ff
 --a11y-media-faded-accent-color: a subtler version of accent color, default is #4E7373
  
  Custom styles for player buttons:
@@ -65,16 +72,16 @@ A LRN element
 --a11y-media-slider-knob-color: slider knob color, default is --a11y-media-accent-color
 
  Custom styles for player volume slider:
---a11y-media-volume-primary-color: volume slider color, default is #00eeff
+--a11y-media-volume-primary-color: volume slider color, default is #00b0ff
 --a11y-media-volume-pin-color: color of the pin that shows volume slider value, default is #444444
---a11y-media-volume-knob-color: volume slider knob color, default is #00eeff
+--a11y-media-volume-knob-color: volume slider knob color, default is #00b0ff
 --a11y-media-volume-knob-start-color: knob color at the start of volume slider, default is --a11y-media-hover-color
 --a11y-media-volume-knob-end-color: knob color at the end of volume slider, default is --a11y-media-volume-knob-color
 
  Custom styles for player speed slider:
---a11y-media-speed-primary-color: speed slider color, default is #00eeff
+--a11y-media-speed-primary-color: speed slider color, default is #00b0ff
 --a11y-media-speed-pin-color: color of the pin that shows speed slider value, default is #444444
---a11y-media-speed-knob-color: volume slider knob color, default is #00eeff
+--a11y-media-speed-knob-color: volume slider knob color, default is #00b0ff
 --a11y-media-speed-knob-start-color: knob color at the start of speed slider, default is --a11y-media-speed-knob-color
 --a11y-media-speed-knob-end-color: knob color at the end of speed slider, default is --a11y-media-speed-knob-color
 -->
@@ -85,15 +92,200 @@ A LRN element
       :host {
         display: block;
         max-width: 100%;
-        color:  var(--a11y-media-text-color, #000000);
-        background-color: var(--a11y-media-bg-color,#eeeeee);
       }
-      :host[dark] {
-        color:  var(--a11y-media-text-color, #ffffff);
-        background-color: var(--a11y-media-bg-color,#000000);
+      :host, :host * {
+        /* settings */
+        --a11y-media-settings-menu-color: var(--a11y-media-color, #666666);
+        --a11y-media-settings-menu-bg-color: var(--a11y-media-bg-color, #eeeeee);
+        --a11y-media-settings-menu-hover-color: var(--a11y-media-hover-color, #000000);
+        --a11y-media-settings-menu-hover-bg-color: var(--a11y-media-hover-bg-color, #eeeeee);
+        
+        /* buttons */
+        --a11y-media-button-color: var(--a11y-media-color, #666666);
+        --a11y-media-button-bg-color: var(--a11y-media-bg-color, #eeeeee);
+        --a11y-media-button-hover-color: var(--a11y-media-hover-color, #000000);
+        --a11y-media-button-hover-bg-color: var(--a11y-media-hover-bg-color, #eeeeee);
+        
+        /* toggle button */
+        --paper-toggle-button-unchecked-bar-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #666666));
+        --paper-toggle-button-unchecked-button-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #666666));
+        --paper-toggle-button-checked-bar-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color,#444444));
+        --paper-toggle-button-checked-button-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color,#444444));
+        
+        /* slider */
+        --paper-slider-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color,#444444));
+        --paper-slider-secondary-color: var(--a11y-media-slider-buffer-color, var(--a11y-media-faded-accent-color, #888888));
+        --paper-slider-pin-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-accent-color, #888888));
+        --paper-slider-pin-start-color: var(--a11y-media-slider-pin-color,var(--a11y-media-faded-accent-color, #888888));
+        --paper-slider-pin-end-color:  var(--a11y-media-slider-pin-color, var(--a11y-media-faded-accent-color, #888888));
+        --paper-slider-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color,#444444));
+        --paper-slider-knob-start-border-color: var(--a11y-media-bg-color, #eeeeee);
+        --paper-slider-knob-end-border-color: var(--a11y-media-bg-color, #eeeeee);
+        --paper-slider-knob-start-color: var(--a11y-media-bg-color, #eeeeee);
+        --paper-slider-knob-end-color: var(--a11y-media-bg-color, #eeeeee);
+        
+        /* volume slider */
+        --a11y-media-volume-active-color: var(--a11y-media-accent-color, #444444);
+        --a11y-media-volume-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color,#444444));
+        --a11y-media-volume-knob-start-color: var(--a11y-media-hover-color, #000000);
+        --a11y-media-volume-knob-end-color: var(--a11y-media-volume-knob-color, var(--a11y-media-slider-knob-color, --a11y-media-accent-color));
+        
+        /* speed slider */
+        --a11y-media-speed-active-color: var(--a11y-media-accent-color,#444444);
+        --a11y-media-speed-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color,#444444));
+        --a11y-media-speed-knob-start-color: var(--a11y-media-speed-knob-color, var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color,#444444)));
+        --a11y-media-speed-knob-end-color: var(--a11y-media-speed-knob-color, var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color,#444444)));
+      }
+      :host[dark], :host[dark] * {
+        --a11y-media-color: #bbbbbb;
+        --a11y-media-bg-color: #000000;
+        --a11y-media-hover-color: #ffffff;
+        --a11y-media-hover-bg-color: #000000;
+        --a11y-media-faded-bg-color: #222222;
+        --a11y-media-accent-color: #ffffff;
+        --a11y-media-faded-accent-color: #dddddd;
+      }
+      :host[accent-color="red"], :host[accent-color="red"] * { 
+        --a11y-media-accent-color: #d50000;
+        --a11y-media-faded-accent-color: #e4a2a2;
+      }
+      :host[accent-color="red"][dark], :host[accent-color="red"][dark] * { 
+        --a11y-media-faded-accent-color: #7a0d0d;
+      }
+      :host[accent-color="pink"], :host[accent-color="pink"] * { 
+        --a11y-media-accent-color: #f50057;
+        --a11y-media-faded-accent-color: #e6a4bc;
+      }
+      :host[accent-color="pink"][dark], :host[accent-color="pink"][dark] * { 
+        --a11y-media-faded-accent-color: #9b1b4a;
+      }
+      :host[accent-color="purple"], :host[accent-color="purple"] * { 
+        --a11y-media-accent-color: #d500f9;
+        --a11y-media-faded-accent-color: #e2a1ee;
+      }
+      :host[accent-color="purple"][dark], :host[accent-color="purple"][dark] * { 
+        --a11y-media-faded-accent-color: #692075;
+      }
+      :host[accent-color="deep-purple"], :host[accent-color="deep-purple"] * { 
+        --a11y-media-accent-color: #651fff;
+        --a11y-media-faded-accent-color: #a194c0;
+      }
+      :host[accent-color="deep-purple"][dark], :host[accent-color="deep-purple"][dark] * { 
+        --a11y-media-faded-accent-color: #412582;
+      }
+      :host[accent-color="indigo"], :host[accent-color="indigo"] * { 
+        --a11y-media-accent-color: #304ffe;
+        --a11y-media-faded-accent-color: #919ddc;
+      }
+      :host[accent-color="indigo"][dark], :host[accent-color="indigo"][dark] * { 
+        --a11y-media-faded-accent-color: #2a3981;
+      }
+      :host[accent-color="blue"], :host[accent-color="blue"] * { 
+        --a11y-media-accent-color: #1565c0;
+        --a11y-media-faded-accent-color: #62a2e2;
+      }
+      :host[accent-color="blue"][dark], :host[accent-color="blue"][dark] * { 
+        --a11y-media-accent-color: #2196f3;
+        --a11y-media-faded-accent-color: #326b97;
+      }
+      :host[accent-color="light-blue"], :host[accent-color="light-blue"] * { 
+        --a11y-media-accent-color: #0091ea;
+        --a11y-media-faded-accent-color: #a0d3f0;
+      }
+      :host[accent-color="light-blue"][dark], :host[accent-color="light-blue"][dark] * {
+        --a11y-media-accent-color: #00b0ff;
+        --a11y-media-faded-accent-color: #2982a8;
+      }
+      :host[accent-color="cyan"], :host[accent-color="cyan"] * { 
+        --a11y-media-accent-color: #0097a7;
+        --a11y-media-faded-accent-color: #6fd4db;
+      }
+      :host[accent-color="cyan"][dark], :host[accent-color="cyan"][dark] * { 
+        --a11y-media-accent-color: #18ffff;
+        --a11y-media-faded-accent-color: #27a1a1;
+      }
+      :host[accent-color="teal"], :host[accent-color="teal"] * { 
+        --a11y-media-accent-color: #00897b;
+        --a11y-media-faded-accent-color: #76ccbf;
+      }
+      :host[accent-color="teal"][dark], :host[accent-color="teal"][dark] * { 
+        --a11y-media-accent-color: #64ffda;
+        --a11y-media-faded-accent-color: #4c9683;
+      }
+      :host[accent-color="green"], :host[accent-color="green"] * { 
+        --a11y-media-accent-color: #02993c;
+        --a11y-media-faded-accent-color: #5fd88e;
+      }
+      :host[accent-color="green"][dark], :host[accent-color="green"][dark] * { 
+        --a11y-media-accent-color: #00e676;
+        --a11y-media-faded-accent-color: #289960;
+      }
+      :host[accent-color="light-green"], :host[accent-color="light-green"] * { 
+        --a11y-media-accent-color: #448f02;
+        --a11y-media-faded-accent-color: #94d157;
+      }
+      :host[accent-color="light-green"][dark], :host[accent-color="light-green"][dark] * { 
+        --a11y-media-accent-color: #76ff03;
+        --a11y-media-faded-accent-color: #66ac29;
+      }
+      :host[accent-color="lime"], :host[accent-color="lime"] * { 
+        --a11y-media-accent-color: #6f8e00;
+        --a11y-media-faded-accent-color: #c1d86d;
+      }
+      :host[accent-color="lime"][dark], :host[accent-color="lime"][dark] * { 
+        --a11y-media-accent-color: #c6ff00;
+        --a11y-media-faded-accent-color: #8ca827;
+      }
+      :host[accent-color="yellow"], :host[accent-color="yellow"] * { 
+        --a11y-media-accent-color: #9a8000;
+        --a11y-media-faded-accent-color: #ceb545;
+      }
+      :host[accent-color="yellow"][dark], :host[accent-color="yellow"][dark] * { 
+        --a11y-media-accent-color: #ffff00;
+        --a11y-media-faded-accent-color: #b4b422;
+      }
+      :host[accent-color="amber"], :host[accent-color="amber"] * { 
+        --a11y-media-accent-color: #bf7f00;
+        --a11y-media-faded-accent-color: #e7b153;
+      }
+      :host[accent-color="amber"][dark], :host[accent-color="amber"][dark] * { 
+        --a11y-media-accent-color: #ffc400;
+        --a11y-media-faded-accent-color: #b89525;
+      }
+      :host[accent-color="orange"], :host[accent-color="orange"] * { 
+        --a11y-media-accent-color: #e65100;
+        --a11y-media-faded-accent-color: #f58851;
+      }
+      :host[accent-color="orange"][dark], :host[accent-color="orange"][dark] * { 
+        --a11y-media-accent-color: #ff9800;
+        --a11y-media-faded-accent-color: #b88038;
+      }
+      :host[accent-color="deep-orange"], :host[accent-color="deep-orange"] * { 
+        --a11y-media-accent-color: #ff3d00;
+        --a11y-media-faded-accent-color: #ff8661;
+      }
+      :host[accent-color="deep-orange"][dark], :host[accent-color="deep-orange"][dark] * { 
+        --a11y-media-faded-accent-color: #ac4729;
+      }
+      :host[accent-color="brown"], :host[accent-color="brown"] * { 
+        --a11y-media-accent-color: #5d4037;
+        --a11y-media-faded-accent-color: #77635d;
+      }
+      :host[accent-color="brown"][dark], :host[accent-color="brown"][dark] * { 
+        --a11y-media-accent-color: #8d6e63;
+        --a11y-media-faded-accent-color: #8d6e63;
+      }
+      :host, :host #controls {
+        /* defaults */
+        color: var(--a11y-media-color, #666666);
+        background-color: var(--a11y-media-bg-color, #eeeeee);
       }
       :host #player-inner {
         z-index: 1;
+      }
+      :host #slider,
+      :host #controls {
+        z-index: 2 !important;
       }
       :host #media {
         padding-top: 56.25%;
@@ -108,98 +300,6 @@ A LRN element
       :host #controls {
         width: 100%;
       }
-      :host, :host #controls {
-        background-color: var(--a11y-media-bg-color, #eeeeee);
-        color: var(--a11y-media-color, #666666);
-
-        /* buttons */
-        --a11y-media-settings-menu-color: var(--a11y-media-color, #666666);
-        --a11y-media-settings-menu-bg-color: var(--a11y-media-bg-color, #eeeeee);
-        --a11y-media-settings-menu-hover-color: var(--a11y-media-hover-color, #000000);
-        --a11y-media-settings-menu-hover-bg-color: var(--a11y-media-hover-bg-color, #eeeeee);
-        
-        /* buttons */
-        --a11y-media-button-bg-color: var(--a11y-media-bg-color, #eeeeee);
-        --a11y-media-button-color: var(--a11y-media-color, #666666);
-        --a11y-media-button-hover-bg-color: var(--a11y-media-hover-bg-color, #eeeeee);
-        --a11y-media-button-hover-color: var(--a11y-media-hover-color, #000000);
-        
-        /* toggle button */
-        --paper-toggle-button-unchecked-bar-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #666666));
-        --paper-toggle-button-unchecked-button-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #666666));
-        --paper-toggle-button-checked-bar-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color, #007ce9));
-        --paper-toggle-button-checked-button-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color, #007ce9));
-        
-        /* slider */
-        --paper-slider-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #007ce9));
-        --paper-slider-secondary-color: var(--a11y-media-slider-buffer-color, var(--a11y-media-faded-accent-color, #66a8e1));
-        --paper-slider-pin-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #aaaaaa));
-        --paper-slider-pin-start-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #aaaaaa));
-        --paper-slider-pin-end-color:  var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #aaaaaa));
-        --paper-slider-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #007ce9));
-        --paper-slider-knob-start-border-color: var(--a11y-media-bg-color, #eeeeee);
-        --paper-slider-knob-end-border-color: var(--a11y-media-bg-color, #eeeeee);
-        --paper-slider-knob-start-color: var(--a11y-media-bg-color, #eeeeee);
-        --paper-slider-knob-end-color: var(--a11y-media-bg-color, #eeeeee);
-        
-        /* volume slider */
-        --a11y-media-volume-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #007ce9));
-        --a11y-media-volume-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #007ce9));
-        --a11y-media-volume-knob-start-color: var(--a11y-media-hover-color, #000000);
-        --a11y-media-volume-knob-end-color: --a11y-media-volume-knob-color;
-        
-        /* speed slider */
-        --a11y-media-speed-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #007ce9));
-        --a11y-media-speed-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #007ce9));
-        --a11y-media-speed-knob-start-color: --a11y-media-speed-knob-color;
-        --a11y-media-speed-knob-end-color: --a11y-media-speed-knob-color;
-      }
-      :host[dark], :host[dark] #controls {
-        background-color: var(--a11y-media-bg-color, #000000);
-        color: var(--a11y-media-color, #bbbbbb);
-
-        /* buttons */
-        --a11y-media-settings-menu-color: var(--a11y-media-color, #bbbbbb);
-        --a11y-media-settings-menu-bg-color: var(--a11y-media-bg-color, #000000);
-        --a11y-media-settings-menu-hover-color: var(--a11y-media-hover-color, #ffffff);
-        --a11y-media-settings-menu-hover-bg-color: var(--a11y-media-hover-bg-color, #000000);
-        
-        /* buttons */
-        --a11y-media-button-bg-color: var(--a11y-media-bg-color, #000000);
-        --a11y-media-button-color: var(--a11y-media-color, #bbbbbb);
-        --a11y-media-button-hover-bg-color: var(--a11y-media-hover-bg-color, #000000);
-        --a11y-media-button-hover-color: var(--a11y-media-hover-color, #ffffff);
-        
-        /* toggle button */
-        --paper-toggle-button-unchecked-bar-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #bbbbbb));
-        --paper-toggle-button-unchecked-button-color: var(--a11y-media-toggle-off-color, var(--a11y-media-color, #bbbbbb));
-        --paper-toggle-button-checked-bar-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color, #00eeff));
-        --paper-toggle-button-checked-button-color: var(--a11y-media-toggle-on-color, var(--a11y-media-accent-color, #00eeff));
-        
-        /* slider */
-        --paper-slider-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #00eeff));
-        --paper-slider-secondary-color: var(--a11y-media-slider-buffer-color, var(--a11y-media-faded-accent-color, #4E7373));
-        --paper-slider-pin-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #444444));
-        --paper-slider-pin-start-color: var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #444444));
-        --paper-slider-pin-end-color:  var(--a11y-media-slider-pin-color, var(--a11y-media-faded-bg-color, #444444));
-        --paper-slider-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #00eeff));
-        --paper-slider-knob-start-border-color: var(--a11y-media-bg-color, #000000);
-        --paper-slider-knob-end-border-color: var(--a11y-media-bg-color, #000000);
-        --paper-slider-knob-start-color: var(--a11y-media-bg-color, #000000);
-        --paper-slider-knob-end-color: var(--a11y-media-bg-color, #000000);
-        
-        /* volume slider */
-        --a11y-media-volume-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #00eeff));
-        --a11y-media-volume-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #00eeff));;
-        --a11y-media-volume-knob-start-color: var(--a11y-media-hover-color, #ffffff);
-        --a11y-media-volume-knob-end-color: --a11y-media-volume-knob-color;
-        
-        /* speed slider */
-        --a11y-media-speed-active-color: var(--a11y-media-slider-primary-color, var(--a11y-media-accent-color, #00eeff));
-        --a11y-media-speed-knob-color: var(--a11y-media-slider-knob-color, var(--a11y-media-accent-color, #00eeff));;
-        --a11y-media-speed-knob-start-color: --a11y-media-speed-knob-color;
-        --a11y-media-speed-knob-end-color: --a11y-media-speed-knob-color;
-      }
       :host #video {
         position: absolute;
         top: 0;
@@ -207,17 +307,7 @@ A LRN element
       }
       :host a11y-media-play-button {
         padding-top: 56.25%;
-        --a11y-media-play-button-text: {
-          fill: var(--a11y-play-button-text-color, #000000);
-        };
       }
-
-      :host[dark] a11y-media-play-button {
-        --a11y-media-play-button-text: {
-          fill: var(--a11y-play-button-text-color, #ffffff);
-        };
-      }
-
 
       @media print {
         :host {
@@ -279,6 +369,7 @@ A LRN element
       </paper-slider>
     </div>
     <a11y-media-controls 
+      accent-color$="[[accentColor]]"
       allow-fullscreen$="[[allowFullscreen]]"
       autoplay$="[[autoplay]]"
       cc$="[[cc]]"
@@ -329,11 +420,12 @@ A LRN element
       },
       ready: function(){
         let root = this, video = root.$.video, tracks = new Array();
-        root.__length = 'Loading...';
+        root.__status = 'Loading...';
         root.__slider = root.$.slider;
         root.__volume = root.muted ? 0 : Math.max(this.volume,10);
         root.__resumePlaying = false;
         root.__showFullscreen = this.allowFullscreen && screenfull.enabled;
+        root.$.controls.setStatus(root.__status);
 
         // handles fullscreen
         if(root.__showFullscreen) {
@@ -378,7 +470,8 @@ A LRN element
           root.$.media.style.paddingTop = aspect+'%';
           // gets and converts video duration
           root.__duration = video.duration > 0 ? video.duration: 0; 
-          root.__length = root._convertTime(0,video.duration)+'/'+root._convertTime(video.duration);
+          root.__status = root._convertTime(0,video.duration)+'/'+root._convertTime(video.duration);
+          root.$.controls.setStatus(root.__status);
 
           // hides the video subtitles and captions and adds them to the tracks dropdown-select
           if (video.textTracks.length > 0) {
@@ -473,7 +566,8 @@ A LRN element
           // while playing, update the slider and length
           root.__playProgress = setInterval(() => {
             root.__elapsed = video.currentTime > 0 ? video.currentTime : 0;
-            root.__length = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
+            root.__status = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
+            root.$.controls.setStatus(root.__status);
             // if the video reaches the end and is not set to loop, stop
             if(root.__elapsed === root.__duration && !root.loop){
               root.__playing = false;

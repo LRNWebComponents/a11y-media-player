@@ -1,6 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
-<link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-transcript-cue.html">
 
@@ -12,6 +11,12 @@ A transcript element to pair with a11y-media-player
 
 @microcopy - the mental model for this element
   <a11y-media-transcript 
+    accent-color$="[[accentColor]]"                 // Optional accent color highlighted cues, 
+                                                    // using the following materialize colors: 
+                                                    // red, pink, purple, deep-purple, indigo, blue, 
+                                                    // light blue, cyan, teal, green, light green, lime, 
+                                                    // yellow, amber, orange, deep-orange, and brown. 
+                                                    // Default is null. 
     disable-interactive$="[[disableInteractive]]"   // Disable interactive cues?
     hide-timestamps$="[[hideTimestamps]]"           // Hide cue timestamps?
     media-id=""                                     // The id of the player
@@ -49,10 +54,14 @@ A transcript element to pair with a11y-media-player
         }
       }
     </style>
+    <!--paper-input id="search" label="Search">
+      <iron-icon icon="search" slot="prefix"></iron-icon>
+    </paper-input-->
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
       <div id="tracks-inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
         <template is="dom-repeat" items="[[track.cues]]" as="cue">
           <a11y-media-transcript-cue 
+            accent-color$="[[accentColor]]"
             active-cues$="[[activeCues]]"
             cue$="[[cue]]"
             order$="[[cue.order]]"

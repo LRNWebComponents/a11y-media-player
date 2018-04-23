@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 
 <!--
@@ -72,19 +71,71 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         :host:not([active]):not([disabled]):focus,
         :host:not([active]):not([disabled]):hover {
           cursor: pointer;
-          font-weight: var(--a11y-media-transcript-focused-cue-weight, bold);
+          font-weight: var(--a11y-media-transcript-focused-cue-weight, normal);
           color: var(--a11y-media-transcript-focused-cue-text, --a11y-media-transcript-text-color);
           background-color: var(--a11y-media-transcript-focused-cue-bg, #ffffff);
+          outline: 1px dotted var(--a11y-media-transcript-text-color, #000000);
         }
         :host[active] {
           font-weight: var(--a11y-media-transcript-active-cue-weight, normal);
           color: var(--a11y-media-transcript-active-cue-text, --a11y-media-transcript-text-color);
-          background-color: var(--a11y-media-transcript-active-cue-bg, #ccfffd);
+          background-color: var(--a11y-media-transcript-active-cue-bg, #eeeeee);
+        }
+        :host[accent-color="red"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #ffd9d6);
+        }
+        :host[accent-color="pink"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #ffd7e5);
+        }
+        :host[accent-color="purple"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #f7d7fd);
+        }
+        :host[accent-color="deep-purple"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #e1d2ff);
+        }
+        :host[accent-color="indigo"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #c7d2ff);
+        }
+        :host[accent-color="blue"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #b9e2ff);
+        }
+        :host[accent-color="light-blue"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #bdecff);
+        }
+        :host[accent-color="cyan"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #cbfdf1);
+        }
+        :host[accent-color="teal"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #c8ffff);
+        }
+        :host[accent-color="green"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #d1ffdd);
+        }
+        :host[accent-color="light-green"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #deffb6);
+        }
+        :host[accent-color="lime"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #f4ff81);
+        }
+        :host[accent-color="yellow"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #ffff8d);
+        }
+        :host[accent-color="amber"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #fff1c1);
+        }
+        :host[accent-color="orange"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #ffdda3);
+        }
+        :host[accent-color="deep-orange"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #ffddd3);
+        }
+        :host[accent-color="brown"][active] {
+          background-color: var(--a11y-media-transcript-active-cue-bg, #d7ccc8);
         }
       }
     </style>
-    <span id="time"><juicy-html html$="[[cue.start]] - [[cue.end]]"> </juicy-html></span>
-    <span id="text"><juicy-html html$="[[cue.text]]"></juicy-html></span>
+    <span id="time">[[cue.start]] - [[cue.end]]</span>
+    <span id="text">[[cue.text]]</span>
     <iron-a11y-keys 
       id="a11y" 
       keys="enter" 
