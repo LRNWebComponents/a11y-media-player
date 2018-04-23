@@ -52,12 +52,14 @@ Custom styles:
       :host #button {
         background: transparent; 
       }
+      :host #button:hover {
+        cursor: pointer;
+      }
       :host #background {
         opacity: 0.3;
         background: var(--a11y-play-button-bg-color, #000000);
       }
       :host #button:hover #background {
-        cursor: pointer;
         background: var(--a11y-play-button-focus-bg-color, var(--a11y-play-button-bg-color, #000000));
         opacity: 0.1;
       }
