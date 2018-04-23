@@ -57,6 +57,29 @@
           </a11y-media-group>
         </template>
       </demo-snippet>  
+      
+      <h3>a11y-media-group demo, dark, with custom styles</h3>
+      <demo-snippet>
+        <template>
+          <style is="custom-style">
+              #custom1 {
+                --a11y-media-transcript-bg-color: #000000;
+                --a11y-media-transcript-text-color: #bbbbbb;
+                --a11y-media-transcript-focused-cue-bg: #222222;
+                --a11y-media-transcript-focused-cue-text: #eeeeee;
+                --a11y-media-transcript-active-cue-bg: #000000;
+                --a11y-media-transcript-active-cue-text: #ffffff;
+              }
+            </style>
+            <a11y-media-group id="custom1" accent-color="red" dark>
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
+            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
+            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
+            <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
+            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
+          </a11y-media-group>
+        </template>
+      </demo-snippet>  
 
       <h3>a11y-media-group, customized</h3>
       <demo-snippet>
