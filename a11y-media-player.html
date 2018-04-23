@@ -23,6 +23,7 @@ A LRN element
                                                 // light blue, cyan, teal, green, light green, lime, 
                                                 // yellow, amber, orange, deep-orange, and brown. 
                                                 // Default is null. 
+    audio-only$="[[audioOnly]]"                 // Is media audio only?
     autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
     cc$="[[cc]]"                                // Are closed captions toggled?
     dark$="[[dark]]"                            // Is the color scheme dark? Default is light.    
@@ -329,28 +330,26 @@ A LRN element
     <div id="player">
       <div id="player-inner">
         <div id="media" hidden$="[[noHeight]]">
-          <!--template is="dom-if" if="[[!audioOnly]]"-->
-            <video 
-              autoplay$="[[autoplay]]" 
-              id="video" 
-              loop$="[[loop]]" 
-              muted$="[[muted]]" 
-              preload="metadata">
-              <slot></slot>
-              HTML5 video not supported 
-            </video>
-          <!--/template>
-          <template is="dom-if" if="[[audioOnly]]">
-            <audio 
-              autoplay$="[[autoplay]]" 
-              id="video" 
-              loop$="[[loop]]" 
-              muted$="[[muted]]" 
-              preload="metadata">
-              <slot></slot>
-              HTML5 video not supported 
+          <video 
+            autoplay$="[[autoplay]]" 
+            hidden$="[[audioOnly]]"
+            id="video" 
+            loop$="[[loop]]" 
+            muted$="[[muted]]" 
+            preload="metadata">
+            <slot></slot>
+            HTML5 video not supported 
+          </video>
+          <audio 
+            autoplay$="[[autoplay]]" 
+            hidden$="[[!audioOnly]]"
+            id="audio" 
+            loop$="[[loop]]" 
+            muted$="[[muted]]" 
+            preload="metadata">
+            <slot></slot>
+            HTML5 audio not supported 
           </audio>
-          </template-->
           <a11y-media-play-button 
             audio-only$="[[audioOnly]]" 
             hidden$="[[noHeight]]"
@@ -419,7 +418,8 @@ A LRN element
         this._addResponsiveUtility();
       },
       ready: function(){
-        let root = this, video = root.$.video, tracks = new Array();
+        let root = this, tracks = new Array();
+        root.__src = root.$.video !== undefined ? root.$.video : root.$.audio
         root.__status = 'Loading...';
         root.__slider = root.$.slider;
         root.__volume = root.muted ? 0 : Math.max(this.volume,10);
@@ -461,31 +461,31 @@ A LRN element
           root.style.width = root.width;  
         }
         // handles loaded metadata
-        video.addEventListener('loadedmetadata',function(){
+        root.__src.addEventListener('loadedmetadata',function(){
           // adjusts aspect ratio
           if (root.width !== 'unset') root.setAttribute('width',root.width);
           if (root.height !== 'unset') root.setAttribute('height',root.height);
-          let aspect = video.videoHeight/video.videoWidth * 100;
+          let aspect = root.__src.videoHeight/root.__src.videoWidth * 100;
           root.$.playbutton.style.paddingTop = aspect+'%';
           root.$.media.style.paddingTop = aspect+'%';
           // gets and converts video duration
-          root.__duration = video.duration > 0 ? video.duration: 0; 
-          root.__status = root._convertTime(0,video.duration)+'/'+root._convertTime(video.duration);
+          root.__duration = root.__src.duration > 0 ? root.__src.duration: 0; 
+          root.__status = root._convertTime(0,root.__src.duration)+'/'+root._convertTime(root.__src.duration);
           root.$.controls.setStatus(root.__status);
 
           // hides the video subtitles and captions and adds them to the tracks dropdown-select
-          if (video.textTracks.length > 0) {
+          if (root.__src.textTracks.length > 0) {
             root.hasCaptions = true;
             root.selectTrack(0);
           }
           
           // gets cues from tracks
-          for(i in video.textTracks) {
+          for(i in root.__src.textTracks) {
             let cues = {};
-            if (video.textTracks[i] !== null) {
-              let text = video.textTracks[i].label !== undefined ? video.textTracks[i].label : video.textTracks[i].language;
+            if (root.__src.textTracks[i] !== null) {
+              let text = root.__src.textTracks[i].label !== undefined ? root.__src.textTracks[i].label : root.__src.textTracks[i].language;
               if(text !== undefined){
-                let track = video.textTracks[i];
+                let track = root.__src.textTracks[i];
                 root.setAttribute('has-captions',true);
                 tracks.push({
                   'text': text, 
@@ -508,7 +508,7 @@ A LRN element
           if (root.__transcript !== undefined && root.__transcript !== null) {
             let complete = 0;
             for (var i=0 ; i < tracks.length; i++) {
-              let itrack = tracks[i], track = video.textTracks[i], loaded = itrack.cues !== undefined;
+              let itrack = tracks[i], track = root.__src.textTracks[i], loaded = itrack.cues !== undefined;
               if(!loaded){
                 track.mode = 'showing';
                 let temp = setInterval(() => {
@@ -518,8 +518,8 @@ A LRN element
                       return {
                         "order": track.cues[key].id,
                         "seek": track.cues[key].startTime,
-                        "start": root._convertTime(track.cues[key].startTime,video.duration),
-                        "end": root._convertTime(track.cues[key].endTime,video.duration), 
+                        "start": root._convertTime(track.cues[key].startTime,root.__src.duration),
+                        "end": root._convertTime(track.cues[key].endTime,root.__src.duration), 
                         "text": track.cues[key].text
                       };
                     });
@@ -550,23 +550,16 @@ A LRN element
         });
       },
       /** 
-       * loads tracks from array
-      setTracks: function(tracks){
-        this.set('tracks',tracks.slice(0));
-        this.$.tracks.render();
-      },
-       */
-      /** 
        * plays the media 
        */
       play: function(e){
-        let root = this, video = root.$.video;
+        let root = this;
         root.__playing = true;
         if (e === undefined || e.detail === root.$.playbutton) {
           // while playing, update the slider and length
           root.__playProgress = setInterval(() => {
-            root.__elapsed = video.currentTime > 0 ? video.currentTime : 0;
-            root.__status = root._convertTime(video.currentTime,video.duration) +'/'+ root._convertTime(video.duration);
+            root.__elapsed = root.__src.currentTime > 0 ? root.__src.currentTime : 0;
+            root.__status = root._convertTime(root.__src.currentTime,root.__src.duration) +'/'+ root._convertTime(root.__src.duration);
             root.$.controls.setStatus(root.__status);
             // if the video reaches the end and is not set to loop, stop
             if(root.__elapsed === root.__duration && !root.loop){
@@ -574,10 +567,10 @@ A LRN element
               clearInterval(root.__playProgress);
             }
             //updated buffered section of the slider
-            root.__buffered = video.buffered.length > 0 ? video.buffered.end(0) : root.__elapsed;
+            root.__buffered = root.__src.buffered.length > 0 ? root.__src.buffered.end(0) : root.__elapsed;
           }, 1);
 
-          root.$.video.play();
+          root.__src.play();
         }
       },
       /** 
@@ -586,7 +579,7 @@ A LRN element
       pause: function(){
         let root = this;
         root.__playing = false;
-        root.$.video.pause();
+        root.__src.pause();
         //stop updating the slider and length
         clearInterval(root.__playProgress); 
       },
@@ -609,24 +602,24 @@ A LRN element
        */
       rewind: function(amt){
         amt = amt !== undefined ? amt : 1;
-        this.seek(Math.max(this.$.video.currentTime - amt,0));
+        this.seek(Math.max(this.__src.currentTime - amt,0));
       },
       /** 
        * seeks media forward at a set increment
        */
       forward: function(amt){
         amt = amt !== undefined ? amt : 1;
-        this.seek(Math.min(this.$.video.currentTime + amt,this.$.video.duration));
+        this.seek(Math.min(this.__src.currentTime + amt,this.__src.duration));
       },
       /** 
        * seeks to a specific time 
        */
       seek: function(time){
-        let seekable = this.$.video.seekable;
+        let seekable = this.__src.seekable;
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
-          this.$.video.currentTime = time;
+          this.__src.currentTime = time;
           this.__elapsed = time;
-          this.__length = this._convertTime(this.$.video.currentTime,this.$.video.duration) +'/'+ this._convertTime(this.$.video.duration);
+          this.__length = this._convertTime(this.__src.currentTime,this.__src.duration) +'/'+ this._convertTime(this.__src.duration);
           if (this.__resumePlaying) this.play();
         }
       },
@@ -634,13 +627,13 @@ A LRN element
        * selects a specific track by index
        */
       selectTrack: function(index){
-        for(i in this.$.video.textTracks) {
+        for(i in this.__src.textTracks) {
           if (index == i) {
-            this.$.video.textTracks[i].mode = 'showing';
-            this.__selectedTrack = this.$.video.textTracks[i];
+            this.__src.textTracks[i].mode = 'showing';
+            this.__selectedTrack = this.__src.textTracks[i];
             this.__selectedTrackId = i;
-          } else if (this.$.video.textTracks[i] !== null) {
-            this.$.video.textTracks[i].mode = 'hidden';
+          } else if (this.__src.textTracks[i] !== null) {
+            this.__src.textTracks[i].mode = 'hidden';
           }
         }
         if (this.__transcript !== undefined && this.__transcript !== null && this.__transcript.tracks !== null) {
@@ -672,8 +665,8 @@ A LRN element
         mode = mode === undefined ? !this.muted : mode;
         this.muted = mode;
         this.__volume = this.muted ? 0 : Math.max(this.volume,10);
-        this.$.video.volume = this.muted ? 0 : Math.max(this.volume/100,0.1);
-        this.$.video.muted = this.muted;
+        this.__src.volume = this.muted ? 0 : Math.max(this.volume/100,0.1);
+        this.__src.muted = this.muted;
       },
       /** 
        * toggles autoplay:
@@ -690,14 +683,14 @@ A LRN element
        */
       setVolume: function(value){
         this.volume = value !== null ? value : 70;
-        this.$.video.volume = this.volume !== null ? value/100 : 0.7;
+        this.__src.volume = this.volume !== null ? value/100 : 0.7;
         this.muted = value === null || value === 0;
       },
       /** 
        * set speed/playback rate of media
        */
       setPlaybackRate: function(value){
-        this.$.video.playbackRate = value !== null ? value : 1;
+        this.__src.playbackRate = value !== null ? value : 1;
       },
       /** 
        * toggles looping:
@@ -706,7 +699,7 @@ A LRN element
       toggleLoop: function(mode){
         mode = mode === undefined ? !this.loop : mode;
         this.loop = mode;
-        this.$.video.muted = this.loop;
+        this.__src.muted = this.loop;
       },
       /**
        * determine which button was clicked and act accordingly 
@@ -714,11 +707,11 @@ A LRN element
        _onControlsChanged: function(e){
         let action = e.detail.label !== undefined ? e.detail.label : e.detail.id;
         if (action === 'backward') {
-          this.rewind(this.$.video.duration/20);
+          this.rewind(this.__src.duration/20);
         } else if (action === 'closed captions' || action === 'captions') {
           this.toggleCC();
         } else if (action === 'forward') {
-          this.forward(this.$.video.duration/20);
+          this.forward(this.__src.duration/20);
         } else if (action === 'full screen') {
           screenfull.toggle(this);
         } else if (action === 'loop') {

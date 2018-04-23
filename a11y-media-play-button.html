@@ -28,6 +28,9 @@ Custom styles:
         opacity: 1;
         transition: opacity 0.5s; 
       }
+      :host[playing], :host[disabled] {
+        opacity: 0;
+      }
       :host, 
       :host #thumbnail, 
       :host #background, 

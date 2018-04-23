@@ -19,6 +19,7 @@ A responsive group of player and transcript.
                                                     // light blue, cyan, teal, green, light green, lime, 
                                                     // yellow, amber, orange, deep-orange, and brown. 
                                                     // Default is null. 
+    audio-only$="[[audioOnly]]"                     // Is media audio only?
     autoplay$="[[autoplay]]"                        // Is player set to autoplay (not recommended for a11y)?
     cc$="[[cc]]"                                    // Are closed captions toggled?
     dark$="[[dark]]"                                // Is the color scheme dark? Default is light.   
@@ -104,7 +105,8 @@ Basic customization:
     <div id="player-outer">
       <a11y-media-player 
         id="player"
-        accent-color$="[[accentColor]]"
+        accent-color$="[[accentColor]]" 
+        audio-only$="[[audioOnly]]"
         autoplay$="[[autoplay]]"
         cc$="[[cc]]" 
         dark$="[[dark]]"
