@@ -13,7 +13,12 @@ A responsive group of player and transcript.
  
   <a11y-media-group
                                                     // For player & controls:
-    accent-color$="[[accentColor]]"                 // Accent color for controls, inlcuding cues. Default is null. 
+    accent-color$="[[accentColor]]"                 // Optional accent color for controls, inlcuding cues, 
+                                                    // using the following materialize colors: 
+                                                    // red, pink, purple, deep-purple, indigo, blue, 
+                                                    // light blue, cyan, teal, green, light green, lime, 
+                                                    // yellow, amber, orange, deep-orange, and brown. 
+                                                    // Default is null. 
     autoplay$="[[autoplay]]"                        // Is player set to autoplay (not recommended for a11y)?
     cc$="[[cc]]"                                    // Are closed captions toggled?
     dark$="[[dark]]"                                // Is the color scheme dark? Default is light.   
