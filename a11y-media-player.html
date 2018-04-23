@@ -566,12 +566,10 @@ A LRN element
               root.__playing = false;
               clearInterval(root.__playProgress);
             }
+            
             //updated buffered section of the slider
             root.__buffered = root.__src.buffered.length > 0 ? root.__src.buffered.end(0) : root.__elapsed;
           }, 1);
-          if( /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && root.responsiveSize == 'xs' && root.__showFullscreen) {
-            screenfull.toggle(this);
-          }
           root.__src.play();
         }
       },
@@ -582,9 +580,7 @@ A LRN element
         let root = this;
         root.__playing = false;
         root.__src.pause();
-        if( /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)  && root.responsiveSize == 'xs' && root.__showFullscreen) {
-          screenfull.toggle(this);
-        }
+
         //stop updating the slider and length
         clearInterval(root.__playProgress); 
       },
