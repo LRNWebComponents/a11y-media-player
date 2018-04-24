@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
-<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="a11y-media-transcript-search.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-player.html">
 
@@ -54,7 +54,7 @@ Basic customization:
 
 <dom-module id="a11y-media-group">
   <template>
-    <style>
+    <style is="custom-style">
       :host {  
         width: 100%;
         display: block;
@@ -104,15 +104,10 @@ Basic customization:
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
           color: var(--a11y-media-transcript-text-color, #000000);
           width: 100%;
-          --paper-input-container-input-color: var(--a11y-media-transcript-text-color, #000000);
-          --paper-input-container-focus-color: var(--a11y-media-transcript-focus-color, --a11y-media-transcript-text-color);
-          --paper-input-container-color: --a11y-media-transcript-text-color;
-          --paper-input-container: {
-            padding: 0;
-          };
-        }
-        :host #search {
-          margin: 0 15px;
+          --simple-search-input-color: var(--a11y-media-transcript-text-color, #000000);
+          --simple-search-focus-color: var(--a11y-media-transcript-focus-color, --a11y-media-transcript-text-color);
+          --simple-search-color: --a11y-media-transcript-text-color;
+          padding: 0 15px;
         }
         :host:not([disable-search]) #transcript {
           padding-top: 49px;
@@ -150,16 +145,15 @@ Basic customization:
     </div>
     <div id="transcript-outer">
       <div id="searchbar" hidden$="[[disableSearch]]"  disabled$="[[disableSearch]]">
-        <paper-input id="search" label="search transcript">
-          <iron-icon icon="search" slot="prefix"></iron-icon>
-        </paper-input>
+        <a11y-media-transcript-search id="search" label="search transcript"></a11y-media-transcript-search>
       </div>
       <a11y-media-transcript 
         accent-color$="[[accentColor]]"
+        disable-search$="[[disableSearch]]"
         disable-interactive$="[[disableInteractive]]"
         hide-timestamps$="[[hideTimestamps]]"
         id="transcript" 
-        search$="[[search]]"
+        search="[[search]]"
         selected-transcript$="[[selectedTranscript]]">
       </a11y-media-transcript>
     </div>
@@ -189,14 +183,10 @@ Basic customization:
         * calls responsive-utility to get parent's responsive size
         */ 
       attached: function(){
-        let root = this, search = root.$.search;
+        let root = this;
+        root.search = root.$.search;
         root.$.transcript.setMedia(root.$.player);
         root._addResponsiveUtility();
-        if(!root.disableSearch) {
-          search.addEventListener('change',function(e){
-            root.search = search.value;
-          });
-        }
       }
     });
   </script>

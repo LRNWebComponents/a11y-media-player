@@ -146,7 +146,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
     </style>
     <span id="time">[[cue.start]] - [[cue.end]]</span>
     <span id="text">
-      <template is="dom-repeat" items="[[searchText]]" as="text">
+      <template is="dom-repeat" items="[[text]]" as="text">
         <span matched$="[[text.matched]]">[[text.text]]</span>
       </template>
     </span>
@@ -166,6 +166,10 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       listeners: {
         'tap': '_onClick'
       },
+      
+      behaviors: [
+        a11yMediaBehaviors.TranscriptBehaviors
+      ],
 
       properties: {
         /** 
@@ -201,26 +205,32 @@ A single cue in a11y-media-transcriptas static text or as an button that control
           value: false,
         },
         /** 
-          * the search string 
+          * parsed cue text
           */
-        search: {
-          type: String,
-          value: '',
-        },
-        /** 
-         * search text
-         */
-        searchText: {
+        text: {
           type: Array,
-          notify: true,
-          computed: '_getSearchText(cue,search)',
-        },
+          value: [],
+        }
+      },
+      attached: function(){
+        this.text = [
+          {
+            "matched": false, 
+            "text": this.cue.text
+          }
+        ];
       },
       ready: function(){
-        if(!this.disabled) {
-          this.__target = this;
-          this.setAttribute('aria-role','button');
-          this.setAttribute('controls',this.mediaId);
+        let root = this, search = root.search;
+        if(!root.disabled) {
+          root.__target = this;
+          root.setAttribute('aria-role','button');
+          root.setAttribute('controls',this.mediaId);
+        }
+        if(!root.disableSearch && root.search !== undefined && root.search !== null) {
+          search.addEventListener('change',function(e){
+            root.text = search.findMatches(root.cue.text);
+          });
         }
       },
       /**
@@ -228,47 +238,6 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         */
       _getActiveCue: function(cue,activeCues){
         return ((activeCues !== null) && activeCues.includes(cue.order.toString())) ? true : false;
-      },
-      /** 
-       * gets the tab-index of cues based on whether or not interactive cues are disabled
-       */
-       _getSearchText: function(cue,search){
-        let temp = new Array(), results = [
-          {
-            "matched": false, 
-            "text": cue.text
-          }
-        ], updateResults = function(find){
-          for(let i = 0; i<results.length; i++){
-            if (!results[i].matched){
-              let text = results[i].text, start = text.toLowerCase().indexOf(find), end = start+find.length;
-              if(start > -1){
-                let pre = text.slice(0,start), match = text.slice(start,end), post = text.slice(end,text.length), update = results.splice(i,1,{
-                  "matched": false, 
-                  "text": pre
-                },{
-                  "matched": true, 
-                  "text": match
-                },{
-                  "matched": false, 
-                  "text": post
-                });
-              }  
-            }
-          }
-        }
-        if(search !== null) {
-          temp = search.toLowerCase().split(/[\"\']/gm);
-          for (let i=0; i<temp.length;i++){
-            temp[i] = temp[i].trim();
-            if (temp[i] === '') {
-              temp.splice(i,1);
-            } else {
-              updateResults(temp[i]);
-            }
-          }
-        }
-        return results;
       },
       /**
         * fires click event
