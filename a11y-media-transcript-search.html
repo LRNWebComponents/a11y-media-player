@@ -17,17 +17,6 @@ A button used in a11y-media-controls
 
 <dom-module id="a11y-media-transcript-search">
   <template>
-    <style is="custom-style">
-      :host #input {
-        background-color: var(--simple-search-bg-color, #ffffff);
-        --paper-input-container-input-color: var(--simple-search-text-color, #000000);
-        --paper-input-container-focus-color: var(--simple-search-focus-color, var(--simple-search-text-color, #000000));
-        --paper-input-container-color: var(--simple-search-focus-color, var(--simple-search-text-color, #000000));
-        --paper-input-container: {
-          padding: 0 0;
-        };
-      }
-    </style>
     <paper-input id="input" label="[[label]]">
       <iron-icon icon="search" slot="prefix"></iron-icon>
     </paper-input>

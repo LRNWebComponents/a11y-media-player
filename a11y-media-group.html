@@ -104,10 +104,14 @@ Basic customization:
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
           color: var(--a11y-media-transcript-text-color, #000000);
           width: 100%;
-          --simple-search-input-color: var(--a11y-media-transcript-text-color, #000000);
-          --simple-search-focus-color: var(--a11y-media-transcript-focus-color, --a11y-media-transcript-text-color);
-          --simple-search-color: --a11y-media-transcript-text-color;
-          padding: 0 15px;
+        }
+        :host #search {
+          --paper-input-container-input-color: var(--a11y-media-transcript-text-color, #000000);
+          --paper-input-container-focus-color: var(--a11y-media-transcript-focus-color, var(--a11y-media-transcript-text-color, #000000));
+          --paper-input-container-color: var(--a11y-media-transcript-text-color, #000000);
+          --paper-input-container: {
+            padding: 0 15px;
+          };
         }
         :host:not([disable-search]) #transcript {
           padding-top: 49px;
