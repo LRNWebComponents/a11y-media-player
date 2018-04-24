@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
-<link rel="import" href="a11y-media-transcript-search.html">
+<link rel="import" href="../simple-search/simple-search.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-player.html">
 
@@ -149,7 +149,7 @@ Basic customization:
     </div>
     <div id="transcript-outer">
       <div id="searchbar" hidden$="[[disableSearch]]"  disabled$="[[disableSearch]]">
-        <a11y-media-transcript-search id="search" label="search transcript"></a11y-media-transcript-search>
+        <simple-search id="search" label="search transcript"></simple-search>
       </div>
       <a11y-media-transcript 
         accent-color$="[[accentColor]]"
