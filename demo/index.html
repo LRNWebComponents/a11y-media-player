@@ -45,10 +45,10 @@
         </template>
       </demo-snippet>
       
-      <h3>a11y-media-group demo, dark, with no timestamps or interactive transcript</h3>
+      <h3>a11y-media-group demo, dark, with no timestamps, no interactive transcript, and no search feature</h3>
       <demo-snippet>
         <template>
-          <a11y-media-group accent-color="pink" disable-interactive hide-timestamps>
+          <a11y-media-group accent-color="pink" disable-interactive disable-search hide-timestamps>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
@@ -69,6 +69,8 @@
                 --a11y-media-transcript-focused-cue-text: #eeeeee;
                 --a11y-media-transcript-active-cue-bg: #000000;
                 --a11y-media-transcript-active-cue-text: #ffffff;
+                --a11y-media-transcript-matched-cue-bg: #333333;
+                --a11y-media-transcript-matched-cue-text: #ffffff;
               }
             </style>
             <a11y-media-group id="custom1" accent-color="red" dark>

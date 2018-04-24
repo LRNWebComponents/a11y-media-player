@@ -101,7 +101,7 @@ A set of behaviors for a11y-media components.
         type: Boolean,
         value: false,
       },
-      /*
+      /**
         * Is the size mobile?
         */
       mobileSize: {
@@ -200,28 +200,35 @@ A set of behaviors for a11y-media components.
         value: null,
         reflectToAttribute: true,
       },
-      /* 
+      /** 
         * disable interactive mode that makes the transcript clickable 
         */
       disableInteractive: {
         type: Boolean,
         value: false,
       },
-      /* 
+      /**
         * show cue's start and end time 
         */
       hideTimestamps: {
         type: Boolean,
         value: false,
       },
-      /* 
+      /**
         * show cue's start and end time 
         */
       media: {
         type: Object,
         value: {},
       },
-      /* 
+      /**
+        * the search string for the transcript
+        */
+      search: {
+        type: String,
+        value: null,
+      },
+      /**
         * selected transcript track id
         */
       selectedTranscript: {

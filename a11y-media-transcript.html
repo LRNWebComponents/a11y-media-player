@@ -54,20 +54,18 @@ A transcript element to pair with a11y-media-player
         }
       }
     </style>
-    <!--paper-input id="search" label="Search">
-      <iron-icon icon="search" slot="prefix"></iron-icon>
-    </paper-input-->
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
       <div id="tracks-inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
         <template is="dom-repeat" items="[[track.cues]]" as="cue">
           <a11y-media-transcript-cue 
             accent-color$="[[accentColor]]"
             active-cues$="[[activeCues]]"
-            cue$="[[cue]]"
-            order$="[[cue.order]]"
-            disabled$="[[disableInteractive]]" 
             controls$="[[mediaId]]" 
+            cue$="[[cue]]"
+            disabled$="[[disableInteractive]]" 
             hide-timestamps$="[[hideTimestamps]]" 
+            order$="[[cue.order]]"
+            search$="[[search]]"
             tabindex="[[tabIndex]]">
           </a11y-media-transcript-cue>
         </template>
@@ -117,7 +115,7 @@ A transcript element to pair with a11y-media-player
         /** 
          * array of cues 
          */
-        tracks: {
+         tracks: {
           type: Array,
           value: null
         },

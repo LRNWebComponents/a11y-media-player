@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
+<link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-player.html">
 
@@ -80,12 +81,11 @@ Basic customization:
         }
         :host:not([no-height]):not([responsive-size*="s"]) #transcript {
           position: absolute;
-          top: 0; left: 0;
-          right: 0; bottom: 0;
+          top: 0; 
+          left: 0;
+          right: 0; 
+          bottom: 0;
           overflow-y: scroll;
-        }
-        :host:not([no-height]):not([responsive-size*="s"]) #transcript-outer {
-          position: relative;
         }
         :host:not([no-height]):not([responsive-size*="s"]) #player.totop {
           position: absolute;
@@ -93,6 +93,29 @@ Basic customization:
           left: 0;
           width: 200px !important;
           z-index: 9999;
+        }
+        :host #transcript-outer {
+          position: relative;
+        }
+        :host #searchbar {
+          z-index: 1000;
+          position: absolute;
+          top: 0;
+          background-color: var(--a11y-media-transcript-bg-color, #ffffff);
+          color: var(--a11y-media-transcript-text-color, #000000);
+          width: 100%;
+          --paper-input-container-input-color: var(--a11y-media-transcript-text-color, #000000);
+          --paper-input-container-focus-color: var(--a11y-media-transcript-focus-color, --a11y-media-transcript-text-color);
+          --paper-input-container-color: --a11y-media-transcript-text-color;
+          --paper-input-container: {
+            padding: 0;
+          };
+        }
+        :host #search {
+          margin: 0 15px;
+        }
+        :host:not([disable-search]) #transcript {
+          padding-top: 49px;
         }
       }
       @media print {
@@ -116,9 +139,9 @@ Basic customization:
         hide-elapsed-time$="[[hideElapsedTime]]"
         lang$="[[lang]]"
         loop$="[[loop]]" 
-        audio-only$="[[audioOnly]]"
         no-height$="[[noHeight]]"
         muted$="[[muted]]" 
+        search$="[[search]]"
         thumbnail-src$="[[thumbnailSrc]]"
         volume$="[[volume]]"
         width$="[[width]]">
@@ -126,11 +149,17 @@ Basic customization:
       </a11y-media-player>
     </div>
     <div id="transcript-outer">
+      <div id="searchbar" hidden$="[[disableSearch]]"  disabled$="[[disableSearch]]">
+        <paper-input id="search" label="search transcript">
+          <iron-icon icon="search" slot="prefix"></iron-icon>
+        </paper-input>
+      </div>
       <a11y-media-transcript 
         accent-color$="[[accentColor]]"
         disable-interactive$="[[disableInteractive]]"
         hide-timestamps$="[[hideTimestamps]]"
         id="transcript" 
+        search$="[[search]]"
         selected-transcript$="[[selectedTranscript]]">
       </a11y-media-transcript>
     </div>
@@ -146,13 +175,28 @@ Basic customization:
         a11yMediaBehaviors.TranscriptBehaviors,
         a11yMediaBehaviors.UtilityFunctions
       ],
+
+      properties: {
+        /** 
+          * disable transcript search feature 
+          */
+        disableSearch: {
+          type: Boolean,
+          value: false,
+        },
+      },
       /**
         * calls responsive-utility to get parent's responsive size
         */ 
       attached: function(){
-        let root = this;
+        let root = this, search = root.$.search;
         root.$.transcript.setMedia(root.$.player);
-        this._addResponsiveUtility();
+        root._addResponsiveUtility();
+        if(!root.disableSearch) {
+          search.addEventListener('change',function(e){
+            root.search = search.value;
+          });
+        }
       }
     });
   </script>
