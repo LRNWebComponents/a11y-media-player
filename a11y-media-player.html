@@ -494,9 +494,9 @@ A LRN element
                 });
                 track.oncuechange = function(e){
                   if (root.__transcript !== undefined && root.__transcript !== null) {
-                    root.__transcript.activeCues = Object.keys(e.currentTarget.activeCues).map(function(key) { 
+                    root.__transcript.setActiveCues(Object.keys(e.currentTarget.activeCues).map(function(key) { 
                       return e.currentTarget.activeCues[key].id;
-                    });
+                    }));
                   }
                 };
               }

@@ -81,7 +81,6 @@ A transcript element to pair with a11y-media-player
 
       listeners: {
         'cue-seek': '_onCueSeek',
-        'cue-active': '_onCueActive',
       },
       
       behaviors: [
@@ -142,6 +141,16 @@ A transcript element to pair with a11y-media-player
         if (this.tracks !== undefined && this.tracks.length > 0) this.$.tracks.render();
       },
       /** 
+       * updates activeCues array and scrolls to position
+       */
+      setActiveCues: function(cues){
+        this.set('activeCues',cues.slice(0));
+        let inner = document.getElementById('tracks-inner'), active = (inner !== null && inner !== undefined) ? inner.querySelector('a11y-media-transcript-cue[active]') : null;
+        if (active !== null & active !== undefined) {
+          this.scrollTop = active.offsetTop - 50;
+        }
+      },
+      /** 
        * gets the tab-index of cues based on whether or not interactive cues are disabled
        */
       _getTabIndex: function(disableInteractive){
@@ -152,14 +161,6 @@ A transcript element to pair with a11y-media-player
        */
       _onCueSeek: function(e){
         this.fire('transcript-seek',e.detail);
-      },
-      /** 
-       * scrolls to active cue
-       */
-      _onCueActive: function(e){
-        //TODO
-
-        //root.$.tracks-inner.offsetTop = root.$.tracks-inner.offsetTop-cue.offsetTop;
       },
       /** 
        * determines if this is the currently selected transcript to show or hide
