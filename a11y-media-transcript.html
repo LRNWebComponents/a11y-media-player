@@ -17,8 +17,9 @@ A transcript element to pair with a11y-media-player
                                                     // light blue, cyan, teal, green, light green, lime, 
                                                     // yellow, amber, orange, deep-orange, and brown. 
                                                     // Default is null. 
-    disable-interactive$="[[disableInteractive]]"   // Disable interactive cues?
-    disableScroll$="[[disableScroll]]"              // Disable autoscrolling transcript as video plays? 
+    disable-interactive$="[[disableInteractive]]"   // Disable interactive transcript cues?
+    disable-scroll$="[[disableScroll]]"             // Disable autoscrolling transcript as video plays? 
+    disable-search$="[[disableSearch]]"             // Disable transcript search? 
     hide-timestamps$="[[hideTimestamps]]"           // Hide cue timestamps?
     media-id=""                                     // The id of the player
     selected-transcript$="[[selectedTranscript]]">  // The index of the current track
@@ -45,6 +46,14 @@ A transcript element to pair with a11y-media-player
       :host[hideTimestamps] #tracks-inner[active] {
         display: table;
       }
+      :host .sr-only {
+        position: absolute;
+        left: -99999;
+        top: 0;
+        height: 0;
+        width: 0;
+        overflow: hidden;
+      }
       @media print {
         :host {
           background-color: #ffffff;
@@ -55,6 +64,9 @@ A transcript element to pair with a11y-media-player
         }
       }
     </style>
+    <div id="transcript-desc" class="sr-only">
+      The transcript follows. <a href="#bottom">Skip the transcript.</a>
+    </div>
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
       <div id="tracks-inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
         <template is="dom-repeat" items="[[track.cues]]" as="cue">
@@ -73,6 +85,7 @@ A transcript element to pair with a11y-media-player
         </template>
       </div>
     </template>
+    <div id="bottom" class="sr-only"></div>
   </template>
 
   <script>
