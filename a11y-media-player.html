@@ -653,10 +653,10 @@ A LRN element
         this.cc = mode;
         if (this.__selectedTrack !== undefined && mode == true) {
           this.__selectedTrack.mode = 'showing';
-          this.$.tracks.value = this.__selectedTrackId;
+          this.$.video.textTracks.value = this.__selectedTrackId;
         } else if (this.__selectedTrack !== undefined) {
           this.__selectedTrack.mode = 'hidden';
-          this.$.tracks.value = '';
+          this.$.video.textTracks.value = '';
         }
       },
       /** 
