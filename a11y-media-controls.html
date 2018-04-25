@@ -108,6 +108,9 @@ The controls bar for the a11y-media-player.
       :host:not([has-captions]) .captions {
         display: none;
       }
+      :host:not([has-transcript]) .transcript {
+        display: none;
+      }
       :host .setting {
         display: flex;
         justify-content: space-between;
@@ -186,14 +189,23 @@ The controls bar for the a11y-media-player.
     </div>
     <div id="controls-right">
       <a11y-media-button class="captions" icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
+      <a11y-media-button class="transcript" hidden-when="xs sm" icon="description" label="transcript" toggle$="[[!hideTranscript]]"></a11y-media-button>
       <paper-menu-button id="settings" vertical-align="bottom" ignore-select>
         <paper-icon-button icon="settings" slot="dropdown-trigger" alt="Settings"></paper-icon-button>
         <paper-listbox id="settingslist" slot="dropdown-content">
+          <paper-item hidden-when="md lg xl" class="transcript">
+            <div class="setting">
+              <div id="transcript-label" class="setting-text">Transcript</div>
+              <div class="setting-control">
+                <paper-toggle-button id="transcript-toggle" aria-labelledby="transcript-label" checked$="[[!hideTranscript]]"></paper-toggle-button>
+              </div>
+            </div>
+          </paper-item>
           <paper-item>
             <div class="setting">
-              <div class="setting-text">Loop </div>
+              <div id="loop-label" class="setting-text">Loop </div>
               <div class="setting-control">
-                <paper-toggle-button id="loop" checked$="[[loop]]"></paper-toggle-button>
+                <paper-toggle-button id="loop" aria-labelledby="loop-label" checked$="[[loop]]"></paper-toggle-button>
               </div>
             </div>
           </paper-item>
@@ -212,9 +224,9 @@ The controls bar for the a11y-media-player.
           </paper-item>
           <paper-item>
             <div class="setting">
-              <div class="setting-text">Speed %</div>
+              <div id="speed-label" class="setting-text">Speed %</div>
               <div class="setting-control">
-                <paper-slider id="speed" class="setting-slider" label="tracks" min="0.5" max="4" pin step="0.5" tab-index="-1" value$="[[playbackRate]]"></paper-slider>
+                <paper-slider id="speed" aria-labelledby="speed-label" class="setting-slider" label="tracks" min="0.5" max="4" pin step="0.5" tab-index="-1" value$="[[playbackRate]]"></paper-slider>
               </div>
             </div>
           </paper-item>

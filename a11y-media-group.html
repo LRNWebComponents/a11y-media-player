@@ -82,6 +82,13 @@ Basic customization:
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
+          transition: width 0.5s;
+        }
+        :host[hide-transcript] #player-outer {
+          width: 100%;
+        }
+        :host[hide-transcript] #transcript-outer {
+          width: 0%;
         }
         :host:not([no-height]):not([responsive-size*="s"]) #transcript {
           position: absolute;
@@ -112,6 +119,9 @@ Basic customization:
           align-items: stretch;
           justify-content: space-between;
         }
+        :host[hide-transcript] #searchbar {
+          display: none;
+        }
         :host #search {
           --paper-input-container-input-color: var(--a11y-media-transcript-text-color, #666666);
           --paper-input-container-focus-color: var(--a11y-media-transcript-focus-color, #000000);
@@ -131,11 +141,11 @@ Basic customization:
           padding-right: 0.5em;
         }
         :host #scroll {
-          /* toggle button */
-          --paper-toggle-button-unchecked-bar-color: var(--a11y-media-transcript-text-color, #666666);
-          --paper-toggle-button-unchecked-button-color: var(--a11y-media-transcript-text-color, #666666);
-          --paper-toggle-button-checked-bar-color: var(--a11y-media-transcript-focus-color, #000000);
-          --paper-toggle-button-checked-button-color: var(--a11y-media-transcript-focus-color, #000000);
+          --a11y-media-button-toggle-color: var(--a11y-media-transcript-focus-color, #000000);
+          --a11y-media-button-color: var(--a11y-media-transcript-text-color, #666666);
+          --a11y-media-button-bg-color:  var(--a11y-media-transcript-bg-color, #ffffff);
+          --a11y-media-button-hover-color: var(--a11y-media-transcript-focus-color, #000000);
+          --a11y-media-button-hover-bg-color:  var(--a11y-media-transcript-bg-color, #ffffff);
         }
         :host[accent-color="red"] #search, 
         :host[accent-color="red"] #scroll { 
@@ -245,8 +255,7 @@ Basic customization:
           <simple-search id="search" label="search transcript"></simple-search>
         </div>
         <div id="scrolling">
-          <label id="autoscroll">auto-scroll</label>
-          <paper-toggle-button aria-labelledby="autoscroll" checked$="[[!disableScroll]]" id="scroll"></paper-toggle-button>
+          <a11y-media-button id="scroll" icon="swap-vert" label="auto-scrolling" toggle$="[[!disableScroll]]"></a11y-media-button>
         </div>
       </div>
       <a11y-media-transcript 
@@ -268,7 +277,7 @@ Basic customization:
       is: 'a11y-media-group',
 
       listeners: {
-        'change': '_onSettingsChanged'
+        'transcript-toggle': 'toggleTranscript'
       },
       
       behaviors: [
@@ -293,11 +302,14 @@ Basic customization:
         let root = this;
         root.search = root.$.search;
         root.$.transcript.setMedia(root.$.player);
-        root.$.scroll.addEventListener('change',function(e){
+        root.$.scroll.addEventListener('button-clicked',function(e){
           root.disableScroll = !root.disableScroll;
         });
         root._addResponsiveUtility();
       },
+      toggleTranscript: function(e){
+        this.hideTranscript = e.detail.hideTranscript;
+      }
     });
   </script>
 </dom-module>

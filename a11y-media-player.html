@@ -374,7 +374,9 @@ A LRN element
       cc$="[[cc]]"
       fullscreen$="[[fullscreen]]" 
       has-captions$="[[hasCaptions]]"
+      has-transcript$="[[hasTranscript]]"
       hide-elapsed-time$="[[hideElapsedTime]]"
+      hide-transcript$="[[hideTranscript]]"
       id="controls"
       length="[[__length]]"
       loop$="[[loop]]"
@@ -537,8 +539,9 @@ A LRN element
         });
         // when transcript is ready associate it with the player
         document.body.addEventListener('transcript-ready',function(e){
-          if(root.getAttribute('id') === e.detail.mediaId || root === e.detail.media) {
+          if((root.getAttribute('id') !== null && root.getAttribute('id') === e.detail.mediaId) || root === e.detail.media) {
             root.__transcript = e.detail;
+            root.hasTranscript = true;
             if (root.__tracks !== undefined) {
               root.__transcript.setTracks(tracks);
               root.$.controls.setTracks(tracks);
@@ -702,6 +705,19 @@ A LRN element
         this.loop = mode;
         this.__src.muted = this.loop;
       },
+      /** 
+       * toggles transcript:
+       * toggleTranscript(true) to check the toggle, toggleTranscript(false) for unchecking, and toggleTranscript to toggle  
+       */
+       toggleTranscript: function(mode){
+        mode = mode === undefined ? this.hideTranscript : mode;
+        this.hideTranscript = !mode;
+        if (this.__transcript !== undefined && this.__transcript !== null) {
+          console.log('toggleTranscript');
+          this.fire('transcript-toggle',this);
+          this.__transcript.toggleHidden(this.hideTranscript);
+        }
+      },
       /**
        * determine which button was clicked and act accordingly 
        */
@@ -711,6 +727,8 @@ A LRN element
           this.rewind(this.__src.duration/20);
         } else if (action === 'closed captions' || action === 'captions') {
           this.toggleCC();
+        } else if (action === 'transcript' || action === 'transcript-toggle') {
+          this.toggleTranscript();
         } else if (action === 'forward') {
           this.forward(this.__src.duration/20);
         } else if (action === 'full screen') {

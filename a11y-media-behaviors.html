@@ -73,6 +73,13 @@ A set of behaviors for a11y-media components.
         value: false,
       },
       /** 
+        * Does the player have an interactive transcript?
+        */
+      hasTranscript: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
         * The width of the media player. 
         */
       height: {
@@ -85,6 +92,14 @@ A set of behaviors for a11y-media components.
       hideElapsedTime: {
         type: Boolean,
         value: false,
+      },
+      /** 
+        * Hide the transcript?
+        */
+      hideTranscript: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true,
       },
       /**
         * Language

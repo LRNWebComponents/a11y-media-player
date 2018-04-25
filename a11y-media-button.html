@@ -39,6 +39,10 @@ A button used in a11y-media-controls
         color: var(--a11y-media-button-hover-color, --a11y-media-hover-color);
         background-color: var(--a11y-media-button-hover-bg-color, --a11y-media-hover-bg-color);
       }
+      :host[toggle] #button {
+        color: var(--a11y-media-button-toggle-color, var(--a11y-media-accent-color, --a11y-media-color));
+        background-color: var(--a11y-media-button-toggle-bg-color, var(--a11y-media-button-bg-color, --a11y-media-bg-color));
+      }
       :host .sr-only {
         position: absolute;
         left: -99999;
@@ -78,6 +82,13 @@ A button used in a11y-media-controls
          */
          label: {
           type: String,
+          value: null
+        },
+        /*
+         * Is it toggled on?
+         */
+         toggle: {
+          type: Boolean,
           value: null
         },
       },
