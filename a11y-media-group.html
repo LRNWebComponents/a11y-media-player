@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="../simple-search/simple-search.html">
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-player.html">
 
@@ -102,16 +103,104 @@ Basic customization:
           position: absolute;
           top: 0;
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
-          color: var(--a11y-media-transcript-text-color, #000000);
+          color: var(--a11y-media-transcript-text-color, #666666);
           width: 100%;
+          display: flex;
+          align-items: stretch;
+          justify-content: space-between;
         }
         :host #search {
-          --paper-input-container-input-color: var(--a11y-media-transcript-text-color, #000000);
-          --paper-input-container-focus-color: var(--a11y-media-transcript-focus-color, var(--a11y-media-transcript-text-color, #000000));
-          --paper-input-container-color: var(--a11y-media-transcript-text-color, #000000);
+          --paper-input-container-input-color: var(--a11y-media-transcript-text-color, #666666);
+          --paper-input-container-focus-color: var(--a11y-media-transcript-focus-color, #000000);
+          --paper-input-container-color: var(--a11y-media-transcript-text-color, #666666);
           --paper-input-container: {
             padding: 0 15px;
           };
+        }
+        :host #searching {
+            flex-grow: 2;
+        }
+        :host #scrolling {
+          display: flex;
+          align-items: center;
+        }
+        :host #autoscroll {
+          padding-right: 0.5em;
+        }
+        :host #scroll {
+          /* toggle button */
+          --paper-toggle-button-unchecked-bar-color: var(--a11y-media-transcript-text-color, #666666);
+          --paper-toggle-button-unchecked-button-color: var(--a11y-media-transcript-text-color, #666666);
+          --paper-toggle-button-checked-bar-color: var(--a11y-media-transcript-focus-color, #000000);
+          --paper-toggle-button-checked-button-color: var(--a11y-media-transcript-focus-color, #000000);
+        }
+        :host[accent-color="red"] #search, 
+        :host[accent-color="red"] #scroll { 
+          --a11y-media-transcript-focus-color: #d50000;
+        }
+        :host[accent-color="pink"] #search,
+        :host[accent-color="pink"] #scroll { 
+          --a11y-media-transcript-focus-color: #f50057;
+        }
+        :host[accent-color="purple"] #search,
+        :host[accent-color="purple"] #scroll { 
+          --a11y-media-transcript-focus-color: #d500f9;
+        }
+        :host[accent-color="deep-purple"] #search,
+        :host[accent-color="deep-purple"] #scroll { 
+          --a11y-media-transcript-focus-color: #651fff;
+        }
+        :host[accent-color="indigo"] #search,
+        :host[accent-color="indigo"] #scroll { 
+          --a11y-media-transcript-focus-color: #304ffe;
+        }
+        :host[accent-color="blue"] #search,
+        :host[accent-color="blue"] #scroll { 
+          --a11y-media-transcript-focus-color: #1565c0;
+        }
+        :host[accent-color="light-blue"] #search,
+        :host[accent-color="light-blue"] #scroll { 
+          --a11y-media-transcript-focus-color: #0091ea;
+        }
+        :host[accent-color="cyan"] #search,
+        :host[accent-color="cyan"] #scroll { 
+          --a11y-media-transcript-focus-color: #0097a7;
+        }
+        :host[accent-color="teal"] #search,
+        :host[accent-color="teal"] #scroll { 
+          --a11y-media-transcript-focus-color: #00897b;
+        }
+        :host[accent-color="green"] #search,
+        :host[accent-color="green"] #scroll { 
+          --a11y-media-transcript-focus-color: #02993c;
+        }
+        :host[accent-color="light-green"] #search,
+        :host[accent-color="light-green"] #scroll { 
+          --a11y-media-transcript-focus-color: #448f02;
+        }
+        :host[accent-color="lime"] #search,
+        :host[accent-color="lime"] #scroll { 
+          --a11y-media-transcript-focus-color: #6f8e00;
+        }
+        :host[accent-color="yellow"] #search,
+        :host[accent-color="yellow"] #scroll { 
+          --a11y-media-transcript-focus-color: #9a8000;
+        }
+        :host[accent-color="amber"] #search,
+        :host[accent-color="amber"] #scroll { 
+          --a11y-media-transcript-focus-color: #bf7f00;
+        }
+        :host[accent-color="orange"] #search,
+        :host[accent-color="orange"] #scroll { 
+          --a11y-media-transcript-focus-color: #e65100;
+        }
+        :host[accent-color="deep-orange"] #search,
+        :host[accent-color="deep-orange"] #scroll { 
+          --a11y-media-transcript-focus-color: #ff3d00;
+        }
+        :host[accent-color="brown"] #search,
+        :host[accent-color="brown"] #scroll { 
+          --a11y-media-transcript-focus-color: #5d4037;
         }
         :host:not([disable-search]) #transcript {
           padding-top: 49px;
@@ -149,10 +238,17 @@ Basic customization:
     </div>
     <div id="transcript-outer">
       <div id="searchbar" hidden$="[[disableSearch]]"  disabled$="[[disableSearch]]">
-        <simple-search id="search" label="search transcript"></simple-search>
+        <div id="searching">
+          <simple-search id="search" label="search transcript"></simple-search>
+        </div>
+        <div id="scrolling">
+          <label id="autoscroll">auto-scroll</label>
+          <paper-toggle-button aria-labelledby="autoscroll" checked$="[[!disableScroll]]" id="scroll"></paper-toggle-button>
+        </div>
       </div>
       <a11y-media-transcript 
         accent-color$="[[accentColor]]"
+        disable-scroll$="[[disableScroll]]"
         disable-search$="[[disableSearch]]"
         disable-interactive$="[[disableInteractive]]"
         hide-timestamps$="[[hideTimestamps]]"
@@ -167,6 +263,10 @@ Basic customization:
     Polymer({
 
       is: 'a11y-media-group',
+
+      listeners: {
+        'change': '_onSettingsChanged'
+      },
       
       behaviors: [
         a11yMediaBehaviors.PlayerBehaviors, 
@@ -190,8 +290,11 @@ Basic customization:
         let root = this;
         root.search = root.$.search;
         root.$.transcript.setMedia(root.$.player);
+        root.$.scroll.addEventListener('change',function(e){
+          root.disableScroll = !root.disableScroll;
+        });
         root._addResponsiveUtility();
-      }
+      },
     });
   </script>
 </dom-module>
