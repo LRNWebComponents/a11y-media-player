@@ -6,6 +6,7 @@
 <link rel="import" href="a11y-media-play-button.html">
 <link rel="import" href="a11y-media-controls.html">
 <link rel="import" href="a11y-media-transcript.html">
+<link rel="import" href="a11y-media-utility.html">
 
 
 <!--
@@ -417,7 +418,9 @@ A LRN element
         * calls responsive-utility to get parent's responsive size
         */ 
       attached: function(){
+        Polymer.A11yMediaUtility.requestAvailability();
         this._addResponsiveUtility();
+        this.fire('a11y-player',this);
       },
       ready: function(){
         let root = this, tracks = new Array();
@@ -573,6 +576,7 @@ A LRN element
             //updated buffered section of the slider
             root.__buffered = root.__src.buffered.length > 0 ? root.__src.buffered.end(0) : root.__elapsed;
           }, 1);
+          if (!root.allowConcurrent) root.fire('a11y-player-stop-concurrent',root); //stop other players
           root.__src.play();
         }
       },
