@@ -68,7 +68,7 @@ Basic customization:
         outline: 1px solid black;
       }
       @media screen {
-        :host:not([no-height]):not([responsive-size*="s"]):not([sticky]) {
+        :host:not([no-height]):not([responsive-size*="s"]) {
           display: inline-flex;
           align-items: stretch;
           outline: 1px solid;
@@ -78,11 +78,17 @@ Basic customization:
         :host[dark]:not([no-height]):not([responsive-size*="s"]) {
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
         }
-        :host:not([no-height]):not([responsive-size*="s"]):not([sticky]):not([sticky]) > div {
+        :host:not([no-height]):not([responsive-size*="s"]) > div {
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
           transition: width 0.5s;
+        }
+        :host[sticky]:not([no-height]):not([responsive-size*="s"]) > #player-outer {
+          width: 0%;
+        }
+        :host[sticky]:not([no-height]):not([responsive-size*="s"]) > #transcript-outer {
+          width: 100%;
         }
         :host[hide-transcript] #player-outer {
           width: 100%;
