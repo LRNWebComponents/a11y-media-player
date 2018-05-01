@@ -75,6 +75,13 @@ Custom styles:
       :host #text {
         fill: #ffffff;
       }
+      @media print {
+        :host:not([thumbnail-src]),
+        :host #background, 
+        :host #svg {
+          display: none;
+        }
+      }
     </style>
     <button id="button" aria-hidden="true" tabindex="-1" disabled$="[[disabled]]" controls="video">
       <div id="thumbnail" style$="[[thumbnailCSS]]"></div>

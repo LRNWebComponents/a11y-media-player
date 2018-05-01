@@ -87,7 +87,7 @@ Utily to control
           root.__playerMiddle = (root.__playerBottom - root.__playerTop) / 2;
           if (player !== root.stickyPlayer && root.stickyPlayer !== undefined && root.stickyPlayer !== null) {
             root.stickyPlayer.toggleSticky(false);
-            root.__parent.style.height = 'auto';
+            root.__parent.style.height = 'unset';
           };
           parent.style.height = parent.offsetHeight + 'px';
           root.__parent = parent;

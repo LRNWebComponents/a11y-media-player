@@ -342,11 +342,15 @@ A LRN element
       @media print {
         :host {
           color: #000000;
-          background-color: #f0f0f0;
+          background-color: #f8f8f8;
           padding: 15px;
           width: auto;
         }
-        :host > * {
+        :host:not([thumbnail-src]) #media, 
+        :host #slider, 
+        :host #video, 
+        :host #audio, 
+        :host #controls {
           display: none;
         }
         :host:before {
