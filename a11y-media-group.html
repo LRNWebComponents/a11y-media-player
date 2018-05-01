@@ -68,7 +68,7 @@ Basic customization:
         outline: 1px solid black;
       }
       @media screen {
-        :host:not([no-height]):not([responsive-size*="s"]) {
+        :host:not([no-height]):not([responsive-size*="s"]):not([sticky]) {
           display: inline-flex;
           align-items: stretch;
           outline: 1px solid;
@@ -78,7 +78,7 @@ Basic customization:
         :host[dark]:not([no-height]):not([responsive-size*="s"]) {
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
         }
-        :host:not([no-height]):not([responsive-size*="s"]) > div {
+        :host:not([no-height]):not([responsive-size*="s"]):not([sticky]):not([sticky]) > div {
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
@@ -243,6 +243,8 @@ Basic customization:
         no-height$="[[noHeight]]"
         muted$="[[muted]]" 
         search$="[[search]]"
+        sticky$="[[sticky]]"
+        sticky-corner$="[[stickyCorner]]"
         thumbnail-src$="[[thumbnailSrc]]"
         volume$="[[volume]]"
         width$="[[width]]">
@@ -277,7 +279,8 @@ Basic customization:
       is: 'a11y-media-group',
 
       listeners: {
-        'transcript-toggle': 'toggleTranscript'
+        'transcript-toggle': 'toggleTranscript',
+        'player-sticky': 'toggleSticky'
       },
       
       behaviors: [
@@ -307,9 +310,18 @@ Basic customization:
         });
         root._addResponsiveUtility();
       },
+      /**
+        * toggles (shows or hides) the transcript
+        */ 
       toggleTranscript: function(e){
         this.hideTranscript = e.detail.hideTranscript;
-      }
+      },
+      /** 
+       * toggles sticky attribute
+       */
+      toggleSticky: function(e){
+        this.sticky = e.detail.sticky;
+      },
     });
   </script>
 </dom-module>

@@ -28,7 +28,12 @@ Custom styles:
         opacity: 1;
         transition: opacity 0.5s; 
       }
-      :host[playing], :host[disabled] {
+      :host:not([audio-only][thumbnail-src])[playing], 
+      :host[disabled]:not([audio-only][thumbnail-src]) {
+        opacity: 0;
+      }
+      :host[audio-only][thumbnail-src][playing] #button > *:not(#thumbnail), 
+      :host[disabled][audio-only][thumbnail-src] #button > *:not(#thumbnail) {
         opacity: 0;
       }
       :host, 

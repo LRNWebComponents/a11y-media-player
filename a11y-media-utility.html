@@ -28,6 +28,13 @@ Utily to control
             type: Array,
             value: [],
           },
+          /**
+           * Manages which player is sticky.
+           */
+          stickyPlayer: {
+            type: Object,
+            value: null,
+          },
         },
         
         /**
@@ -35,25 +42,82 @@ Utily to control
          */
         created: function() {
           let root = this;
+
+          // like the Highlander, there can be only one
           if (!Polymer.A11yMediaUtility.instance) {
             Polymer.A11yMediaUtility.instance = root;
           }
+
+          // listen for a players added to the page
           document.body.addEventListener('a11y-player', function(e){
             root.players.push(e.detail);
           });
 
-          document.body.addEventListener('a11y-player-stop-concurrent', function(e){
-            root.stopConcurrentPlayers(e.detail);
+          // listen for a player that starts playing, 
+          // make it the player that can be sticky, 
+          // and check for concurrent players
+          document.body.addEventListener('a11y-player-playing', function(e){
+            root.setStickyPlayer(e.detail);
           });
+
+          // listen for scrolling and find out if a player is off-screen
+          window.onscroll = function(e) {
+            root._checkScroll();
+          };
         },
-        stopConcurrentPlayers: function(player){
-          for(let i=0; i<this.players.length; i++){
-            let playeri = this.players[i];
-            if(playeri !== player){
+        /**
+          * if a player disallows concurrent players, pauses other players
+          */ 
+        checkConcurrentPlayers: function(){
+          let root = this, player = root.stickyPlayer;
+          for(let i=0; i<root.players.length; i++){
+            let playeri = root.players[i];
+            if(playeri !== player && (!player.allowConcurrent || !playeri.allowConcurrent)){
               playeri.pause();
             }
           }
         },
+        /**
+          * stops all other players on the page
+          */ 
+        setStickyPlayer: function(player){
+          let root = this, parent = root._getParentNode(player);
+          root.__playerTop = parent.offsetTop;
+          root.__playerBottom = root.__playerTop + parent.offsetHeight;
+          root.__playerMiddle = (root.__playerBottom - root.__playerTop) / 2;
+          if (player !== root.stickyPlayer && root.stickyPlayer !== undefined && root.stickyPlayer !== null) {
+            root.stickyPlayer.toggleSticky(false);
+            root.__parent.style.height = 'auto';
+          };
+          parent.style.height = parent.offsetHeight;
+          root.__parent = parent;
+          root.stickyPlayer = player;
+          if(!player.allowConcurrent) root.checkConcurrentPlayers();
+          root._checkScroll();
+        },
+        /**
+          * checks the wondow's scroll position and compares it to active player to set sticky attribute
+          */ 
+        _checkScroll: function(){
+          let root = this, wintop = window.pageYOffset, winbottom = wintop + window.innerHeight;
+          if(root.stickyPlayer !== undefined && root.stickyPlayer !== null){
+            if (root.stickyPlayer.__playing && (root.__playerMiddle > winbottom || root.__playerMiddle < wintop)) {
+              root.stickyPlayer.toggleSticky(true);
+            } else {
+              root.stickyPlayer.toggleSticky(false);
+            }
+          }
+        },
+        /**
+          * gets parent node in light DOM
+          */ 
+        _getParentNode: function(node){
+          let parent = node.parentNode;
+          if (parent !== undefined && parent !== null && parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+            parent = parent.host;
+          }
+          return parent;
+        }
       });
 
       Polymer.A11yMediaUtility.instance = null;

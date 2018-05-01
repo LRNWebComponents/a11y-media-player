@@ -39,14 +39,14 @@ A transcript element to pair with a11y-media-player
       :host[hidden] {
         display: none;
       }
-      :host #tracks-inner {
+      :host #inner {
         width: 100%;
         display: none;
       }
-      :host #tracks-inner[active] {
+      :host #inner[active] {
         display: block;
       }
-      :host[hideTimestamps] #tracks-inner[active] {
+      :host[hideTimestamps] #inner[active] {
         display: table;
       }
       :host .sr-only:not(:focus) {
@@ -69,7 +69,7 @@ A transcript element to pair with a11y-media-player
     </style>
     <a id="transcript-desc" href="#bottom" class="sr-only">Skip the transcript.</a>
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
-      <div id="tracks-inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
+      <div id="inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
         <template is="dom-repeat" items="[[track.cues]]" as="cue">
           <a11y-media-transcript-cue 
             accent-color$="[[accentColor]]"
@@ -160,7 +160,7 @@ A transcript element to pair with a11y-media-player
        * fires an event when media is associated with the player
        */
       toggleHidden: function(mode){
-        let root = this, inner = document.getElementById('tracks-inner'), active = (inner !== null && inner !== undefined) ? inner.querySelector('a11y-media-transcript-cue[active]') : null, first = (inner !== null && inner !== undefined) ? inner.querySelector('a11y-media-transcript-cue') : null;
+        let root = this, inner = document.getElementById('inner'), active = (inner !== null && inner !== undefined) ? inner.querySelector('a11y-media-transcript-cue[active]') : null, first = (inner !== null && inner !== undefined) ? inner.querySelector('a11y-media-transcript-cue') : null;
         mode = mode !== undefined ? mode : this.hidden;
         this.hidden = mode;
         if(!mode && active !== null){
@@ -180,10 +180,9 @@ A transcript element to pair with a11y-media-player
        * updates activeCues array and scrolls to position
        */
       setActiveCues: function(cues){
-        let root = this, inner = document.getElementById('tracks-inner'), active = (inner !== null && inner !== undefined) ? inner.querySelector('a11y-media-transcript-cue[active]') : null, offset = (inner !== null && inner !== undefined) ? inner.offsetTop : null;
+        let root = this, offset = (root.$$('#inner') !== null && root.$$('#inner') !== undefined) ? root.$$('#inner').offsetTop : 0, cue = root.$$('#inner a11y-media-transcript-cue[active]');
         root.set('activeCues',cues.slice(0));
-        if (!root.disableScroll && active !== null & active !== undefined) {
-          //root.scrollTop = active.offsetTop - offset;
+        if (!root.disableScroll && cue !== null & cue !== undefined) {
           //javascript scrolling from:  https://stackoverflow.com/questions/8917921/cross-browser-javascript-not-jquery-scroll-to-top-animation#answer-8918062 
           let scrollingTo = function(element, to, duration) {
             if (duration <= 0) return;
@@ -196,7 +195,7 @@ A transcript element to pair with a11y-media-player
               scrollingTo(element, to, duration - 10);
             }, 10);
           };
-          scrollingTo(root, active.offsetTop-offset, 100);
+          scrollingTo(root, cue.offsetTop-offset, 250);
         }
       },
       /** 
