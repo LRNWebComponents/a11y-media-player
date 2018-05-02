@@ -24,10 +24,10 @@ A set of behaviors for a11y-media components.
         * Allow this media to play concurrently with other a11y-media-players? 
         * Default is to pause this a11y-media-player when other a11y-media-player starts playing.
         */ 
-        allowConcurrent: {
-          type: Boolean,
-          value: false,
-          reflectToAttribute: true,
+      allowConcurrent: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true,
       },
       /** 
         * Is this an audio file?
@@ -111,6 +111,14 @@ A set of behaviors for a11y-media components.
         reflectToAttribute: true,
       },
       /**
+        * localization object allows controls microcopy to be modified
+        */
+      localization: {
+        type: Object,
+        value: {},
+        reflectToAttribute: true,
+      },
+      /**
         * Language
         */
       lang: {
@@ -124,6 +132,14 @@ A set of behaviors for a11y-media components.
       loop: {
         type: Boolean,
         value: false,
+      },
+      /**
+        * optional title of media (shows when printed)
+        */
+      mediaTitle: {
+        type: String,
+        value: '',
+        reflectToAttribute: true,
       },
       /**
         * Is the size mobile?
@@ -224,6 +240,138 @@ A set of behaviors for a11y-media components.
       */ 
     _getNoHeight: function(audioOnly,thumbnailSrc){
       return audioOnly && (thumbnailSrc === null || thumbnailSrc === undefined);
+    },
+    /**
+      * localizes the microcopy of any overriden defaults.
+      * Defaults are as follows: 
+      * {
+      *   "lang": "en",
+      *   "captions": {
+      *     "label": "closed captions",
+      *     "icon": "av:closed caption",
+      *   },
+      *   "backward": {
+      *     "label": "backward",
+      *     "icon": "av:fast-rewind",
+      *   },
+      *   "forward": {
+      *     "label": "forward",
+      *     "icon": "av:fast-forward",
+      *   },
+      *   "fullscreen": {
+      *     "label": "fullscreen",
+      *     "icon": "fullscreen",
+      *   },
+      *   "mute": {
+      *     "label": "mute",
+      *     "icon": "av:volume-up",
+      *   },
+      *   "pause": {
+      *     "label": "pause",
+      *     "icon": "av:pause",
+      *   },
+      *   "play": {
+      *     "label": "play",
+      *     "icon": "av:play-arrow",
+      *   },
+      *   "restart": {
+      *     "label": "restart",
+      *     "icon": "av:replay",
+      *   },
+      *   "settings": {
+      *     "label": "settings",
+      *     "icon": "settings",
+      *     "items": {
+      *       "captions": "Captions",
+      *       "captionsOff": "Off",
+      *       "loop": "Loop",
+      *       "speed": "Speed %",
+      *       "transcript": "Transcript"
+      *     }
+      *   },
+      *   "transcript": {
+      *     "label": "transcript",
+      *     "icon": "description",
+      *   },
+      *   "unmute": {
+      *     "label": "unmute",
+      *     "icon": "av:volume-off",
+      *   },
+      *   "volume": {
+      *     "label": "volume",
+      *   },
+      * },
+      */ 
+    _getLocalization: function(localization){
+      let defaults = {
+        "lang": "en",
+        "captions": {
+          "label": "closed captions",
+          "icon": "av:closed caption",
+        },
+        "backward": {
+          "label": "backward",
+          "icon": "av:fast-rewind",
+        },
+        "forward": {
+          "label": "forward",
+          "icon": "av:fast-forward",
+        },
+        "fullscreen": {
+          "label": "fullscreen",
+          "icon": "fullscreen",
+        },
+        "mute": {
+          "label": "mute",
+          "icon": "av:volume-up",
+        },
+        "pause": {
+          "label": "pause",
+          "icon": "av:pause",
+        },
+        "play": {
+          "label": "play",
+          "icon": "av:play-arrow",
+        },
+        "restart": {
+          "label": "restart",
+          "icon": "av:replay",
+        },
+        "settings": {
+          "label": "settings",
+          "icon": "settings",
+          "items": {
+            "captions": "Captions",
+            "captionsOff": "Off",
+            "loop": "Loop",
+            "speed": "Speed %",
+            "transcript": "Transcript"
+          }
+        },
+        "transcript": {
+          "label": "transcript",
+          "icon": "description",
+        },
+        "unmute": {
+          "label": "unmute",
+          "icon": "av:volume-off",
+        },
+        "volume": {
+          "label": "volume",
+        },
+      }, setLocal = function(defaults,customs){
+        for (var key in defaults){
+          if(customs[key] !== null & customs[key] !== undefined) {
+            if(typeof(customs[key]) == Object){
+              defaults[key] = setLocal(defaults[key],customs[key]);
+            } else {
+              defaults[key] = customs[key];
+            }
+          }
+        }
+        return defaults;
+      };
+      return setLocal(defaults,localization);
     },
     /**
       * returns true if an attribute is set to a value

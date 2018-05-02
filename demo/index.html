@@ -38,7 +38,7 @@
       <h3>a11y-media-group demo</h3>
       <demo-snippet>
         <template>
-          <a11y-media-group accent-color="light-blue" dark thumbnail-src="samples/stclair.jpg">
+          <a11y-media-group accent-color="light-blue" dark thumbnail-src="samples/stclair.jpg" media-title="a11y-media-group demo video">
             <source src="http://personal.psu.edu/lnm105/stclair.mp4" type="video/mp4">
             <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
           </a11y-media-group>
@@ -58,7 +58,7 @@
         </template>
       </demo-snippet>  
       
-      <h3>a11y-media-group demo, dark, with custom styles</h3>
+      <h3>a11y-media-group demo, dark, with custom styles and language localization</h3>
       <demo-snippet>
         <template>
           <style is="custom-style">
@@ -73,7 +73,30 @@
                 --a11y-media-transcript-matched-cue-text: #ffffff;
               }
             </style>
-            <a11y-media-group id="custom1" accent-color="red" dark>
+            <a11y-media-group id="custom1" accent-color="red" dark lang="es" localization='{
+              "lang": "es",
+              "captions": { "label": "subtítulos", "icon": "av:closed caption" },
+              "backward": { "label": "rebobinar", "icon": "av:fast-rewind" },
+              "fullscreen": { "label": "fullscreen", "icon": "fullscreen" },
+              "mute": { "label": "mudo", "icon": "av:volume-up" },
+              "pause": { "label": "pausa", "icon": "av:pause" },
+              "play": { "label": "comienzo", "icon": "av:play-arrow" },
+              "restart": { "label": "reiniciar", "icon": "av:replay" },
+              "settings": {
+                "label": "sreferencias",
+                "icon": "settings",
+                "items": {
+                  "captions": "Subtítulos",
+                  "captionsOff": "Apagado",
+                  "loop": "Lazo",
+                  "speed": "Velocidad %",
+                  "transcript": "Transcripción"
+                }
+              },
+              "transcript": { "label": "transcripción", "icon": "description" },
+              "unmute": { "label": "dejar de silenciar", "icon": "av:volume-off" },
+              "volume": { "label": "volumen" }
+            }'>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>

@@ -310,6 +310,9 @@ A LRN element
         color: var(--a11y-media-color, #666666);
         background-color: var(--a11y-media-bg-color, #eeeeee);
       }
+      :host #print-only {
+        display: none;
+      }
       :host #player-inner {
         z-index: 1;
       }
@@ -353,13 +356,17 @@ A LRN element
         :host #controls {
           display: none;
         }
-        :host:before {
-          display: block;
-          content: '(Interactive Media)';
+        :host #print-only {
+          display: inline;
+        }
+        :host #print-only:after {
+          display: inline;
+          content: ' (Interactive Media)';
           font-style: italic;
         }
       }
     </style>
+    <div id="print-only" lang$="[[lang]]">[[mediaTitle]]</div>
     <div id="player">
       <div id="player-inner">
         <div id="media" hidden$="[[noHeight]]">
@@ -367,6 +374,7 @@ A LRN element
             autoplay$="[[autoplay]]" 
             hidden$="[[audioOnly]]"
             id="video" 
+            lang$="[[lang]]"
             loop$="[[loop]]" 
             muted$="[[muted]]" 
             preload="metadata">
@@ -377,6 +385,7 @@ A LRN element
             autoplay$="[[autoplay]]" 
             hidden$="[[!audioOnly]]"
             id="audio" 
+            lang$="[[lang]]"
             loop$="[[loop]]" 
             muted$="[[muted]]" 
             preload="metadata">
@@ -412,6 +421,7 @@ A LRN element
       hide-transcript$="[[hideTranscript]]"
       id="controls"
       length="[[__length]]"
+      localization$="[[_getLocalization(localization)]]" 
       loop$="[[loop]]"
       muted$="[[muted]]"
       responsive-size="[[responsiveSize]]"

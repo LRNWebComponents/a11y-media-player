@@ -175,27 +175,27 @@ The controls bar for the a11y-media-player.
       }
     </style>
     <div id="controls-left">
-      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="av:fast-rewind" label="backward"></a11y-media-button>
+      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="[[localization.backward.icon]]" label="[[localization.backward.label]]"></a11y-media-button>
       <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
-      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="av:fast-forward" label="forward"></a11y-media-button>
-      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="av:replay" label="restart"></a11y-media-button>
+      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="[[localization.forward.icon]]" label="[[localization.forward.label]]"></a11y-media-button>
+      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="[[localization.restart.icon]]" label="[[localization.restart.label]]"></a11y-media-button>
       <div id="showvolume">
         <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
-        <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]"></paper-slider>
+        <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]" aria-label="[[localization.volume.label]]"></paper-slider>
       </div>
       <span class="play-status control-bar" disabled$="[[mobileSize]]">
         <span id="statbar" hidden-when="xs sm"></span>
       </span>
     </div>
     <div id="controls-right">
-      <a11y-media-button class="captions" icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
-      <a11y-media-button class="transcript" hidden-when="xs sm" icon="description" label="transcript" toggle$="[[!hideTranscript]]"></a11y-media-button>
+      <a11y-media-button class="captions" icon="[[localization.captions.icon]]" label="[[localization.captions.label]]" toggle$="[[cc]]"></a11y-media-button>
+      <a11y-media-button class="transcript" hidden-when="xs sm" icon="[[localization.transcript.icon]]" label="[[localization.transcript.label]]" toggle$="[[!hideTranscript]]"></a11y-media-button>
       <paper-menu-button id="settings" vertical-align="bottom" ignore-select>
-        <paper-icon-button icon="settings" slot="dropdown-trigger" alt="Settings"></paper-icon-button>
+        <paper-icon-button icon="[[localization.settings.icon]]" slot="dropdown-trigger" alt="[[localization.settings.label]]"></paper-icon-button>
         <paper-listbox id="settingslist" slot="dropdown-content">
           <paper-item hidden-when="md lg xl" class="transcript">
             <div class="setting">
-              <div id="transcript-label" class="setting-text">Transcript</div>
+              <div id="transcript-label" class="setting-text">[[localization.settings.items.transcript]]</div>
               <div class="setting-control">
                 <paper-toggle-button id="transcript-toggle" aria-labelledby="transcript-label" checked$="[[!hideTranscript]]"></paper-toggle-button>
               </div>
@@ -203,7 +203,7 @@ The controls bar for the a11y-media-player.
           </paper-item>
           <paper-item>
             <div class="setting">
-              <div id="loop-label" class="setting-text">Loop </div>
+              <div id="loop-label" class="setting-text">[[localization.settings.items.loop]]</div>
               <div class="setting-control">
                 <paper-toggle-button id="loop" aria-labelledby="loop-label" checked$="[[loop]]"></paper-toggle-button>
               </div>
@@ -211,10 +211,10 @@ The controls bar for the a11y-media-player.
           </paper-item>
           <paper-item class="captions">
             <div class="setting">
-              <div class="setting-text">Captions</div>
+              <div class="setting-text">[[localization.settings.items.captions]]</div>
               <div class="setting-control">
                 <dropdown-select id="tracks" no-label-float value="" label="tracks">
-                  <paper-item value="">Off</paper-item>
+                  <paper-item value="">[[localization.settings.items.captionsOff]]</paper-item>
                   <template is="dom-repeat" items="{{tracks}}" as="option">
                     <paper-item value$="{{option.value}}">{{option.text}}</paper-item>
                   </template>
@@ -224,7 +224,7 @@ The controls bar for the a11y-media-player.
           </paper-item>
           <paper-item>
             <div class="setting">
-              <div id="speed-label" class="setting-text">Speed %</div>
+              <div id="speed-label" class="setting-text">[[localization.settings.items.speed]]</div>
               <div class="setting-control">
                 <paper-slider id="speed" aria-labelledby="speed-label" class="setting-slider" label="tracks" min="0.5" max="4" pin step="0.5" tab-index="-1" value$="[[playbackRate]]"></paper-slider>
               </div>
@@ -237,10 +237,10 @@ The controls bar for the a11y-media-player.
           </paper-item>
         </paper-listbox>
       </paper-menu-button>
-      <paper-tooltip for="settings">settings</paper-tooltip>
+      <paper-tooltip for="settings">[[localization.settings.label]]</paper-tooltip>
       <template is="dom-if" if="[[!disableFullscreen]]">
         <template is="dom-if" if="[[!noHeight]]">
-          <a11y-media-button icon="fullscreen" label="full screen" toggle$="[[fullscreen]]" step="1"></a11y-media-button>
+          <a11y-media-button icon="[[localization.fullscreen.label]]" label="[[localization.fullscreen.label]]" toggle$="[[fullscreen]]" step="1"></a11y-media-button>
         </template>
       </template>
       </div>
@@ -267,14 +267,14 @@ The controls bar for the a11y-media-player.
           */
         playPause: {
           type: Object,
-          computed: '_getPlayPause(playing)'
+          computed: '_getPlayPause(playing,localization)'
         },
         /**
           * mute/unmute button
           */
         muteUnmute: {
           type: Object,
-          computed: '_getMuteUnmute(muted)'
+          computed: '_getMuteUnmute(muted,localization)'
         }
       },
       /**
@@ -340,14 +340,14 @@ The controls bar for the a11y-media-player.
       /** 
         * set play/pause button 
         */
-      _getPlayPause: function(playing){
-        return playing ? {'icon': 'av:pause', 'label': 'pause'} : {'icon': 'av:play-arrow', 'label': 'play'};
+      _getPlayPause: function(playing,localization){
+        return playing ? localization.pause : localization.play;
       },
       /** 
         * set play/pause button 
         */
-      _getMuteUnmute: function(muted){
-        return muted ? {'icon': 'av:volume-off', 'label': 'unmute'} : {'icon': 'av:volume-up', 'label': 'mute'};
+      _getMuteUnmute: function(muted,localization){
+        return muted ? localization.unmute : localization.mute;
       },
       /** 
         * determine which button was clicked and act accordingly 
