@@ -190,7 +190,7 @@ The controls bar for the a11y-media-player.
     <div id="controls-right">
       <a11y-media-button class="captions" icon="[[localization.captions.icon]]" label="[[localization.captions.label]]" toggle$="[[cc]]"></a11y-media-button>
       <a11y-media-button class="transcript" hidden-when="xs sm" icon="[[localization.transcript.icon]]" label="[[localization.transcript.label]]" toggle$="[[!hideTranscript]]"></a11y-media-button>
-      <paper-menu-button id="settings" vertical-align="bottom" ignore-select>
+      <paper-menu-button id="settings" vertical-align="bottom" horizontal-align="right" ignore-select>
         <paper-icon-button icon="[[localization.settings.icon]]" slot="dropdown-trigger" alt="[[localization.settings.label]]"></paper-icon-button>
         <paper-listbox id="settingslist" slot="dropdown-content">
           <paper-item hidden-when="md lg xl" class="transcript">
