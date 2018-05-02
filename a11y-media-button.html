@@ -52,7 +52,7 @@ A button used in a11y-media-controls
         overflow: hidden;
       }
     </style>
-    <button id="button" aria-role="button" tabindex="0" aria-label$="[[label]]" controls="video">
+    <button id="button" aria-role="button" tabindex="0" aria-label$="[[label]]" controls="[[controls]]">
       <iron-icon icon$="[[icon]]"></iron-icon>
     </button>
     <paper-tooltip for="button">[[label]]</paper-tooltip>
@@ -70,6 +70,13 @@ A button used in a11y-media-controls
       },
 
       properties: {
+        /*
+         * id of element button controls
+         */
+        controls: {
+          type: String,
+          value: 'video'
+        },
         /*
          * iron-icon type
          */

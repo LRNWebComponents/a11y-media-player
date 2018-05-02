@@ -83,8 +83,8 @@ Utily to control
         setStickyPlayer: function(player){
           let root = this, parent = root._getParentNode(player);
           root.__playerTop = parent.offsetTop;
-          root.__playerBottom = root.__playerTop + parent.offsetHeight;
-          root.__playerMiddle = (root.__playerBottom - root.__playerTop) / 2;
+          root.__playerUpperMiddle = root.__playerTop + parent.offsetHeight * 0.15;
+          root.__playerLowerMiddle = root.__playerTop + parent.offsetHeight * 0.85;
           if (player !== root.stickyPlayer && root.stickyPlayer !== undefined && root.stickyPlayer !== null) {
             root.stickyPlayer.toggleSticky(false);
             root.__parent.style.height = 'unset';
@@ -101,7 +101,8 @@ Utily to control
         _checkScroll: function(){
           let root = this, wintop = window.pageYOffset, winbottom = wintop + window.innerHeight;
           if(root.stickyPlayer !== undefined && root.stickyPlayer !== null){
-            if (root.stickyPlayer.__playing && (root.__playerMiddle > winbottom || root.__playerMiddle < wintop)) {
+            console.log(wintop,root.__playerTop,root.__playerMiddle,root.__playerBottom,winbottom);
+            if (root.stickyPlayer.__playing && (root.__playerLowerMiddle > winbottom || root.__playerUpperMiddle < wintop)) {
               root.stickyPlayer.toggleSticky(true);
             } else {
               root.stickyPlayer.toggleSticky(false);

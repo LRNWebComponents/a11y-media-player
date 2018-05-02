@@ -245,13 +245,13 @@ Basic customization:
         audio-only$="[[audioOnly]]"
         autoplay$="[[autoplay]]"
         cc$="[[cc]]" 
+        custom-microcopy$="[[customMicrocopy]]" 
         dark$="[[dark]]"
         disableFullscreen$="[[disableFullscreen]]"
         fullscreen$="[[fullscreen]]"
         height$="[[height]]"
         hide-elapsed-time$="[[hideElapsedTime]]"
         lang$="[[lang]]"
-        localization$="[[localization]]" 
         loop$="[[loop]]" 
         no-height$="[[noHeight]]"
         media-title$="[[mediaTitle]]"
@@ -268,14 +268,32 @@ Basic customization:
     <div id="transcript-outer">
       <div id="searchbar" hidden$="[[disableSearch]]"  disabled$="[[disableSearch]]">
         <div id="searching">
-          <simple-search id="search" label="search transcript"></simple-search>
+          <simple-search id="search" label="[[microcopy.searchTranscript]]"></simple-search>
         </div>
         <div id="scrolling">
-          <a11y-media-button id="scroll" icon="swap-vert" label="auto-scrolling" toggle$="[[!disableScroll]]"></a11y-media-button>
+          <a11y-media-button 
+            
+            controls="transcript" 
+            id="scroll" 
+            icon="[[microcopy.autoScroll.icon]]" 
+            label="[[microcopy.autoScroll.label]]" 
+            toggle$="[[!disableScroll]]">
+          </a11y-media-button>
+        </div>
+        <div id="printing">
+          <a11y-media-button 
+            
+            controls="transcript" 
+            id="print" 
+            icon="[[microcopy.print.icon]]" 
+            label="[[microcopy.print.label]]" 
+            toggle$="[[!disablePrintButton]]">
+          </a11y-media-button>
         </div>
       </div>
       <a11y-media-transcript 
         accent-color$="[[accentColor]]"
+        custom-microcopy$="[[customMicrocopy]]" 
         disable-scroll$="[[disableScroll]]"
         disable-search$="[[disableSearch]]"
         disable-interactive$="[[disableInteractive]]"
@@ -300,7 +318,7 @@ Basic customization:
       behaviors: [
         a11yMediaBehaviors.PlayerBehaviors, 
         a11yMediaBehaviors.TranscriptBehaviors,
-        a11yMediaBehaviors.UtilityFunctions
+        a11yMediaBehaviors.GeneralFunctions
       ],
 
       properties: {
@@ -321,6 +339,9 @@ Basic customization:
         root.$.transcript.setMedia(root.$.player);
         root.$.scroll.addEventListener('button-clicked',function(e){
           root.disableScroll = !root.disableScroll;
+        });
+        root.$.print.addEventListener('button-clicked',function(e){
+          root.$.transcript.print(root.mediaTitle);
         });
         root._addResponsiveUtility();
       },

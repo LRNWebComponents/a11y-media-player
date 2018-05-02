@@ -337,6 +337,7 @@ A LRN element
         position: absolute;
         top: 0;
         left: 0;
+        max-height: 0.8vh;
       }
       :host a11y-media-play-button {
         padding-top: 56.25%;
@@ -359,14 +360,17 @@ A LRN element
         :host #print-only {
           display: inline;
         }
-        :host #print-only:after {
+        :host #print-only .media-type {
           display: inline;
-          content: ' (Interactive Media)';
           font-style: italic;
         }
       }
     </style>
-    <div id="print-only" lang$="[[lang]]">[[mediaTitle]]</div>
+    <span id="print-only" lang$="[[lang]]">
+      [[mediaTitle]]
+      (<span class="media-type" hidden$="[[audioOnly]]">[[microcopy.video]]</span>
+      <span class="media-type" hidden$="[[!audioOnly]]">[[microcopy.audio]]</span>)
+    </span>
     <div id="player">
       <div id="player-inner">
         <div id="media" hidden$="[[noHeight]]">
@@ -414,6 +418,7 @@ A LRN element
       allow-fullscreen$="[[allowFullscreen]]"
       autoplay$="[[autoplay]]"
       cc$="[[cc]]"
+      custom-microcopy$="[[customMicrocopy]]" 
       fullscreen$="[[fullscreen]]" 
       has-captions$="[[hasCaptions]]"
       has-transcript$="[[hasTranscript]]"
@@ -421,7 +426,6 @@ A LRN element
       hide-transcript$="[[hideTranscript]]"
       id="controls"
       length="[[__length]]"
-      localization$="[[_getLocalization(localization)]]" 
       loop$="[[loop]]"
       muted$="[[muted]]"
       responsive-size="[[responsiveSize]]"
@@ -443,7 +447,7 @@ A LRN element
       
       behaviors: [
         a11yMediaBehaviors.PlayerBehaviors, 
-        a11yMediaBehaviors.UtilityFunctions
+        a11yMediaBehaviors.GeneralFunctions
       ],
       
       properties: {
@@ -776,32 +780,32 @@ A LRN element
        * determine which button was clicked and act accordingly 
        */
        _onControlsChanged: function(e){
-        let action = e.detail.label !== undefined ? e.detail.label : e.detail.id;
-        if (action === 'backward') {
-          this.rewind(this.__src.duration/20);
-        } else if (action === 'closed captions' || action === 'captions') {
-          this.toggleCC();
-        } else if (action === 'transcript' || action === 'transcript-toggle') {
-          this.toggleTranscript();
-        } else if (action === 'forward') {
-          this.forward(this.__src.duration/20);
-        } else if (action === 'full screen') {
-          screenfull.toggle(this);
-        } else if (action === 'loop') {
-          this.toggleLoop();
-        } else if (action === 'mute' || action === 'unmute') {
-          this.toggleMute();
-        } else if (action === 'pause') {
-          this.pause();
-        } else if (action === 'play') {
-          this.play();
-        } else if (action === 'restart') {
-          this.seek(0);
-          this.play();
-        } else if (action === 'speed') {
-          this.setPlaybackRate(e.detail.value);
-        } else if (action === 'volume') {
-          this.setVolume(e.detail.value);
+        let root = this, action = e.detail.label !== undefined ? e.detail.label : e.detail.id;
+        if (action === 'backward' || action === root.microcopy.backward.label) {
+          root.rewind(root.__src.duration/20);
+        } else if (action === 'closed captions' || action === 'captions' || action === root.microcopy.captions.label  || action === root.microcopy.settings.items.captions) {
+          root.toggleCC();
+        } else if (action === 'transcript' || action === 'transcript-toggle' || action === root.microcopy.transcript.label  || action === root.microcopy.settings.items.transcript) {
+          root.toggleTranscript();
+        } else if (action === 'forward' || action === root.microcopy.forward.label) {
+          root.forward(root.__src.duration/20);
+        } else if (action === 'full screen' || action === root.microcopy.fullscreen.label) {
+          screenfull.toggle(root);
+        } else if (action === 'loop' || action === root.microcopy.settings.items.loop) {
+          root.toggleLoop();
+        } else if (action === 'mute' || action === 'unmute' || action === root.microcopy.mute.label || action === root.microcopy.unmute.label ) {
+          root.toggleMute();
+        } else if (action === 'pause' || action === root.microcopy.pause.label) {
+          root.pause();
+        } else if (action === 'play' || action === root.microcopy.play.label) {
+          root.play();
+        } else if (action === 'restart' || action === root.microcopy.restart.label) {
+          root.seek(0);
+          root.play();
+        } else if (action === 'speed' || action === root.microcopy.settings.items.speed) {
+          root.setPlaybackRate(e.detail.value);
+        } else if (action === 'volume' || action === root.microcopy.volume) {
+          root.setVolume(e.detail.value);
         }
       },
       /**

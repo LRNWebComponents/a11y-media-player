@@ -58,7 +58,7 @@
         </template>
       </demo-snippet>  
       
-      <h3>a11y-media-group demo, dark, with custom styles and language localization</h3>
+      <h3>a11y-media-group demo, dark, with custom styles and custom microcopy</h3>
       <demo-snippet>
         <template>
           <style is="custom-style">
@@ -73,15 +73,19 @@
                 --a11y-media-transcript-matched-cue-text: #ffffff;
               }
             </style>
-            <a11y-media-group id="custom1" accent-color="red" dark lang="es" localization='{
+            <a11y-media-group id="custom1" accent-color="red" dark lang="es" custom-microcopy='{
               "lang": "es",
+              "video": "vídeo",
+              "autoScroll": { "label": "desplazamiento automático", "icon": "swap-vert" },
               "captions": { "label": "subtítulos", "icon": "av:closed caption" },
               "backward": { "label": "rebobinar", "icon": "av:fast-rewind" },
               "fullscreen": { "label": "fullscreen", "icon": "fullscreen" },
               "mute": { "label": "mudo", "icon": "av:volume-up" },
               "pause": { "label": "pausa", "icon": "av:pause" },
               "play": { "label": "comienzo", "icon": "av:play-arrow" },
+              "print": { "label": "impresión", "icon": "print" },
               "restart": { "label": "reiniciar", "icon": "av:replay" },
+              "searchTranscript": "buscar la transcripción",
               "settings": {
                 "label": "sreferencias",
                 "icon": "settings",
@@ -93,15 +97,16 @@
                   "transcript": "Transcripción"
                 }
               },
+              "skipTranscript": "omitir la transcripción",
               "transcript": { "label": "transcripción", "icon": "description" },
               "unmute": { "label": "dejar de silenciar", "icon": "av:volume-off" },
               "volume": { "label": "volumen" }
             }'>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
-            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
+            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt" default>
+            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt">
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
-            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
           </a11y-media-group>
         </template>
       </demo-snippet>  

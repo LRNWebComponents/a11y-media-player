@@ -9,7 +9,6 @@ A set of behaviors for a11y-media components.
 
 <script>
   window.a11yMediaBehaviors = window.a11yMediaBehaviors || {};
-  // ensure we have consistent reporting of haxBodyProperties
   window.a11yMediaBehaviors.PlayerBehaviors = {
     properties: {
       /** 
@@ -108,14 +107,6 @@ A set of behaviors for a11y-media components.
       hideTranscript: {
         type: Boolean,
         value: false,
-        reflectToAttribute: true,
-      },
-      /**
-        * localization object allows controls microcopy to be modified
-        */
-      localization: {
-        type: Object,
-        value: {},
         reflectToAttribute: true,
       },
       /**
@@ -242,138 +233,6 @@ A set of behaviors for a11y-media components.
       return audioOnly && (thumbnailSrc === null || thumbnailSrc === undefined);
     },
     /**
-      * localizes the microcopy of any overriden defaults.
-      * Defaults are as follows: 
-      * {
-      *   "lang": "en",
-      *   "captions": {
-      *     "label": "closed captions",
-      *     "icon": "av:closed caption",
-      *   },
-      *   "backward": {
-      *     "label": "backward",
-      *     "icon": "av:fast-rewind",
-      *   },
-      *   "forward": {
-      *     "label": "forward",
-      *     "icon": "av:fast-forward",
-      *   },
-      *   "fullscreen": {
-      *     "label": "fullscreen",
-      *     "icon": "fullscreen",
-      *   },
-      *   "mute": {
-      *     "label": "mute",
-      *     "icon": "av:volume-up",
-      *   },
-      *   "pause": {
-      *     "label": "pause",
-      *     "icon": "av:pause",
-      *   },
-      *   "play": {
-      *     "label": "play",
-      *     "icon": "av:play-arrow",
-      *   },
-      *   "restart": {
-      *     "label": "restart",
-      *     "icon": "av:replay",
-      *   },
-      *   "settings": {
-      *     "label": "settings",
-      *     "icon": "settings",
-      *     "items": {
-      *       "captions": "Captions",
-      *       "captionsOff": "Off",
-      *       "loop": "Loop",
-      *       "speed": "Speed %",
-      *       "transcript": "Transcript"
-      *     }
-      *   },
-      *   "transcript": {
-      *     "label": "transcript",
-      *     "icon": "description",
-      *   },
-      *   "unmute": {
-      *     "label": "unmute",
-      *     "icon": "av:volume-off",
-      *   },
-      *   "volume": {
-      *     "label": "volume",
-      *   },
-      * },
-      */ 
-    _getLocalization: function(localization){
-      let defaults = {
-        "lang": "en",
-        "captions": {
-          "label": "closed captions",
-          "icon": "av:closed caption",
-        },
-        "backward": {
-          "label": "backward",
-          "icon": "av:fast-rewind",
-        },
-        "forward": {
-          "label": "forward",
-          "icon": "av:fast-forward",
-        },
-        "fullscreen": {
-          "label": "fullscreen",
-          "icon": "fullscreen",
-        },
-        "mute": {
-          "label": "mute",
-          "icon": "av:volume-up",
-        },
-        "pause": {
-          "label": "pause",
-          "icon": "av:pause",
-        },
-        "play": {
-          "label": "play",
-          "icon": "av:play-arrow",
-        },
-        "restart": {
-          "label": "restart",
-          "icon": "av:replay",
-        },
-        "settings": {
-          "label": "settings",
-          "icon": "settings",
-          "items": {
-            "captions": "Captions",
-            "captionsOff": "Off",
-            "loop": "Loop",
-            "speed": "Speed %",
-            "transcript": "Transcript"
-          }
-        },
-        "transcript": {
-          "label": "transcript",
-          "icon": "description",
-        },
-        "unmute": {
-          "label": "unmute",
-          "icon": "av:volume-off",
-        },
-        "volume": {
-          "label": "volume",
-        },
-      }, setLocal = function(defaults,customs){
-        for (var key in defaults){
-          if(customs[key] !== null & customs[key] !== undefined) {
-            if(typeof(customs[key]) == Object){
-              defaults[key] = setLocal(defaults[key],customs[key]);
-            } else {
-              defaults[key] = customs[key];
-            }
-          }
-        }
-        return defaults;
-      };
-      return setLocal(defaults,localization);
-    },
-    /**
       * returns true if an attribute is set to a value
       */ 
       _testAttribute: function(attr,val){
@@ -401,6 +260,13 @@ A set of behaviors for a11y-media components.
         * disable autoscrolling as transcript plays 
         */
       disableScroll: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * disable transcript print button
+        */
+      disablePrintButton: {
         type: Boolean,
         value: false,
       },
@@ -434,7 +300,23 @@ A set of behaviors for a11y-media components.
       }
     }
   };
-  window.a11yMediaBehaviors.UtilityFunctions = {
+  window.a11yMediaBehaviors.GeneralFunctions = {
+    properties: {
+      /**
+        * custom microcopy that can override defaults
+        */
+      customMicrocopy: {
+        type: Object,
+        value: {}
+      },
+      /**
+        * microcopy
+        */
+      microcopy: {
+        type: Object,
+        computed: '_getMicrocopy(customMicrocopy)'
+      }
+    },
     /**
       * calls responsive-utility to get parent's responsive size
       */ 
@@ -446,6 +328,155 @@ A set of behaviors for a11y-media components.
       };
       Polymer.ResponsiveUtility.requestAvailability();
       root.fire('responsive-element',data2);
+    },
+    /**
+      * customizes the microcopy of any overriden defaults.
+      * Defaults are as follows: 
+      * {
+      *   "lang": "en",
+      *   "captions": {
+      *     "label": "closed captions",
+      *     "icon": "av:closed caption",
+      *   },
+      *   "backward": {
+      *     "label": "backward",
+      *     "icon": "av:fast-rewind",
+      *   },
+      *   "forward": {
+      *     "label": "forward",
+      *     "icon": "av:fast-forward",
+      *   },
+      *   "fullscreen": {
+      *     "label": "fullscreen",
+      *     "icon": "fullscreen",
+      *   },
+      *   "mute": {
+      *     "label": "mute",
+      *     "icon": "av:volume-up",
+      *   },
+      *   "pause": {
+      *     "label": "pause",
+      *     "icon": "av:pause",
+      *   },
+      *   "play": {
+      *     "label": "play",
+      *     "icon": "av:play-arrow",
+      *   },
+      *   "print": {
+      *     "label": "print",
+      *     "icon": "print",
+      *   },
+      *   "restart": {
+      *     "label": "restart",
+      *     "icon": "av:replay",
+      *   },
+      *   "settings": {
+      *     "label": "settings",
+      *     "icon": "settings",
+      *     "items": {
+      *       "captions": "Captions",
+      *       "captionsOff": "Off",
+      *       "loop": "Loop",
+      *       "speed": "Speed %",
+      *       "transcript": "Transcript"
+      *     }
+      *   },
+      *   "skipTranscript": "Skip the transcript.", //off-screen link for screenreaders to skip the transcript
+      *   "transcript": {
+      *     "label": "transcript",
+      *     "icon": "description",
+      *   },
+      *   "unmute": {
+      *     "label": "unmute",
+      *     "icon": "av:volume-off",
+      *   },
+      *   "volume": {
+      *     "label": "volume",
+      *   },
+      * },
+      */ 
+    _getMicrocopy: function(customMicrocopy){
+      let defaults = {
+        "lang": "en",
+        "audio": "audio",
+        "autoScroll": {
+          "label": "auto-scrolling",
+          "icon": "swap-vert"
+        },
+        "captions": {
+          "label": "closed captions",
+          "icon": "av:closed caption"
+        },
+        "backward": {
+          "label": "backward",
+          "icon": "av:fast-rewind"
+        },
+        "forward": {
+          "label": "forward",
+          "icon": "av:fast-forward"
+        },
+        "fullscreen": {
+          "label": "fullscreen",
+          "icon": "fullscreen"
+        },
+        "mute": {
+          "label": "mute",
+          "icon": "av:volume-up"
+        },
+        "pause": {
+          "label": "pause",
+          "icon": "av:pause",
+        },
+        "play": {
+          "label": "play",
+          "icon": "av:play-arrow"
+        },
+        "print": {
+          "label": "print",
+          "icon": "print"
+        },
+        "restart": {
+          "label": "restart",
+          "icon": "av:replay"
+        },
+        "searchTranscript": "search transcript",
+        "settings": {
+          "label": "settings",
+          "icon": "settings",
+          "items": {
+            "captions": "Captions",
+            "captionsOff": "Off",
+            "loop": "Loop",
+            "speed": "Speed %",
+            "transcript": "Transcript"
+          }
+        },
+        "skipTranscript": "Skip the transcript.",
+        "transcript": {
+          "label": "transcript",
+          "icon": "description"
+        },
+        "unmute": {
+          "label": "unmute",
+          "icon": "av:volume-off"
+        },
+        "video": "video",
+        "volume": "volume"
+      }, setLocal = function(defaults,customs){
+        if(customs !== null && customs !== undefined) {
+          for (var key in defaults){
+            if(customs[key] !== null & customs[key] !== undefined) {
+              if(typeof(customs[key]) == Object){
+                defaults[key] = setLocal(defaults[key],customs[key]);
+              } else {
+                defaults[key] = customs[key];
+              }
+            }
+          }
+        }
+        return defaults;
+      };
+      return setLocal(defaults,customMicrocopy);
     }
   };
 </script>
