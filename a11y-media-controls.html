@@ -190,7 +190,7 @@ The controls bar for the a11y-media-player.
     <div id="controls-right">
       <a11y-media-button class="captions" icon="av:closed-caption" label="closed captions" toggle$="[[cc]]"></a11y-media-button>
       <a11y-media-button class="transcript" hidden-when="xs sm" icon="description" label="transcript" toggle$="[[!hideTranscript]]"></a11y-media-button>
-      <paper-menu-button id="settings" vertical-align="bottom" ignore-select>
+      <paper-menu-button id="settings" vertical-align="bottom" horizontal-align="right" ignore-select>
         <paper-icon-button icon="settings" slot="dropdown-trigger" alt="Settings"></paper-icon-button>
         <paper-listbox id="settingslist" slot="dropdown-content">
           <paper-item hidden-when="md lg xl" class="transcript">
