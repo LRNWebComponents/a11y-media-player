@@ -139,14 +139,16 @@ Basic customization:
         :host #searching {
             flex-grow: 2;
         }
-        :host #scrolling {
+        :host #scrolling,
+        :host #printing {
           display: flex;
           align-items: center;
         }
         :host #autoscroll {
           padding-right: 0.5em;
         }
-        :host #scroll {
+        :host #scroll,
+        :host #print {
           --a11y-media-button-toggle-color: var(--a11y-media-transcript-focus-color, #000000);
           --a11y-media-button-color: var(--a11y-media-transcript-text-color, #666666);
           --a11y-media-button-bg-color:  var(--a11y-media-transcript-bg-color, #ffffff);
@@ -154,71 +156,88 @@ Basic customization:
           --a11y-media-button-hover-bg-color:  var(--a11y-media-transcript-bg-color, #ffffff);
         }
         :host[accent-color="red"] #search, 
-        :host[accent-color="red"] #scroll { 
+        :host[accent-color="red"] #scroll, 
+        :host[accent-color="red"] #print { 
           --a11y-media-transcript-focus-color: #d50000;
         }
         :host[accent-color="pink"] #search,
-        :host[accent-color="pink"] #scroll { 
+        :host[accent-color="pink"] #scroll, 
+        :host[accent-color="pink"] #print { 
           --a11y-media-transcript-focus-color: #f50057;
         }
         :host[accent-color="purple"] #search,
-        :host[accent-color="purple"] #scroll { 
+        :host[accent-color="purple"] #scroll, 
+        :host[accent-color="purple"] #print { 
           --a11y-media-transcript-focus-color: #d500f9;
         }
         :host[accent-color="deep-purple"] #search,
-        :host[accent-color="deep-purple"] #scroll { 
+        :host[accent-color="deep-purple"] #scroll, 
+        :host[accent-color="deep-purple"] #print { 
           --a11y-media-transcript-focus-color: #651fff;
         }
         :host[accent-color="indigo"] #search,
-        :host[accent-color="indigo"] #scroll { 
+        :host[accent-color="indigo"] #scroll,
+        :host[accent-color="indigo"] #print { 
           --a11y-media-transcript-focus-color: #304ffe;
         }
         :host[accent-color="blue"] #search,
-        :host[accent-color="blue"] #scroll { 
+        :host[accent-color="blue"] #scroll, 
+        :host[accent-color="blue"] #print { 
           --a11y-media-transcript-focus-color: #1565c0;
         }
         :host[accent-color="light-blue"] #search,
-        :host[accent-color="light-blue"] #scroll { 
+        :host[accent-color="light-blue"] #scroll, 
+        :host[accent-color="light-blue"] #print { 
           --a11y-media-transcript-focus-color: #0091ea;
         }
         :host[accent-color="cyan"] #search,
-        :host[accent-color="cyan"] #scroll { 
+        :host[accent-color="cyan"] #scroll, 
+        :host[accent-color="cyan"] #print { 
           --a11y-media-transcript-focus-color: #0097a7;
         }
         :host[accent-color="teal"] #search,
-        :host[accent-color="teal"] #scroll { 
+        :host[accent-color="teal"] #scroll, 
+        :host[accent-color="teal"] #print { 
           --a11y-media-transcript-focus-color: #00897b;
         }
         :host[accent-color="green"] #search,
-        :host[accent-color="green"] #scroll { 
+        :host[accent-color="green"] #scroll, 
+        :host[accent-color="green"] #print { 
           --a11y-media-transcript-focus-color: #02993c;
         }
         :host[accent-color="light-green"] #search,
-        :host[accent-color="light-green"] #scroll { 
+        :host[accent-color="light-green"] #scroll, 
+        :host[accent-color="light-green"] #print { 
           --a11y-media-transcript-focus-color: #448f02;
         }
         :host[accent-color="lime"] #search,
-        :host[accent-color="lime"] #scroll { 
+        :host[accent-color="lime"] #scroll, 
+        :host[accent-color="lime"] #print { 
           --a11y-media-transcript-focus-color: #6f8e00;
         }
         :host[accent-color="yellow"] #search,
-        :host[accent-color="yellow"] #scroll { 
+        :host[accent-color="yellow"] #scroll, 
+        :host[accent-color="yellow"] #print { 
           --a11y-media-transcript-focus-color: #9a8000;
         }
         :host[accent-color="amber"] #search,
-        :host[accent-color="amber"] #scroll { 
+        :host[accent-color="amber"] #scroll, 
+        :host[accent-color="amber"] #print { 
           --a11y-media-transcript-focus-color: #bf7f00;
         }
         :host[accent-color="orange"] #search,
-        :host[accent-color="orange"] #scroll { 
+        :host[accent-color="orange"] #scroll, 
+        :host[accent-color="orange"] #print { 
           --a11y-media-transcript-focus-color: #e65100;
         }
         :host[accent-color="deep-orange"] #search,
-        :host[accent-color="deep-orange"] #scroll { 
+        :host[accent-color="deep-orange"] #scroll, 
+        :host[accent-color="deep-orange"] #print { 
           --a11y-media-transcript-focus-color: #ff3d00;
         }
         :host[accent-color="brown"] #search,
-        :host[accent-color="brown"] #scroll { 
+        :host[accent-color="brown"] #scroll, 
+        :host[accent-color="brown"] #print { 
           --a11y-media-transcript-focus-color: #5d4037;
         }
         :host:not([disable-search]) #transcript {
@@ -272,7 +291,6 @@ Basic customization:
         </div>
         <div id="scrolling">
           <a11y-media-button 
-            
             controls="transcript" 
             id="scroll" 
             icon="[[microcopy.autoScroll.icon]]" 
@@ -282,12 +300,11 @@ Basic customization:
         </div>
         <div id="printing">
           <a11y-media-button 
-            
             controls="transcript" 
             id="print" 
             icon="[[microcopy.print.icon]]" 
             label="[[microcopy.print.label]]" 
-            toggle$="[[!disablePrintButton]]">
+            hidden$="[[disablePrintButton]]">
           </a11y-media-button>
         </div>
       </div>
