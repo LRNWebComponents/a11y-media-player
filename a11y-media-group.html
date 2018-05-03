@@ -1,9 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
-<link rel="import" href="../simple-search/simple-search.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-player.html">
+<link rel="import" href="a11y-media-transcript-controls.html">
 
 <!--
 `a11y-media-group`
@@ -103,6 +103,7 @@ Basic customization:
           right: 0; 
           bottom: 0;
           overflow-y: scroll;
+          margin-top: 40px;
         }
         :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) #player.totop {
           position: absolute;
@@ -114,134 +115,13 @@ Basic customization:
         :host #transcript-outer {
           position: relative;
         }
-        :host #searchbar {
+        :host #controls {
           z-index: 1000;
           position: absolute;
           top: 0;
-          background-color: var(--a11y-media-transcript-bg-color, #ffffff);
-          color: var(--a11y-media-transcript-text-color, #666666);
+          left: 0;
           width: 100%;
           display: flex;
-          align-items: stretch;
-          justify-content: space-between;
-        }
-        :host[hide-transcript] #searchbar {
-          display: none;
-        }
-        :host #search {
-          --paper-input-container-input-color: var(--a11y-media-transcript-text-color, #666666);
-          --paper-input-container-focus-color: var(--a11y-media-transcript-focus-color, #000000);
-          --paper-input-container-color: var(--a11y-media-transcript-text-color, #666666);
-          --paper-input-container: {
-            padding: 0 15px;
-          };
-        }
-        :host #searching {
-            flex-grow: 2;
-        }
-        :host #scrolling,
-        :host #printing {
-          display: flex;
-          align-items: center;
-        }
-        :host #autoscroll {
-          padding-right: 0.5em;
-        }
-        :host #scroll,
-        :host #print {
-          --a11y-media-button-toggle-color: var(--a11y-media-transcript-focus-color, #000000);
-          --a11y-media-button-color: var(--a11y-media-transcript-text-color, #666666);
-          --a11y-media-button-bg-color:  var(--a11y-media-transcript-bg-color, #ffffff);
-          --a11y-media-button-hover-color: var(--a11y-media-transcript-focus-color, #000000);
-          --a11y-media-button-hover-bg-color:  var(--a11y-media-transcript-bg-color, #ffffff);
-        }
-        :host[accent-color="red"] #search, 
-        :host[accent-color="red"] #scroll, 
-        :host[accent-color="red"] #print { 
-          --a11y-media-transcript-focus-color: #d50000;
-        }
-        :host[accent-color="pink"] #search,
-        :host[accent-color="pink"] #scroll, 
-        :host[accent-color="pink"] #print { 
-          --a11y-media-transcript-focus-color: #f50057;
-        }
-        :host[accent-color="purple"] #search,
-        :host[accent-color="purple"] #scroll, 
-        :host[accent-color="purple"] #print { 
-          --a11y-media-transcript-focus-color: #d500f9;
-        }
-        :host[accent-color="deep-purple"] #search,
-        :host[accent-color="deep-purple"] #scroll, 
-        :host[accent-color="deep-purple"] #print { 
-          --a11y-media-transcript-focus-color: #651fff;
-        }
-        :host[accent-color="indigo"] #search,
-        :host[accent-color="indigo"] #scroll,
-        :host[accent-color="indigo"] #print { 
-          --a11y-media-transcript-focus-color: #304ffe;
-        }
-        :host[accent-color="blue"] #search,
-        :host[accent-color="blue"] #scroll, 
-        :host[accent-color="blue"] #print { 
-          --a11y-media-transcript-focus-color: #1565c0;
-        }
-        :host[accent-color="light-blue"] #search,
-        :host[accent-color="light-blue"] #scroll, 
-        :host[accent-color="light-blue"] #print { 
-          --a11y-media-transcript-focus-color: #0091ea;
-        }
-        :host[accent-color="cyan"] #search,
-        :host[accent-color="cyan"] #scroll, 
-        :host[accent-color="cyan"] #print { 
-          --a11y-media-transcript-focus-color: #0097a7;
-        }
-        :host[accent-color="teal"] #search,
-        :host[accent-color="teal"] #scroll, 
-        :host[accent-color="teal"] #print { 
-          --a11y-media-transcript-focus-color: #00897b;
-        }
-        :host[accent-color="green"] #search,
-        :host[accent-color="green"] #scroll, 
-        :host[accent-color="green"] #print { 
-          --a11y-media-transcript-focus-color: #02993c;
-        }
-        :host[accent-color="light-green"] #search,
-        :host[accent-color="light-green"] #scroll, 
-        :host[accent-color="light-green"] #print { 
-          --a11y-media-transcript-focus-color: #448f02;
-        }
-        :host[accent-color="lime"] #search,
-        :host[accent-color="lime"] #scroll, 
-        :host[accent-color="lime"] #print { 
-          --a11y-media-transcript-focus-color: #6f8e00;
-        }
-        :host[accent-color="yellow"] #search,
-        :host[accent-color="yellow"] #scroll, 
-        :host[accent-color="yellow"] #print { 
-          --a11y-media-transcript-focus-color: #9a8000;
-        }
-        :host[accent-color="amber"] #search,
-        :host[accent-color="amber"] #scroll, 
-        :host[accent-color="amber"] #print { 
-          --a11y-media-transcript-focus-color: #bf7f00;
-        }
-        :host[accent-color="orange"] #search,
-        :host[accent-color="orange"] #scroll, 
-        :host[accent-color="orange"] #print { 
-          --a11y-media-transcript-focus-color: #e65100;
-        }
-        :host[accent-color="deep-orange"] #search,
-        :host[accent-color="deep-orange"] #scroll, 
-        :host[accent-color="deep-orange"] #print { 
-          --a11y-media-transcript-focus-color: #ff3d00;
-        }
-        :host[accent-color="brown"] #search,
-        :host[accent-color="brown"] #scroll, 
-        :host[accent-color="brown"] #print { 
-          --a11y-media-transcript-focus-color: #5d4037;
-        }
-        :host:not([disable-search]) #transcript {
-          padding-top: 49px;
         }
       }
       @media print {
@@ -285,29 +165,13 @@ Basic customization:
       </a11y-media-player>
     </div>
     <div id="transcript-outer">
-      <div id="searchbar" hidden$="[[disableSearch]]"  disabled$="[[disableSearch]]">
-        <div id="searching">
-          <simple-search id="search" label="[[microcopy.searchTranscript]]"></simple-search>
-        </div>
-        <div id="scrolling">
-          <a11y-media-button 
-            controls="transcript" 
-            id="scroll" 
-            icon="[[microcopy.autoScroll.icon]]" 
-            label="[[microcopy.autoScroll.label]]" 
-            toggle$="[[!disableScroll]]">
-          </a11y-media-button>
-        </div>
-        <div id="printing">
-          <a11y-media-button 
-            controls="transcript" 
-            id="print" 
-            icon="[[microcopy.print.icon]]" 
-            label="[[microcopy.print.label]]" 
-            hidden$="[[disablePrintButton]]">
-          </a11y-media-button>
-        </div>
-      </div>
+      <a11y-media-transcript-controls
+        accent-color$="[[accentColor]]" 
+        disable-print-button$="[[disablePrintButton]]"
+        disable-search$="[[disableSearch]]" 
+        id="controls"
+        microcopy$="[[microcopy]]">
+      </a11y-media-transcript-controls>
       <a11y-media-transcript 
         accent-color$="[[accentColor]]"
         custom-microcopy$="[[customMicrocopy]]" 
@@ -340,13 +204,6 @@ Basic customization:
 
       properties: {
         /** 
-          * disable transcript search feature 
-          */
-        disableSearch: {
-          type: Boolean,
-          value: false,
-        },
-        /** 
           * stacked layout instead of side-by-side?
           */
         stackedLayout: {
@@ -360,13 +217,14 @@ Basic customization:
       attached: function(){
         let root = this;
         root.search = root.$.search;
-        root.$.transcript.setMedia(root.$.player);
-        root.$.scroll.addEventListener('button-clicked',function(e){
+        root.$.controls.addEventListener('toggle-scroll',function(e){
           root.disableScroll = !root.disableScroll;
         });
-        root.$.print.addEventListener('button-clicked',function(e){
+        root.$.controls.addEventListener('print-transcript',function(e){
+          this.fire('print-transcript',this);
           root.$.transcript.print(root.mediaTitle);
         });
+        root.$.transcript.setMedia(root.$.player);
         root._addResponsiveUtility();
       },
       /**

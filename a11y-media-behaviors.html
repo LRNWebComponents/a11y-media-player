@@ -135,7 +135,7 @@ A set of behaviors for a11y-media components.
       /**
         * Is the size mobile?
         */
-      mobileSize: {
+      smallPlayer: {
         type: Boolean,
         computed: '_testAttribute(responsiveSize,"xs")',
         notify: true,
@@ -181,7 +181,7 @@ A set of behaviors for a11y-media components.
       /**
         * show the FullscreenButton?
         */
-      showFullscreenButton: {
+      fullscreenButton: {
         type: Boolean,
         computed: '_getFullscreenButton(disableFullscreen)',
         notify: true
@@ -271,6 +271,13 @@ A set of behaviors for a11y-media components.
         * disable interactive mode that makes the transcript clickable 
         */
       disableInteractive: {
+        type: Boolean,
+        value: false,
+      },
+      /** 
+        * disable transcript search feature 
+        */
+      disableSearch: {
         type: Boolean,
         value: false,
       },
