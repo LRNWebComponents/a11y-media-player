@@ -204,15 +204,31 @@ The controls bar for the a11y-media-player.
     </div>
     <div id="controls-right">
       <a11y-media-button class="captions" icon="[[microcopy.captions.icon]]" label="[[microcopy.captions.label]]" toggle$="[[cc]]"></a11y-media-button>
-      <a11y-media-button class="transcript" hidden$="[[compactControls]]" disabled$="[[compactControls]]" icon="[[microcopy.transcript.icon]]" label="[[microcopy.transcript.label]]" toggle$="[[!hideTranscript]]"></a11y-media-button>
+      <a11y-media-button 
+        class="transcript"   
+        controls="transcript"
+        hidden$="[[compactControls]]" 
+        disabled$="[[compactControls]]" 
+        icon="[[microcopy.transcript.icon]]" 
+        label="[[microcopy.transcript.label]]"
+        toggle$="[[!hideTranscript]]">
+      </a11y-media-button>
       <paper-menu-button id="settings" vertical-align="bottom" horizontal-align="right" ignore-select>
         <paper-icon-button icon="[[microcopy.settings.icon]]" slot="dropdown-trigger" alt="[[microcopy.settings.label]]"></paper-icon-button>
         <paper-listbox id="settingslist" slot="dropdown-content">
           <paper-item hidden$="[[!compactControls]]" class="transcript">
             <div class="setting">
-              <div id="transcript-label" class="setting-text">[[microcopy.settings.items.transcript]]</div>
+              <div id="transcript-label" class="setting-text">
+                [[microcopy.settings.items.transcript]]
+              </div>
               <div class="setting-control">
-                <paper-toggle-button id="transcript-toggle" aria-labelledby="transcript-label" checked$="[[!hideTranscript]]" disabled$="[[!compactControls]]"></paper-toggle-button>
+                <paper-toggle-button 
+                  id="transcript-toggle" 
+                  aria-labelledby="transcript-label" 
+                  checked$="[[!hideTranscript]]"  
+                  controls="transcript"
+                  disabled$="[[!compactControls]]">
+                </paper-toggle-button>
               </div>
             </div>
           </paper-item>

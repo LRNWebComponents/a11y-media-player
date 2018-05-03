@@ -80,7 +80,7 @@ A transcript element to pair with a11y-media-player
             order$="[[cue.order]]"
             role="button"
             search="[[search]]"
-            tabindex="1">
+            tabindex="0">
           </a11y-media-transcript-cue>
         </template>
       </div>
@@ -161,11 +161,6 @@ A transcript element to pair with a11y-media-player
         let root = this, inner = document.getElementById('inner'), active = (inner !== null && inner !== undefined) ? inner.querySelector('a11y-media-transcript-cue[active]') : null, first = (inner !== null && inner !== undefined) ? inner.querySelector('a11y-media-transcript-cue') : null;
         mode = mode !== undefined ? mode : this.hidden;
         this.hidden = mode;
-        if(!mode && active !== null){
-          active.focus();
-        } else if (!mode && first !== null){
-          first.focus();
-        }
       },
       /** 
        * prints the active transcript
