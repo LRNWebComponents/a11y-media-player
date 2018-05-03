@@ -18,6 +18,27 @@ The controls bar for the a11y-media-player.
 
 @microcopy - the mental model for this element
  - the control bar for the media player
+
+  <a11y-media-controls 
+    accent-color$="[[accentColor]]"             // Optional accent color for controls, 
+                                                // using the following materialize colors: 
+                                                // red, pink, purple, deep-purple, indigo, blue, 
+                                                // light blue, cyan, teal, green, light green, lime, 
+                                                // yellow, amber, orange, deep-orange, and brown. 
+                                                // Default is null. 
+    allow-fullscreen$="[[allowFullscreen]]"         // Allow fullscreen mode?
+    audio-only$="[[audioOnly]]"                 // Is media audio only?
+    autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
+    cc$="[[cc]]"                                // Are closed captions toggled?
+    dark$="[[dark]]"                            // Is the color scheme dark? Default is light.    
+    disableFullscreen$="[[disableFullscreen]]"  // Is full screen mode disabled?
+    fullscreen$="[[fullscreen]]"                // Is full screen mode toggled on?
+    hide-elapsed-time$="[[hideElapsedTime]]"    // Is elapsed time hidden?
+    loop$="[[loop]]"                            // Is video on a loop?
+    microcopy$="[[microcopy]]"                      // Optional customization or text and icons
+    muted$="[[muted]]"                          // Is video muted?
+    volume$="[[volume]]">                        // The initial volume of the video
+  </a11y-media-controls>
  -
  -
 

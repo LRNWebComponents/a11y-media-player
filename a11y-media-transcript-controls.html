@@ -17,12 +17,10 @@ A controls for the transcript element
                                                     // light blue, cyan, teal, green, light green, lime, 
                                                     // yellow, amber, orange, deep-orange, and brown. 
                                                     // Default is null. 
-    disable-interactive$="[[disableInteractive]]"   // Disable interactive transcript cues?
+    custom-microcopy$="[[customMicrocopy]]"         // Optional customization or text and icons
+    disable-print-button$="[[disablePrintButton]]"  // Disable the print button?
     disable-scroll$="[[disableScroll]]"             // Disable autoscrolling transcript as video plays? 
     disable-search$="[[disableSearch]]"             // Disable transcript search? 
-    hide-timestamps$="[[hideTimestamps]]"           // Hide cue timestamps?
-    media-id=""                                     // The id of the player
-    selected-transcript$="[[selectedTranscript]]">  // The index of the current track
   </a11y-media-transcript-controls>
 
 -->
@@ -42,6 +40,7 @@ A controls for the transcript element
             padding: 0 15px;
           };
         }
+        :host simple-search, 
         :host a11y-media-button {
           --a11y-media-button-toggle-color: var(--a11y-media-transcript-focus-color, #000000);
           --a11y-media-button-color: var(--a11y-media-transcript-text-color, #666666);
@@ -89,15 +88,15 @@ A controls for the transcript element
         :host[accent-color="green"] a11y-media-button { 
           --a11y-media-transcript-focus-color: #02993c;
         }
-        :host[accent-color="light-green"], simple-search,
+        :host[accent-color="light-green"] simple-search,
         :host[accent-color="light-green"] a11y-media-button { 
           --a11y-media-transcript-focus-color: #448f02;
         }
-        :host[accent-color="lime"], simple-search,
+        :host[accent-color="lime"] simple-search,
         :host[accent-color="lime"] a11y-media-button { 
           --a11y-media-transcript-focus-color: #6f8e00;
         }
-        :host[accent-color="yellow"], simple-search,
+        :host[accent-color="yellow"] simple-search,
         :host[accent-color="yellow"] a11y-media-button { 
           --a11y-media-transcript-focus-color: #9a8000;
         }
@@ -179,7 +178,8 @@ A controls for the transcript element
         */ 
       attached: function(){
         let root = this;
-        root.search = root.$.search;
+        root.search = root.$.search
+        root.fire('searchbar-added',root.$.search);
         root.$.scroll.addEventListener('button-clicked',function(e){
           this.fire('toggle-scroll',this);
         });

@@ -24,9 +24,11 @@ A LRN element
                                                 // light blue, cyan, teal, green, light green, lime, 
                                                 // yellow, amber, orange, deep-orange, and brown. 
                                                 // Default is null. 
+    allow-fullscreen$="[[allowFullscreen]]"         // Allow fullscreen mode?
     audio-only$="[[audioOnly]]"                 // Is media audio only?
     autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
     cc$="[[cc]]"                                // Are closed captions toggled?
+    custom-microcopy$="[[customMicrocopy]]"     // Optional customization or text and icons
     dark$="[[dark]]"                            // Is the color scheme dark? Default is light.    
     disableFullscreen$="[[disableFullscreen]]"  // Is full screen mode disabled?
     fullscreen$="[[fullscreen]]"                // Is full screen mode toggled on?
@@ -365,74 +367,77 @@ A LRN element
         }
       }
     </style>
-    <span id="print-only" lang$="[[lang]]">
-      [[mediaTitle]]
-      (<span class="media-type" hidden$="[[audioOnly]]">[[microcopy.video]]</span>
-      <span class="media-type" hidden$="[[!audioOnly]]">[[microcopy.audio]]</span>)
-    </span>
-    <div id="player">
-      <div id="player-inner">
-        <div id="media" hidden$="[[noHeight]]">
-          <video 
-            autoplay$="[[autoplay]]" 
-            hidden$="[[audioOnly]]"
-            id="video" 
-            lang$="[[lang]]"
-            loop$="[[loop]]" 
-            muted$="[[muted]]" 
-            preload="metadata">
-            <slot></slot>
-            HTML5 video not supported 
-          </video>
-          <audio 
-            autoplay$="[[autoplay]]" 
-            hidden$="[[!audioOnly]]"
-            id="audio" 
-            lang$="[[lang]]"
-            loop$="[[loop]]" 
-            muted$="[[muted]]" 
-            preload="metadata">
-            <slot></slot>
-            HTML5 audio not supported 
-          </audio>
-          <a11y-media-play-button 
-            audio-only$="[[audioOnly]]" 
-            hidden$="[[noHeight]]"
-            id="playbutton" 
-            playing$="[[__playing]]"
-            thumbnail-src$="[[thumbnailSrc]]">
-          </a11y-media-play-button>
+    <div lang$="[[microcopy.lang]]">
+      <span id="print-only">
+        [[mediaTitle]]
+        (<span class="media-type" hidden$="[[audioOnly]]">[[microcopy.video]]</span>
+        <span class="media-type" hidden$="[[!audioOnly]]">[[microcopy.audio]]</span>)
+      </span>
+      <div id="player">
+        <div id="player-inner">
+          <div id="media" hidden$="[[noHeight]]">
+            <video 
+              autoplay$="[[autoplay]]" 
+              hidden$="[[audioOnly]]"
+              id="video" 
+              lang$="[[lang]]"
+              loop$="[[loop]]" 
+              muted$="[[muted]]" 
+              preload="metadata">
+              <slot></slot>
+              HTML5 video not supported 
+            </video>
+            <audio 
+              autoplay$="[[autoplay]]" 
+              hidden$="[[!audioOnly]]"
+              id="audio" 
+              lang$="[[lang]]"
+              loop$="[[loop]]" 
+              muted$="[[muted]]" 
+              preload="metadata">
+              <slot></slot>
+              HTML5 audio not supported 
+            </audio>
+            <a11y-media-play-button 
+              audio-only$="[[audioOnly]]" 
+              hidden$="[[noHeight]]"
+              id="playbutton" 
+              playing$="[[__playing]]"
+              thumbnail-src$="[[thumbnailSrc]]">
+            </a11y-media-play-button>
+          </div>
         </div>
+        <paper-slider 
+          id="slider" 
+          max$="[[__duration]]" 
+          pin 
+          secondary-progress$="[[__buffered]]" 
+          value$="[[__elapsed]]">
+        </paper-slider>
       </div>
-      <paper-slider 
-        id="slider" 
-        max$="[[__duration]]" 
-        pin 
-        secondary-progress$="[[__buffered]]" 
-        value$="[[__elapsed]]">
-      </paper-slider>
+      <a11y-media-controls 
+        accent-color$="[[accentColor]]"
+        allow-fullscreen$="[[allowFullscreen]]"
+        autoplay$="[[autoplay]]"
+        cc$="[[cc]]"
+        custom-microcopy$="[[customMicrocopy]]" 
+        dark$="[[dark]]"
+        fullscreen$="[[fullscreen]]" 
+        fullscreen-button$="[[fullscreenButton]]"
+        has-captions$="[[hasCaptions]]"
+        has-transcript$="[[hasTranscript]]"
+        hide-elapsed-time$="[[hideElapsedTime]]"
+        hide-transcript$="[[hideTranscript]]"
+        id="controls"
+        length="[[__length]]"
+        loop$="[[loop]]"
+        muted$="[[muted]]"
+        responsive-size="[[responsiveSize]]"
+        playing$="[[__playing]]"
+        playback-rate="[[playbackRate]]"
+        volume="[[__volume]]">
+      </a11y-media-controls>
     </div>
-    <a11y-media-controls 
-      accent-color$="[[accentColor]]"
-      allow-fullscreen$="[[allowFullscreen]]"
-      autoplay$="[[autoplay]]"
-      cc$="[[cc]]"
-      custom-microcopy$="[[customMicrocopy]]" 
-      fullscreen$="[[fullscreen]]" 
-      fullscreen-button$="[[fullscreenButton]]"
-      has-captions$="[[hasCaptions]]"
-      has-transcript$="[[hasTranscript]]"
-      hide-elapsed-time$="[[hideElapsedTime]]"
-      hide-transcript$="[[hideTranscript]]"
-      id="controls"
-      length="[[__length]]"
-      loop$="[[loop]]"
-      muted$="[[muted]]"
-      responsive-size="[[responsiveSize]]"
-      playing$="[[__playing]]"
-      playback-rate="[[playbackRate]]"
-      volume="[[__volume]]">
-    </a11y-media-controls>
   </template>
 
   <script>

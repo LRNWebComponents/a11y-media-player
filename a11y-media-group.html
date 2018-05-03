@@ -23,7 +23,9 @@ A responsive group of player and transcript.
                                                     // Default is null. 
     audio-only$="[[audioOnly]]"                     // Is media audio only?
     autoplay$="[[autoplay]]"                        // Is player set to autoplay (not recommended for a11y)?
+    allow-fullscreen$="[[allowFullscreen]]"         // Allow fullscreen mode?
     cc$="[[cc]]"                                    // Are closed captions toggled?
+    custom-microcopy$="[[customMicrocopy]]"         // Optional customization or text and icons
     dark$="[[dark]]"                                // Is the color scheme dark? Default is light.  
     disableFullscreen$="[[disableFullscreen]]"      // Is full screen mode disabled?  
     disable-interactive$="[[disableInteractive]]"   // Disable interactive transcript cues?
@@ -37,6 +39,7 @@ A responsive group of player and transcript.
     muted$="[[muted]]"                              // Is video muted?
     volume$="[[volume]]"                            // The initial volume of the video
     width$="[[width]]"                              // The width of player
+
                                                     // For transcript & cues: 
     disable-interactive$="[[disableInteractive]]"   // Disable interactive cues?
     hide-timestamps$="[[hideTimestamps]]"           // Hide cue timestamps?
@@ -137,7 +140,7 @@ Basic customization:
         }
       }
     </style>
-    <div id="player-outer">
+    <div id="player-outer" lang$="[[microcopy.lang]]">
       <a11y-media-player 
         id="player"
         accent-color$="[[accentColor]]" 
@@ -167,10 +170,11 @@ Basic customization:
     <div id="transcript-outer">
       <a11y-media-transcript-controls
         accent-color$="[[accentColor]]" 
+        custom-microcopy$="[[customMicrocopy]]" 
         disable-print-button$="[[disablePrintButton]]"
+        disable-scroll$="[[disableScroll]]"
         disable-search$="[[disableSearch]]" 
-        id="controls"
-        microcopy$="[[microcopy]]">
+        id="controls">
       </a11y-media-transcript-controls>
       <a11y-media-transcript 
         accent-color$="[[accentColor]]"
@@ -216,7 +220,9 @@ Basic customization:
         */ 
       attached: function(){
         let root = this;
-        root.search = root.$.search;
+        root.$.controls.addEventListener('searchbar-added',function(e){
+          root.search = e.detail;
+        });
         root.$.controls.addEventListener('toggle-scroll',function(e){
           root.disableScroll = !root.disableScroll;
         });
