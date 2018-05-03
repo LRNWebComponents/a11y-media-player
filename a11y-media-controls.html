@@ -37,7 +37,8 @@ The controls bar for the a11y-media-player.
     loop$="[[loop]]"                            // Is video on a loop?
     microcopy$="[[microcopy]]"                      // Optional customization or text and icons
     muted$="[[muted]]"                          // Is video muted?
-    volume$="[[volume]]">                        // The initial volume of the video
+    responsive-size$="[[responsiveSize]]"       // The size of the player determines how controls are displayed
+    volume$="[[volume]]">                       // The initial volume of the video
   </a11y-media-controls>
  -
  -
@@ -119,13 +120,6 @@ The controls bar for the a11y-media-player.
       :host[hide-play-status] .play-status {
         display: none;
       }
-      :host[responsive-size="xs"] *[hidden-when*="xs"],
-      :host[responsive-size="sm"] *[hidden-when*="sm"],
-      :host[responsive-size="md"] *[hidden-when*="md"],
-      :host[responsive-size="lg"] *[hidden-when*="lg"],
-      :host[responsive-size="xl"] *[hidden-when*="xl"] {
-        display: none;
-      }
       :host:not([has-captions]) .captions {
         display: none;
       }
@@ -196,29 +190,29 @@ The controls bar for the a11y-media-player.
       }
     </style>
     <div id="controls-left">
-      <a11y-media-button disabled$="[[smallPlayer]]" hidden-when="xs sm" icon="[[microcopy.backward.icon]]" label="[[microcopy.backward.label]]"></a11y-media-button>
+      <a11y-media-button disabled$="[[compactControls]]" hidden$="[[compactControls]]" icon="[[microcopy.backward.icon]]" label="[[microcopy.backward.label]]"></a11y-media-button>
       <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
-      <a11y-media-button disabled$="[[smallPlayer]]" hidden-when="xs sm" icon="[[microcopy.forward.icon]]" label="[[microcopy.forward.label]]"></a11y-media-button>
-      <a11y-media-button disabled$="[[smallPlayer]]" hidden-when="xs sm" icon="[[microcopy.restart.icon]]" label="[[microcopy.restart.label]]"></a11y-media-button>
+      <a11y-media-button disabled$="[[compactControls]]" hidden$="[[compactControls]]" icon="[[microcopy.forward.icon]]" label="[[microcopy.forward.label]]"></a11y-media-button>
+      <a11y-media-button disabled$="[[compactControls]]" hidden$="[[compactControls]]" icon="[[microcopy.restart.icon]]" label="[[microcopy.restart.label]]"></a11y-media-button>
       <div id="showvolume">
         <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
         <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]" aria-label="[[microcopy.volume]]"></paper-slider>
       </div>
-      <span class="play-status control-bar" disabled$="[[smallPlayer]]">
-        <span id="statbar" hidden-when="xs sm"></span>
+      <span class="play-status control-bar" hidden$="[[compactControls]]">
+        <span id="statbar"></span>
       </span>
     </div>
     <div id="controls-right">
       <a11y-media-button class="captions" icon="[[microcopy.captions.icon]]" label="[[microcopy.captions.label]]" toggle$="[[cc]]"></a11y-media-button>
-      <a11y-media-button class="transcript" hidden-when="xs sm" icon="[[microcopy.transcript.icon]]" label="[[microcopy.transcript.label]]" toggle$="[[!hideTranscript]]"></a11y-media-button>
+      <a11y-media-button class="transcript" hidden$="[[compactControls]]" disabled$="[[compactControls]]" icon="[[microcopy.transcript.icon]]" label="[[microcopy.transcript.label]]" toggle$="[[!hideTranscript]]"></a11y-media-button>
       <paper-menu-button id="settings" vertical-align="bottom" horizontal-align="right" ignore-select>
         <paper-icon-button icon="[[microcopy.settings.icon]]" slot="dropdown-trigger" alt="[[microcopy.settings.label]]"></paper-icon-button>
         <paper-listbox id="settingslist" slot="dropdown-content">
-          <paper-item hidden-when="md lg xl" class="transcript">
+          <paper-item hidden$="[[!compactControls]]" class="transcript">
             <div class="setting">
               <div id="transcript-label" class="setting-text">[[microcopy.settings.items.transcript]]</div>
               <div class="setting-control">
-                <paper-toggle-button id="transcript-toggle" aria-labelledby="transcript-label" checked$="[[!hideTranscript]]"></paper-toggle-button>
+                <paper-toggle-button id="transcript-toggle" aria-labelledby="transcript-label" checked$="[[!hideTranscript]]" disabled$="[[!compactControls]]"></paper-toggle-button>
               </div>
             </div>
           </paper-item>
@@ -251,8 +245,8 @@ The controls bar for the a11y-media-player.
               </div>
             </div>
           </paper-item>
-          <paper-item hidden-when="md lg xl">
-            <span class="play-status settings-menu" disabled$="[[!smallPlayer]]">
+          <paper-item hidden$="[[!compactControls]]">
+            <span class="play-status settings-menu">
               <span id="statmenu"></span>
             </span>
           </paper-item>
@@ -296,7 +290,7 @@ The controls bar for the a11y-media-player.
         muteUnmute: {
           type: Object,
           computed: '_getMuteUnmute(muted,microcopy)'
-        }
+        },
       },
       /**
         * calls responsive-utility to get parent's responsive size

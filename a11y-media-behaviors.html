@@ -51,6 +51,14 @@ A set of behaviors for a11y-media components.
         type: Boolean,
         value: false,
       },
+      /**
+        * Use compact controls?
+        */
+      compactControls: {
+        type: Boolean,
+        computed: '_getCompactControls(responsiveSize)',
+        reflectToAttribute: true
+      },
       /** 
         * disable fullscreen option 
         */
@@ -131,15 +139,6 @@ A set of behaviors for a11y-media components.
         type: String,
         value: '',
         reflectToAttribute: true,
-      },
-      /**
-        * Is the size mobile?
-        */
-      smallPlayer: {
-        type: Boolean,
-        computed: '_testAttribute(responsiveSize,"xs")',
-        notify: true,
-        reflectToAttribute: true
       },
       /** 
         * Is audio muted?
@@ -224,7 +223,7 @@ A set of behaviors for a11y-media components.
         */
       volume: {
         type: Number,
-        value: 70,
+        value: 70
       },
       /** 
         * The width of the media player. 
@@ -249,6 +248,12 @@ A set of behaviors for a11y-media components.
       } else {
         return true;
       }
+    },
+    /**
+      * returns true if player is xs or sm and needs to use compact controls
+      */ 
+    _getCompactControls: function(responsiveSize){
+      return this._testAttribute(responsiveSize,"xs") || this._testAttribute(responsiveSize,"sm");
     },
     /**
       * returns true if an attribute is set to a value
@@ -361,7 +366,7 @@ A set of behaviors for a11y-media components.
       *   "lang": "en",
       *   "captions": {
       *     "label": "closed captions",
-      *     "icon": "av:closed caption",
+      *     "icon": "av:closed-caption",
       *   },
       *   "backward": {
       *     "label": "backward",
@@ -430,7 +435,7 @@ A set of behaviors for a11y-media components.
         },
         "captions": {
           "label": "closed captions",
-          "icon": "av:closed caption"
+          "icon": "av:closed-caption"
         },
         "backward": {
           "label": "backward",
