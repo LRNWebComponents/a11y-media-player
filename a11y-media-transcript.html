@@ -174,7 +174,7 @@ A transcript element to pair with a11y-media-player
         mediaTitle = mediaTitle !== undefined ? mediaTitle : 'Transcript';
         if(track !== null & track !== undefined){
           //From https://stackoverflow.com/questions/1071962/how-do-i-print-part-of-a-rendered-html-page-in-javascript#answer-1072151
-          let print = window.open('','','left=0,top=0,width=552,height=477,toolbar=0,scrollbars=0,status =0');
+          let print = window.open('','','left=0,top=0,width=552,height=477,toolbar=0,scrollbars=0,status =0'), node = Polymer.dom(root).node;
           print.document.write('<style>'+css+'</style><h1>'+mediaTitle+'</h1>'+track.innerHTML);
           print.document.close();
           print.focus();

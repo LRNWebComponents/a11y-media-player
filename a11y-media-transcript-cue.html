@@ -232,6 +232,11 @@ A single cue in a11y-media-transcriptas static text or as an button that control
             root.text = search.findMatches(root.cue.text);
           });
         }
+      },/** 
+       * prints the active cue
+       */
+      print: function(){
+        console.log(this,this.getComputedStyle());
       },
       /**
         * gets the active cue for styling

@@ -178,6 +178,14 @@ A set of behaviors for a11y-media components.
         notify: true,
         reflectToAttribute: true
       },
+      /**
+        * show the FullscreenButton?
+        */
+      showFullscreenButton: {
+        type: Boolean,
+        computed: '_getFullscreenButton(disableFullscreen)',
+        notify: true
+      },
       /** 
         * Is the video currently sticky, i.e. it is fixed to the corner when playing but scrolled off screen? 
         */
@@ -235,7 +243,17 @@ A set of behaviors for a11y-media components.
     /**
       * returns true if an attribute is set to a value
       */ 
-      _testAttribute: function(attr,val){
+    _getFullscreenButton: function(disableFullscreen){
+      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || disableFullscreen) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    /**
+      * returns true if an attribute is set to a value
+      */ 
+    _testAttribute: function(attr,val){
       return attr === val;
     }
   };

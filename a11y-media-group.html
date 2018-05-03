@@ -68,26 +68,26 @@ Basic customization:
         outline: 1px solid black;
       }
       @media screen {
-        :host:not([no-height]):not([responsive-size*="s"]) {
+        :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
           display: inline-flex;
           align-items: stretch;
           outline: 1px solid;
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#bbbbbb));
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
         }
-        :host[dark]:not([no-height]):not([responsive-size*="s"]) {
+        :host[dark]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
         }
-        :host:not([no-height]):not([responsive-size*="s"]) > div {
+        :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > div {
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
           transition: width 0.5s;
         }
-        :host[sticky]:not([no-height]):not([responsive-size*="s"]) > #player-outer {
+        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #player-outer {
           width: 0%;
         }
-        :host[sticky]:not([no-height]):not([responsive-size*="s"]) > #transcript-outer {
+        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #transcript-outer {
           width: 100%;
         }
         :host[hide-transcript] #player-outer {
@@ -96,7 +96,7 @@ Basic customization:
         :host[hide-transcript] #transcript-outer {
           width: 0%;
         }
-        :host:not([no-height]):not([responsive-size*="s"]) #transcript {
+        :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) #transcript {
           position: absolute;
           top: 0; 
           left: 0;
@@ -104,7 +104,7 @@ Basic customization:
           bottom: 0;
           overflow-y: scroll;
         }
-        :host:not([no-height]):not([responsive-size*="s"]) #player.totop {
+        :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) #player.totop {
           position: absolute;
           top:0;
           left: 0;
@@ -343,6 +343,13 @@ Basic customization:
           * disable transcript search feature 
           */
         disableSearch: {
+          type: Boolean,
+          value: false,
+        },
+        /** 
+          * stacked layout instead of side-by-side?
+          */
+        stackedLayout: {
           type: Boolean,
           value: false,
         },

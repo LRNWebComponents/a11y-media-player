@@ -175,15 +175,15 @@ The controls bar for the a11y-media-player.
       }
     </style>
     <div id="controls-left">
-      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="[[microcopy.backward.icon]]" label="[[microcopy.backward.label]]"></a11y-media-button>
+      <a11y-media-button disabled$="[[smallPlayer]]" hidden-when="xs sm" icon="[[microcopy.backward.icon]]" label="[[microcopy.backward.label]]"></a11y-media-button>
       <a11y-media-button icon="[[playPause.icon]]" label="[[playPause.label]]"></a11y-media-button>
-      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="[[microcopy.forward.icon]]" label="[[microcopy.forward.label]]"></a11y-media-button>
-      <a11y-media-button disabled$="[[mobileSize]]" hidden-when="xs sm" icon="[[microcopy.restart.icon]]" label="[[microcopy.restart.label]]"></a11y-media-button>
+      <a11y-media-button disabled$="[[smallPlayer]]" hidden-when="xs sm" icon="[[microcopy.forward.icon]]" label="[[microcopy.forward.label]]"></a11y-media-button>
+      <a11y-media-button disabled$="[[smallPlayer]]" hidden-when="xs sm" icon="[[microcopy.restart.icon]]" label="[[microcopy.restart.label]]"></a11y-media-button>
       <div id="showvolume">
         <a11y-media-button id="mute" icon="[[muteUnmute.icon]]" label="[[muteUnmute.label]]"></a11y-media-button>
         <paper-slider id="volume" min="0" max="100" pin step="10" value$="[[volume]]" aria-label="[[microcopy.volume]]"></paper-slider>
       </div>
-      <span class="play-status control-bar" disabled$="[[mobileSize]]">
+      <span class="play-status control-bar" disabled$="[[smallPlayer]]">
         <span id="statbar" hidden-when="xs sm"></span>
       </span>
     </div>
@@ -231,14 +231,14 @@ The controls bar for the a11y-media-player.
             </div>
           </paper-item>
           <paper-item hidden-when="md lg xl">
-            <span class="play-status settings-menu" disabled$="[[!mobileSize]]">
+            <span class="play-status settings-menu" disabled$="[[!smallPlayer]]">
               <span id="statmenu"></span>
             </span>
           </paper-item>
         </paper-listbox>
       </paper-menu-button>
       <paper-tooltip for="settings">[[microcopy.settings.label]]</paper-tooltip>
-      <template is="dom-if" if="[[!disableFullscreen]]">
+      <template is="dom-if" if="[[fullscreenButton]]">
         <template is="dom-if" if="[[!noHeight]]">
           <a11y-media-button icon="[[microcopy.fullscreen.label]]" label="[[microcopy.fullscreen.label]]" toggle$="[[fullscreen]]" step="1"></a11y-media-button>
         </template>
