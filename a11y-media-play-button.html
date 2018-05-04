@@ -25,16 +25,13 @@ Custom styles:
       :host {
         display: block;
         z-index: 2;
-        opacity: 1;
+        opacity: 0;
         transition: opacity 0.5s; 
       }
-      :host:not([audio-only][thumbnail-src])[playing], 
-      :host[disabled]:not([audio-only][thumbnail-src]) {
-        opacity: 0;
-      }
-      :host[audio-only][thumbnail-src][playing] #button > *:not(#thumbnail), 
-      :host[disabled][audio-only][thumbnail-src] #button > *:not(#thumbnail) {
-        opacity: 0;
+      :host:not([playing]):not([disabled]), 
+      :host[audio-only][thumbnail-src] {
+        opacity: 1;
+
       }
       :host, 
       :host #thumbnail, 
@@ -44,7 +41,12 @@ Custom styles:
         position: absolute;
         top: 0;
         left: 0;
+        opacity: 1;
         transition: opacity 0.5s;  
+      }
+      :host[audio-only][thumbnail-src][playing] #button > *:not(#thumbnail), 
+      :host[disabled][audio-only][thumbnail-src] #button > *:not(#thumbnail) {
+        opacity: 0;
       }
       :host #button, 
       :host #thumbnail, 
@@ -83,7 +85,7 @@ Custom styles:
         }
       }
     </style>
-    <button id="button" aria-hidden="true" tabindex="-1" disabled$="[[disabled]]" controls="video">
+    <button id="button" aria-hidden$="[[disabled]]" tabindex="0" disabled$="[[disabled]]" controls="video">
       <div id="thumbnail" style$="[[thumbnailCSS]]"></div>
       <div id="background"></div>
       <svg id="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"  width="30%" height="30%" opacity="0.7">
