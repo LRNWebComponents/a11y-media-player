@@ -99,6 +99,12 @@ Basic customization:
         :host[hide-transcript] #transcript-outer {
           width: 0%;
         }
+        :host #transcript-outer {
+          position: relative;
+        }
+        :host #transcript {
+          padding-top: 48px;
+        }
         :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) #transcript {
           position: absolute;
           top: 0; 
@@ -106,7 +112,6 @@ Basic customization:
           right: 0; 
           bottom: 0;
           overflow-y: scroll;
-          margin-top: 40px;
         }
         :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) #player.totop {
           position: absolute;
@@ -114,9 +119,6 @@ Basic customization:
           left: 0;
           width: 200px !important;
           z-index: 9999;
-        }
-        :host #transcript-outer {
-          position: relative;
         }
         :host #controls {
           z-index: 1000;
