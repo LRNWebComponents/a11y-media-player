@@ -73,35 +73,34 @@
                 --a11y-media-transcript-matched-cue-text: #ffffff;
               }
             </style>
-            <a11y-media-group id="custom1" accent-color="red" dark lang="es" custom-microcopy='{
-              "lang": "es",
-              "video": "vídeo",
-              "autoScroll": { "label": "desplazamiento automático", "icon": "swap-vert" },
-              "captions": { "label": "subtítulos", "icon": "av:closed-caption" },
-              "backward": { "label": "rebobinar", "icon": "av:fast-rewind" },
-              "fullscreen": { "label": "fullscreen", "icon": "fullscreen" },
-              "mute": { "label": "mudo", "icon": "av:volume-up" },
-              "pause": { "label": "pausa", "icon": "av:pause" },
-              "play": { "label": "comienzo", "icon": "av:play-arrow" },
-              "print": { "label": "impresión", "icon": "print" },
-              "restart": { "label": "reiniciar", "icon": "av:replay" },
-              "searchTranscript": "buscar la transcripción",
-              "settings": {
-                "label": "sreferencias",
-                "icon": "settings",
-                "items": {
-                  "captions": "Subtítulos",
-                  "captionsOff": "Apagado",
-                  "loop": "Lazo",
-                  "speed": "Velocidad %",
-                  "transcript": "Transcripción"
-                }
-              },
-              "skipTranscript": "omitir la transcripción",
-              "transcript": { "label": "transcripción", "icon": "description" },
-              "unmute": { "label": "dejar de silenciar", "icon": "av:volume-off" },
-              "volume": { "label": "volumen" }
-            }'>
+            <a11y-media-group id="custom1" accent-color="red" dark lang="es" 
+              audio-label="audio" 
+              auto-scroll-label="desplazamiento automático"
+              captions-label="subtítulos"
+              captions-menu-label="Subtítulos"
+              captions-menu-off="Apagado"
+              forward-label="adelante"
+              fullscreen-label="pantalla completa"
+              ui-language="es" 
+              loop-label="Lazo"
+              mute-label="mudo"
+              pause-label="pausa"
+              play-label="comienzo"
+              print-label="impresión"
+              restart-label="reiniciar"
+              search-transcript="buscar la transcripción"
+              settings-label="sreferencias"
+              rewind-label="rebobinar"
+              search-label="buscar la transcripción"
+              search-prev-button-label="anterior"
+              search-next-button-label="siguiente"
+              skip-transcript-link="Omitir la transcripción."
+              speed-label="Velocidad %"
+              transcript-menu-label="Transcripción"
+              transcript-label="transcripción"
+              unmute-label="dejar de silenciar"
+              volume-label="volumen"
+              video-label="vídeo">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt" default>
@@ -125,7 +124,7 @@
         </template>
       </demo-snippet-->
       
-      <h3>a11y-media-group as audio</h3>
+      <!--h3>a11y-media-group as audio</h3>
       <demo-snippet>
         <template>
           <a11y-media-group accent-color="deep-orange" dark audio-only hide-timestamps>
@@ -169,7 +168,7 @@
               <source src="http://techslides.com/demos/sample-videos/small.3gp" type="video/3gp">
             </a11y-media-player>
           </template>
-        </demo-snippet>
+        </demo-snippet-->
       </div>
     </div>
   </body>

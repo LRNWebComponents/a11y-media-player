@@ -9,6 +9,22 @@ A set of behaviors for a11y-media components.
 
 <script>
   window.a11yMediaBehaviors = window.a11yMediaBehaviors || {};
+  window.a11yMediaBehaviors.GeneralFunctions = {
+    properties: {
+    },
+    /**
+      * calls responsive-utility to get parent's responsive size
+      */ 
+    _addResponsiveUtility: function(data){
+      let root = this, data2 = data !== undefined ? data : {
+        "element": root,
+        "attribute": "responsive-size",
+        "relativeToParent": true,
+      };
+      Polymer.ResponsiveUtility.requestAvailability();
+      root.fire('responsive-element',data2);
+    },
+  };
   window.a11yMediaBehaviors.PlayerBehaviors = {
     properties: {
       /** 
@@ -81,6 +97,14 @@ A set of behaviors for a11y-media components.
         type: Boolean,
         value: false,
       },
+      /**
+        * show the FullscreenButton?
+        */
+      fullscreenButton: {
+        type: Boolean,
+        computed: '_getFullscreenButton(disableFullscreen)',
+        notify: true
+      },
       /** 
         * Does the player have tracks?
         */
@@ -115,14 +139,6 @@ A set of behaviors for a11y-media components.
       hideTranscript: {
         type: Boolean,
         value: false,
-        reflectToAttribute: true,
-      },
-      /**
-        * Language
-        */
-      lang: {
-        type: String,
-        value: 'en',
         reflectToAttribute: true,
       },
       /** 
@@ -177,14 +193,6 @@ A set of behaviors for a11y-media components.
         notify: true,
         reflectToAttribute: true
       },
-      /**
-        * show the FullscreenButton?
-        */
-      fullscreenButton: {
-        type: Boolean,
-        computed: '_getFullscreenButton(disableFullscreen)',
-        notify: true
-      },
       /** 
         * Is the video currently sticky, i.e. it is fixed to the corner when playing but scrolled off screen? 
         */
@@ -231,7 +239,224 @@ A set of behaviors for a11y-media components.
       width: {
         type: String,
         value: 'unset'
-      }
+      },
+      /**
+        * label/microcopy for audio
+        */
+      audioLabel: {
+        type: String,
+        value: "audio"
+      },
+      /**
+        * icon for closed captions button on player controls
+        */
+      captionsIcon: {
+        type: String,
+        value: "av:closed-caption"
+      },
+      /**
+        * label for closed captions button on player controls
+        */
+      captionsLabel: {
+        type: String,
+        value: "closed captions"
+      },
+      /**
+        * label for captions drop-down menu on settings menu of player controls
+        */
+      captionsMenuLabel: {
+        type: String,
+        value: "Captions"
+      },
+      /**
+        * label for captions off drop-down menu item on settings menu of player controls
+        */
+      captionsMenuOff: {
+        type: String,
+        value: "Off"
+      },
+      /**
+        * the interface UI language
+        */
+      uiLanguage: {
+        type: String,
+        value: "en"
+      },
+      /**
+        * icon for forward button on player controls
+        */
+      forwardIcon: {
+        type: String,
+        value: "av:fast-forward"
+      },
+      /**
+        * label for rewind button on player controls
+        */
+      forwardLabel: {
+        type: String,
+        value: "forward"
+      },
+      /**
+        * icon for fullscreen button on transcript
+        */
+      fullscreenIcon: {
+        type: String,
+        value: "fullscreen"
+      },
+      /**
+        * label for fullscreen button on transcript
+        */
+      fullscreenLabel: {
+        type: String,
+        value: "fullscreen"
+      },
+      /**
+        * label for loop menu item on settings menu of player controls
+        */
+      loopLabel: {
+        type: String,
+        value: "Loop Playback"
+      },
+      /**
+        * icon for mute button on player controls
+        */
+      muteIcon: {
+        type: String,
+        value: "av:volume-up"
+      },
+      /**
+        * label for fullscreen button on player controls
+        */
+      muteLabel: {
+        type: String,
+        value: "mute"
+      },
+      /**
+        * icon for pause button on player controls
+        */
+      pauseIcon: {
+        type: String,
+        value: "av:pause"
+      },
+      /**
+        * label for pause button on player controls
+        */
+      pauseLabel: {
+        type: String,
+        value: "pause"
+      },
+      /**
+        * icon for play button on player controls
+        */
+      playIcon: {
+        type: String,
+        value: "av:play-arrow"
+      },
+      /**
+        * label for play button on player controls
+        */
+      playLabel: {
+        type: String,
+        value: "play"
+      },
+      /**
+        * icon for restart button on player controls
+        */
+      restartIcon: {
+        type: String,
+        value: "av:replay"
+      },
+      /**
+        * label for restart button on player controls
+        */
+      restartLabel: {
+        type: String,
+        value: "restart"
+      },
+      /**
+        * icon for rewind button on player controls
+        */
+      rewindIcon: {
+        type: String,
+        value: "av:fast-rewind"
+      },
+      /**
+        * label for rewind button on player controls
+        */
+      rewindLabel: {
+        type: String,
+        value: "backward"
+      },
+      /**
+        * icon for settings menu on player controls
+        */
+      settingsIcon: {
+        type: String,
+        value: "settings"
+      },
+      /**
+        * label for settings menu on player controls
+        */
+      settingsLabel: {
+        type: String,
+        value: "settings"
+      },
+      /**
+        * label for speed menu item on settings menu of player controls
+        */
+      speedLabel: {
+        type: String,
+        value: "Speed %"
+      },
+      /**
+        * icon for transcript button on player controls
+        */
+      transcriptIcon: {
+        type: String,
+        value: "description"
+      },
+      /**
+        * label for transcript button on player controls
+        */
+      transcriptLabel: {
+        type: String,
+        value: "transcript"
+      },
+      /**
+        * label for transcript menu item on settings menu of player controls
+        */
+      transcriptMenuLabel: {
+        type: String,
+        value: "Transcript"
+      },
+      /**
+        * icon for unmute button on player controls
+        */
+      unmuteIcon: {
+        type: String,
+        value: "av:volume-off"
+      },
+      /**
+        * label for unmute button on player controls
+        */
+      unmuteLabel: {
+        type: String,
+        value: "unmute"
+      },
+      /**
+        * label/microcopy for audio
+        */
+      videoLabel: {
+        type: String,
+        value: "video"
+      },
+      /**
+        * label for volume slider on player controls
+        */
+      volumeLabel: {
+        type: String,
+        value: "volume"
+      },
     },
     /**
       * returns true if an attribute is set to a value
@@ -327,186 +552,84 @@ A set of behaviors for a11y-media components.
       selectedTranscript: {
         type: String,
         value: '0',
-      }
-    }
-  };
-  window.a11yMediaBehaviors.GeneralFunctions = {
-    properties: {
-      /**
-        * custom microcopy that can override defaults
-        */
-      customMicrocopy: {
-        type: Object,
-        value: {}
       },
       /**
-        * microcopy
+        * label for search input  on transcript
         */
-      microcopy: {
-        type: Object,
-        computed: '_getMicrocopy(customMicrocopy)'
+      searchLabel: {
+        type: String,
+        value: "search transcript"
+      },
+      /**
+        * icon for search input on transcript
+        */
+      searchIcon: {
+        type: String,
+        value: "search"
+      },
+      /**
+        * label for the next button on transcript search
+        */
+      searchNextButtonLabel: {
+          type: String,
+          value: "next result"
+        },
+      /**
+        * icon for the next button on transcript search
+        */
+      searchNextButtonIcon: {
+          type: String,
+          value: "arrow-forward"
+        },
+      /**
+        * label for the previous button on transcript search
+        */
+      searchPrevButtonLabel: {
+          type: String,
+          value: "previous result"
+        },
+      /**
+        * icon for the previous button on transcript search
+        */
+      searchPrevButtonIcon: {
+          type: String,
+          value: "arrow-back"
+        },
+      /**
+        * label for autoscroll button on transcript controls
+        */
+      autoScrollLabel: {
+        type: String,
+        value: "auto-scrolling"
+      },
+      /**
+        * icon for autoscroll button on transcript controls
+        */
+      autoScrollIcon: {
+        type: String,
+        value: "swap-vert"
+      },
+      /**
+        * label for print button on player controls
+        */
+      printLabel: {
+        type: String,
+        value: "print transcript"
+      },
+      /**
+        * icon for print button on player controls
+        */
+      printIcon: {
+        type: String,
+        value: "print"
+      },
+      /**
+        * label for skip the transcript link before the transcript
+        */
+      skipTranscriptLink: {
+        type: String,
+        value: "Skip the transcript."
       }
-    },
-    /**
-      * calls responsive-utility to get parent's responsive size
-      */ 
-    _addResponsiveUtility: function(data){
-      let root = this, data2 = data !== undefined ? data : {
-        "element": root,
-        "attribute": "responsive-size",
-        "relativeToParent": true,
-      };
-      Polymer.ResponsiveUtility.requestAvailability();
-      root.fire('responsive-element',data2);
-    },
-    /**
-      * customizes the microcopy of any overriden defaults.
-      * Defaults are as follows: 
-      * {
-      *   "lang": "en",
-      *   "captions": {
-      *     "label": "closed captions",
-      *     "icon": "av:closed-caption",
-      *   },
-      *   "backward": {
-      *     "label": "backward",
-      *     "icon": "av:fast-rewind",
-      *   },
-      *   "forward": {
-      *     "label": "forward",
-      *     "icon": "av:fast-forward",
-      *   },
-      *   "fullscreen": {
-      *     "label": "fullscreen",
-      *     "icon": "fullscreen",
-      *   },
-      *   "mute": {
-      *     "label": "mute",
-      *     "icon": "av:volume-up",
-      *   },
-      *   "pause": {
-      *     "label": "pause",
-      *     "icon": "av:pause",
-      *   },
-      *   "play": {
-      *     "label": "play",
-      *     "icon": "av:play-arrow",
-      *   },
-      *   "print": {
-      *     "label": "print",
-      *     "icon": "print",
-      *   },
-      *   "restart": {
-      *     "label": "restart",
-      *     "icon": "av:replay",
-      *   },
-      *   "settings": {
-      *     "label": "settings",
-      *     "icon": "settings",
-      *     "items": {
-      *       "captions": "Captions",
-      *       "captionsOff": "Off",
-      *       "loop": "Loop",
-      *       "speed": "Speed %",
-      *       "transcript": "Transcript"
-      *     }
-      *   },
-      *   "skipTranscript": "Skip the transcript.", //off-screen link for screenreaders to skip the transcript
-      *   "transcript": {
-      *     "label": "transcript",
-      *     "icon": "description",
-      *   },
-      *   "unmute": {
-      *     "label": "unmute",
-      *     "icon": "av:volume-off",
-      *   },
-      *   "volume": {
-      *     "label": "volume",
-      *   },
-      * },
-      */ 
-    _getMicrocopy: function(customMicrocopy){
-      let defaults = {
-        "lang": "en",
-        "audio": "audio",
-        "autoScroll": {
-          "label": "auto-scrolling",
-          "icon": "swap-vert"
-        },
-        "captions": {
-          "label": "closed captions",
-          "icon": "av:closed-caption"
-        },
-        "backward": {
-          "label": "backward",
-          "icon": "av:fast-rewind"
-        },
-        "forward": {
-          "label": "forward",
-          "icon": "av:fast-forward"
-        },
-        "fullscreen": {
-          "label": "fullscreen",
-          "icon": "fullscreen"
-        },
-        "mute": {
-          "label": "mute",
-          "icon": "av:volume-up"
-        },
-        "pause": {
-          "label": "pause",
-          "icon": "av:pause",
-        },
-        "play": {
-          "label": "play",
-          "icon": "av:play-arrow"
-        },
-        "print": {
-          "label": "print",
-          "icon": "print"
-        },
-        "restart": {
-          "label": "restart",
-          "icon": "av:replay"
-        },
-        "searchTranscript": "search transcript",
-        "settings": {
-          "label": "settings",
-          "icon": "settings",
-          "items": {
-            "captions": "Captions",
-            "captionsOff": "Off",
-            "loop": "Loop",
-            "speed": "Speed %",
-            "transcript": "Transcript"
-          }
-        },
-        "skipTranscript": "Skip the transcript.",
-        "transcript": {
-          "label": "transcript",
-          "icon": "description"
-        },
-        "unmute": {
-          "label": "unmute",
-          "icon": "av:volume-off"
-        },
-        "video": "video",
-        "volume": "volume"
-      }, setLocal = function(defaults,customs){
-        if(customs !== null && customs !== undefined) {
-          for (var key in defaults){
-            if(customs[key] !== null & customs[key] !== undefined) {
-              if(typeof(customs[key]) == Object){
-                defaults[key] = setLocal(defaults[key],customs[key]);
-              } else {
-                defaults[key] = customs[key];
-              }
-            }
-          }
-        }
-        return defaults;
-      };
-      return setLocal(defaults,customMicrocopy);
     }
   };
 </script>

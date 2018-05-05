@@ -73,7 +73,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
           color: var(--a11y-media-transcript-text-color, #000000);
         }
-        :host [matched] {
+        :host [match-number] {
           background-color: var(--a11y-media-transcript-matched-cue-bg, var(--a11y-media-transcript-text-color, #000000));
           color: var(--a11y-media-transcript-matched-cue-text, var(--a11y-media-transcript-bg-color, #ffffff));
         }
@@ -147,7 +147,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
     <span id="time">[[cue.start]] - [[cue.end]]</span>
     <span id="text">
       <template is="dom-repeat" items="[[text]]" as="text">
-        <span matched$="[[text.matched]]">[[text.text]]</span>
+        <span match-number$="[[text.matchNumber]]">[[text.text]]</span>
       </template>
     </span>
     <iron-a11y-keys 
@@ -229,7 +229,15 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         }
         if(!root.disableSearch && root.search !== undefined && root.search !== null) {
           search.addEventListener('change',function(e){
+            let matched = false;
             root.text = search.findMatches(root.cue.text);
+            for(let i=0; i<root.text.length; i++){
+              if (root.text[i].matched === true) {
+                i = root.text.length;
+                matched = true;
+                this.fire('search-result',this);
+              }
+            }
           });
         }
       },/** 

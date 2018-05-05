@@ -77,6 +77,9 @@ Custom styles:
       :host #text {
         fill: #ffffff;
       }
+      :host .sr-only {
+        font-size: 0;
+      }
       @media print {
         :host:not([thumbnail-src]),
         :host #background, 
@@ -91,7 +94,7 @@ Custom styles:
       <svg id="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"  width="30%" height="30%" opacity="0.7">
         <g>
           <polygon id="arrow" points="30,20 30,180 170,100" fill="#000000" stroke="#ffffff" stroke-width="15px"/>
-          <text id="text" x="50" y="115" fill="#ffffff" font-size="30px">Play</text>
+          <text id="text" class="sr-only" x="50" y="115" fill="#ffffff" font-size="30px">Play</text>
         </g>
       </svg>
     </button>
@@ -118,11 +121,11 @@ Custom styles:
           computed: '_getThumbnailCSS(thumbnailSrc)'
         },
         /**
-         * button label
-         */
-         label: {
+          * label for play button on player controls
+          */
+        playLabel: {
           type: String,
-          computed: '_getLabel(playing)'
+          value: "play"
         },
         /**
          * is button disabled
@@ -135,14 +138,15 @@ Custom styles:
       /**
         * get label based on whether or not the video is playing
         */
-        _getThumbnailCSS: function(thumbnailSrc){
-          return thumbnailSrc != null ? 'background-image: url('+thumbnailSrc+'); background-size: cover;' : null;
+        attached: function(){
+          this.$.text.innerHTML = this.playLabel;
       },
+
       /**
         * get label based on whether or not the video is playing
         */
-      _getLabel: function(playing){
-        return playing ? 'pause' : 'play';
+        _getThumbnailCSS: function(thumbnailSrc){
+          return thumbnailSrc != null ? 'background-image: url('+thumbnailSrc+'); background-size: cover;' : null;
       },
       /**
         * handle button tap

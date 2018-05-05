@@ -64,7 +64,7 @@ A transcript element to pair with a11y-media-player
         }
       }
     </style>
-    <a id="transcript-desc" href="#bottom" class="sr-only">[[microcopy.skipTranscript]]</a>
+    <a id="transcript-desc" href="#bottom" class="sr-only">[[skipTranscriptLink]]</a>
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
       <div id="inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
         <template is="dom-repeat" items="[[track.cues]]" as="cue">
@@ -97,8 +97,8 @@ A transcript element to pair with a11y-media-player
       },
       
       behaviors: [
-        a11yMediaBehaviors.TranscriptBehaviors, 
-        a11yMediaBehaviors.GeneralFunctions
+        a11yMediaBehaviors.GeneralFunctions,
+        a11yMediaBehaviors.TranscriptBehaviors 
       ],
 
       properties: {
@@ -110,6 +110,14 @@ A transcript element to pair with a11y-media-player
           value: null,
           reflectToAttribute: true,
           notify: true
+        },
+        /**
+          * Language
+          */
+        lang: {
+          type: String,
+          value: 'en',
+          reflectToAttribute: true,
         },
         /** 
          * the id of media

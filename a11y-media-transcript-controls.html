@@ -141,23 +141,36 @@ A controls for the transcript element
     </style>
     <div id="searchbar">
       <div id="searching">
-        <simple-search id="search" label="[[microcopy.searchTranscript]]" hidden$="[[disableSearch]]" disabled$="[[disableSearch]]"></simple-search>
+        <simple-search 
+          disabled$="[[disableSearch]]" 
+          controls="transcript" 
+          hidden$="[[disableSearch]]"
+          id="search" 
+          next-button-icon$="[[searchNextButtonIcon]]"
+          next-button-label$="[[searchNextButtonLabel]]"
+          prev-button-icon$="[[searchPrevButtonIcon]]"
+          prev-button-label$="[[searchPrevButtonLabel]]"
+          search-input-icon$="[[searchIcon]]" 
+          search-input-label$="[[searchLabel]]">
+        </simple-search>
       </div>
       <div id="scrolling">
         <a11y-media-button 
           controls="transcript" 
           id="scroll" 
-          icon="[[microcopy.autoScroll.icon]]" 
-          label="[[microcopy.autoScroll.label]]" 
+          icon="[[autoScrollIcon]]" 
+          label="[[autoScrollLabel]]" 
           toggle$="[[!disableScroll]]">
         </a11y-media-button>
       </div>
-      <div id="printing" hidden$="[[disablePrintButton]]" disabled$="[[disablePrintButton]]">
+      <div id="printing" 
+        hidden$="[[disablePrintButton]]" 
+        disabled$="[[disablePrintButton]]">
         <a11y-media-button 
           controls="transcript" 
           id="print" 
-          icon="[[microcopy.print.icon]]" 
-          label="[[microcopy.print.label]]">
+          icon="[[printIcon]]" 
+          label="[[printLabel]]">
         </a11y-media-button>
       </div>
     </div>
@@ -169,9 +182,20 @@ A controls for the transcript element
       is: 'a11y-media-transcript-controls',
       
       behaviors: [
-        a11yMediaBehaviors.TranscriptBehaviors, 
-        a11yMediaBehaviors.GeneralFunctions
+        a11yMediaBehaviors.GeneralFunctions,
+        a11yMediaBehaviors.TranscriptBehaviors 
       ],
+
+      properties: {
+        /**
+          * Language
+          */
+        lang: {
+          type: String,
+          value: 'en',
+          reflectToAttribute: true,
+        },
+      },
 
       /**
         * calls responsive-utility to get parent's responsive size

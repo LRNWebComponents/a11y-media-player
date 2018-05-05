@@ -25,7 +25,6 @@ A responsive group of player and transcript.
     autoplay$="[[autoplay]]"                        // Is player set to autoplay (not recommended for a11y)?
     allow-fullscreen$="[[allowFullscreen]]"         // Allow fullscreen mode?
     cc$="[[cc]]"                                    // Are closed captions toggled?
-    custom-microcopy$="[[customMicrocopy]]"         // Optional customization or text and icons
     dark$="[[dark]]"                                // Is the color scheme dark? Default is light.  
     disableFullscreen$="[[disableFullscreen]]"      // Is full screen mode disabled?  
     disable-interactive$="[[disableInteractive]]"   // Disable interactive transcript cues?
@@ -71,21 +70,23 @@ Basic customization:
         outline: 1px solid black;
       }
       @media screen {
-        :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
+        :host:not([hide-transcript]):not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
           display: inline-flex;
           align-items: stretch;
           outline: 1px solid;
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#bbbbbb));
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
         }
-        :host[dark]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
+        :host[dark]:not([hide-transcript]):not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
         }
-        :host:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > div {
+        :host > div {
+          transition: width 0.5s, height .5s;
+        }
+        :host:not([hide-transcript]):not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > div {
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
-          transition: width 0.5s;
         }
         :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #player-outer {
           width: 0%;
@@ -94,10 +95,12 @@ Basic customization:
           width: 100%;
         }
         :host[hide-transcript] #player-outer {
-          width: 100%;
+          position: unset;
+          min-width: 50%;
+          max-width: 100%;
         }
         :host[hide-transcript] #transcript-outer {
-          width: 0%;
+          display: none;
         }
         :host #transcript-outer {
           position: relative;
@@ -142,29 +145,62 @@ Basic customization:
         }
       }
     </style>
-    <div id="player-outer" lang$="[[microcopy.lang]]">
+    <div id="player-outer" lang$="[[uiLanguage]]">
       <a11y-media-player 
-        id="player"
         accent-color$="[[accentColor]]" 
+        audio-label$="[[audioLabel]]" 
         audio-only$="[[audioOnly]]"
         autoplay$="[[autoplay]]"
+        captions-label$="[[captionsLabel]]" 
+        captions-icon$="[[captionsIcon]]" 
+        captions-menu-label$="[[captionsMenuLabel]]" 
+        captions-menu-off$="[[captionsMenuOff]]" 
         cc$="[[cc]]" 
-        custom-microcopy$="[[customMicrocopy]]" 
         dark$="[[dark]]"
         disableFullscreen$="[[disableFullscreen]]"
+        forward-label$="[[forwardLabel]]" 
+        forward-icon$="[[forwardIcon]]" 
         fullscreen$="[[fullscreen]]"
+        fullscreen-label$="[[fullscreenLabel]]" 
+        fullscreen-icon$="[[fullscreenIcon]]" 
         height$="[[height]]"
         hide-elapsed-time$="[[hideElapsedTime]]"
+        id="player"  
         lang$="[[lang]]"
+        ui-language$="[[uiLanguage]]"
         loop$="[[loop]]" 
-        no-height$="[[noHeight]]"
+        loop-label$="[[loopLabel]]" 
         media-title$="[[mediaTitle]]"
+        mute-label$="[[muteLabel]]" 
+        mute-icon$="[[muteIcon]]" 
         muted$="[[muted]]" 
+        no-height$="[[noHeight]]"
+        pause-label$="[[pauseLabel]]" 
+        pause-icon$="[[pauseIcon]]" 
+        play-label$="[[playLabel]]" 
+        play-icon$="[[playIcon]]" 
+        print-label$="[[printLabel]]" 
+        print-icon$="[[printIcon]]" 
+        restart-label$="[[restartLabel]]" 
+        restart-icon$="[[restartIcon]]" 
         search$="[[search]]"
+        search-transcript$="[[searchTranscript]]" 
+        settings-label$="[[settingsLabel]]" 
+        settings-icon$="[[settingsIcon]]"
         sticky$="[[sticky]]"
-        sticky-corner$="[[stickyCorner]]"
+        sticky-corner$="[[stickyCorner]]" 
+        rewind-label$="[[rewindLabel]]" 
+        rewind-icon$="[[rewindIcon]]" 
+        speed-label$="[[speedLabel]]"  
         thumbnail-src$="[[thumbnailSrc]]"
+        transcript-label$="[[transcriptLabel]]" 
+        transcript-icon$="[[transcriptIcon]]"
+        transcript-menu-label$="[[transcriptMenuLabel]]"
+        unmute-label$="[[unmuteLabel]]" 
+        unmute-icon$="[[unmuteIcon]]" 
         volume$="[[volume]]"
+        volume-label$="[[volumeLabel]]" 
+        video-label$="[[videoLabel]]"
         width$="[[width]]">
         <slot></slot>
       </a11y-media-player>
@@ -172,15 +208,25 @@ Basic customization:
     <div id="transcript-outer">
       <a11y-media-transcript-controls
         accent-color$="[[accentColor]]" 
-        custom-microcopy$="[[customMicrocopy]]" 
+        auto-scroll-label$="[[autoScrollLabel]]" 
+        auto-scroll-icon$="[[autoScrollIcon]]" 
         disable-print-button$="[[disablePrintButton]]"
         disable-scroll$="[[disableScroll]]"
         disable-search$="[[disableSearch]]" 
-        id="controls">
+        id="controls"
+        lang$="[[uiLanguage]]" 
+        print-label$="[[printLabel]]" 
+        print-icon$="[[printIcon]]" 
+        search-label$="[[searchLabel]]" 
+        search-icon$="[[searchIcon]]" 
+        search-prev-button-label$="[[searchPrevButtonLabel]]" 
+        search-prev-button-icon$="[[searchPrevButtonIcon]]" 
+        search-next-button-label$="[[searchNextButtonLabel]]" 
+        search-next-button-icon$="[[searchNextButtonIcon]]" 
+        skip-transcript-link$="[[skipTranscriptLink]]">
       </a11y-media-transcript-controls>
       <a11y-media-transcript 
         accent-color$="[[accentColor]]"
-        custom-microcopy$="[[customMicrocopy]]" 
         disable-scroll$="[[disableScroll]]"
         disable-search$="[[disableSearch]]"
         disable-interactive$="[[disableInteractive]]"
@@ -203,12 +249,20 @@ Basic customization:
       },
       
       behaviors: [
+        a11yMediaBehaviors.GeneralFunctions, 
         a11yMediaBehaviors.PlayerBehaviors, 
-        a11yMediaBehaviors.TranscriptBehaviors,
-        a11yMediaBehaviors.GeneralFunctions
+        a11yMediaBehaviors.TranscriptBehaviors
       ],
 
       properties: {
+        /**
+          * Language
+          */
+        lang: {
+          type: String,
+          value: 'en',
+          reflectToAttribute: true,
+        },
         /** 
           * stacked layout instead of side-by-side?
           */
@@ -224,6 +278,9 @@ Basic customization:
         let root = this;
         root.$.controls.addEventListener('searchbar-added',function(e){
           root.search = e.detail;
+        });
+        root.$.controls.addEventListener('search-result',function(e){
+          root.$.controls.resultCount += root.$.controls.resultCount;
         });
         root.$.controls.addEventListener('toggle-scroll',function(e){
           root.disableScroll = !root.disableScroll;
