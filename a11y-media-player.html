@@ -323,7 +323,8 @@ A LRN element
         z-index: 2 !important;
       }
       :host #media {
-        padding-top: 56.25%;
+        display: flex;
+        align-items: stretch;
         position: relative;
       }
       :host[no-height] #media {
@@ -340,8 +341,9 @@ A LRN element
         top: 0;
         left: 0;
       }
-      :host a11y-media-play-button {
-        padding-top: 56.25%;
+      :host #player-inner, 
+      :host #media > * {
+        max-height: 80vh;
       }
 
       @media print {
@@ -550,7 +552,6 @@ A LRN element
           if (root.width !== 'unset') root.setAttribute('width',root.width);
           if (root.height !== 'unset') root.setAttribute('height',root.height);
           let aspect = root.__src.videoHeight/root.__src.videoWidth * 100;
-          root.$.playbutton.style.paddingTop = aspect+'%';
           root.$.media.style.paddingTop = aspect+'%';
           // gets and converts video duration
           root.__duration = root.__src.duration > 0 ? root.__src.duration: 0; 
