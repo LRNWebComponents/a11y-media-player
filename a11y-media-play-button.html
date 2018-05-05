@@ -25,13 +25,12 @@ Custom styles:
       :host {
         display: block;
         z-index: 2;
-        opacity: 0;
+        opacity: 1;
         transition: opacity 0.5s; 
       }
-      :host:not([playing]):not([disabled]), 
-      :host[audio-only][thumbnail-src] {
-        opacity: 1;
-
+      :host[disabled]:not([audio-only]),
+      :host[playing]:not([audio-only]) {
+        opacity: 0;
       }
       :host, 
       :host #thumbnail, 
@@ -45,7 +44,7 @@ Custom styles:
         transition: opacity 0.5s;  
       }
       :host[audio-only][thumbnail-src][playing] #button > *:not(#thumbnail), 
-      :host[disabled][audio-only][thumbnail-src] #button > *:not(#thumbnail) {
+      :host[audio-only][thumbnail-src][disabled] #button > *:not(#thumbnail) {
         opacity: 0;
       }
       :host #button, 
@@ -123,14 +122,35 @@ Custom styles:
         /**
           * label for play button on player controls
           */
+        label: {
+          type: String,
+          computed: '_getPlaying(playing,pauseLabel,playLabel)'
+        },
+        /**
+          * label when playing
+          */
+        pauseLabel: {
+          type: String,
+          value: 'play'
+        },
+        /**
+          * label when paused
+          */
         playLabel: {
           type: String,
-          value: "play"
+          value: 'play'
         },
         /**
          * is button disabled
          */
          disabled: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * is media playing
+         */
+         playing: {
           type: Boolean,
           value: false
         },
@@ -141,12 +161,18 @@ Custom styles:
         attached: function(){
           this.$.text.innerHTML = this.playLabel;
       },
-
       /**
         * get label based on whether or not the video is playing
         */
         _getThumbnailCSS: function(thumbnailSrc){
           return thumbnailSrc != null ? 'background-image: url('+thumbnailSrc+'); background-size: cover;' : null;
+      },
+      /**
+        * get label based on whether or not the video is playing
+        */
+        _getPlaying: function(playing,pauseLabel,playLabel){
+          console.log(playing, pauseLabel, playLabel);
+          return playing ? pauseLabel : playLabel;
       },
       /**
         * handle button tap
