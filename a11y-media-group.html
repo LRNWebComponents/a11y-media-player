@@ -284,13 +284,9 @@ Basic customization:
       attached: function(){
         let root = this;
         root.target = root.$$('#transcript');
-        console.log(root.$.transcript,root.$.transcript.getEffectiveChildren());
         root.$.controls.addEventListener('searchbar-added',function(e){
           root.search = e.detail;
         });
-        /*root.$.controls.addEventListener('search-result',function(e){
-          root.$.controls.resultCount += root.$.controls.resultCount;
-        });*/
         root.$.controls.addEventListener('toggle-scroll',function(e){
           root.disableScroll = !root.disableScroll;
         });

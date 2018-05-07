@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../simple-search/simple-search-content.html">
 
 <!--
 `a11y-media-transcript-cue`
@@ -41,6 +42,10 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         display: table-row;
         background-color: #ffffff;
         color: #000000;
+        --simple-search-match: {
+          background-color: #ffffff;
+          color: #eeeeee;
+        };
       }
       :host[hide-timestamps] {
         display: inline;
@@ -62,20 +67,14 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       :host[hide-timestamps] #time {
         display: none;
       }
-      :host [matched] {
-        background-color: #ffffff;
-        color: #eeeeee;
-        padding: 0.1em 0.25em;
-        border-radius: 0.1em;
-      }
       @media screen {
         :host {
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
           color: var(--a11y-media-transcript-text-color, #000000);
-        }
-        :host [matched] {
-          background-color: var(--a11y-media-transcript-matched-cue-bg, var(--a11y-media-transcript-text-color, #000000));
-          color: var(--a11y-media-transcript-matched-cue-text, var(--a11y-media-transcript-bg-color, #ffffff));
+          --simple-search-match: {
+            background-color: var(--a11y-media-transcript-matched-cue-bg, var(--a11y-media-transcript-text-color, #000000));
+            color: var(--a11y-media-transcript-matched-cue-text, var(--a11y-media-transcript-bg-color, #ffffff));
+          };
         }
         :host:not([active]):not([disabled]):active,
         :host:not([active]):not([disabled]):focus,
@@ -146,9 +145,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
     </style>
     <span id="time">[[cue.start]] - [[cue.end]]</span>
     <span id="text">
-      <template is="dom-repeat" items="[[text]]" as="text">
-        <span matched$="[[text.matched]]">[[text.text]]</span>
-      </template>
+      <simple-search-content id="content" content="[[cueContent]]"></simple-search-content>
     </span>
     <iron-a11y-keys 
       id="a11y" 
@@ -198,6 +195,13 @@ A single cue in a11y-media-transcriptas static text or as an button that control
           value: null
         },
         /** 
+          * array of cue data 
+          */
+        cueContent: {
+          type: Array,
+          computed: '_getCueContent(cue)'
+        },
+        /** 
           * disable interactive mode that makes the transcript clickable 
           */
         disabled: {
@@ -212,14 +216,6 @@ A single cue in a11y-media-transcriptas static text or as an button that control
           value: '',
         }
       },
-      attached: function(){
-        this.text = [
-          {
-            "matched": false, 
-            "text": this.cue.text
-          }
-        ];
-      },
       ready: function(){
         let root = this, search = root.search;
         if(!root.disabled) {
@@ -228,10 +224,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
           root.setAttribute('controls',this.mediaId);
         }
         if(!root.disableSearch && root.search !== undefined && root.search !== null) {
-          search.addEventListener('search',function(){
-            root.text = search.findMatches(root.cue.text);
-            root.fire('search-result',root);
-          });
+          root.$.content.enableSearch(search);
         }
       },/** 
        * prints the active cue
@@ -252,6 +245,17 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         if(!this.disabled) {
           this.fire('cue-seek',this);
         }
+      },
+      /**
+        * get cue content
+        */
+      _getCueContent: function(cue){
+        return [
+          {
+            "matched": false, 
+            "text": cue.text       
+          }
+        ];
       },
     });
   </script>
