@@ -148,7 +148,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
     </style>
     <span id="time">[[cue.start]] - [[cue.end]]</span>
     <span id="text">
-      <simple-search-content id="content" content="[[cueContent]]"></simple-search-content>
+      <simple-search-content id="content" content="[[cue.text]]"></simple-search-content>
     </span>
     <iron-a11y-keys 
       id="a11y" 
@@ -198,13 +198,6 @@ A single cue in a11y-media-transcriptas static text or as an button that control
           value: null
         },
         /** 
-          * array of cue data 
-          */
-        cueContent: {
-          type: Array,
-          computed: '_getCueContent(cue)'
-        },
-        /** 
           * disable interactive mode that makes the transcript clickable 
           */
         disabled: {
@@ -248,17 +241,6 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         if(!this.disabled) {
           this.fire('cue-seek',this);
         }
-      },
-      /**
-        * get cue content
-        */
-      _getCueContent: function(cue){
-        return [
-          {
-            "matched": false, 
-            "text": cue.text       
-          }
-        ];
       },
     });
   </script>
