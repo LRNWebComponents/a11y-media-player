@@ -42,13 +42,6 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         display: table-row;
         background-color: #ffffff;
         color: #000000;
-        --simple-search-content: {
-          display: inline;
-        };
-        --simple-search-match: {
-          background-color: #ffffff;
-          color: #eeeeee;
-        };
       }
       :host[hide-timestamps] {
         display: inline;
@@ -59,6 +52,14 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       }
       :host[hide-timestamps] #text {
         display: inline;
+      }
+      :host simple-search-content {
+        --simple-search-match: {
+          background-color: #ffffff;
+          border: none;
+          color: #eeeeee;
+          border-radius: 0.25em;
+        };
       }
       :host #time {
         display: table-cell;
@@ -74,7 +75,10 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         :host {
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
           color: var(--a11y-media-transcript-text-color, #000000);
+        }
+        :host simple-search-content {
           --simple-search-match: {
+            border: none;
             background-color: var(--a11y-media-transcript-matched-cue-bg, var(--a11y-media-transcript-text-color, #000000));
             color: var(--a11y-media-transcript-matched-cue-text, var(--a11y-media-transcript-bg-color, #ffffff));
           };
