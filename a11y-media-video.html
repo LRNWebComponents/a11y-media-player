@@ -1,0 +1,292 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="a11y-media-behaviors.html">
+<link rel="import" href="a11y-media-play-button.html">
+
+
+<!--
+`a11y-media-player`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+
+  <a11y-media-player 
+    accent-color$="[[accentColor]]"             // Optional accent color for controls, 
+                                                // using the following materialize colors: 
+                                                // red, pink, purple, deep-purple, indigo, blue, 
+                                                // light blue, cyan, teal, green, light green, lime, 
+                                                // yellow, amber, orange, deep-orange, and brown. 
+                                                // Default is null. 
+    allow-fullscreen$="[[allowFullscreen]]"         // Allow fullscreen mode?
+    audio-only$="[[audioOnly]]"                 // Is media audio only?
+    autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
+    cc$="[[cc]]"                                // Are closed captions toggled?
+    custom-microcopy$="[[customMicrocopy]]"     // Optional customization or text and icons
+    dark$="[[dark]]"                            // Is the color scheme dark? Default is light.    
+    disableFullscreen$="[[disableFullscreen]]"  // Is full screen mode disabled?
+    fullscreen$="[[fullscreen]]"                // Is full screen mode toggled on?
+    height$="[[height]]"                        // The height of player
+    hide-elapsed-time$="[[hideElapsedTime]]"    // Is elapsed time hidden?
+    lang$="[[lang]]"                            // The language of the media
+    loop$="[[loop]]"                            // Is video on a loop?
+    muted$="[[muted]]"                          // Is video muted?
+    volume$="[[volume]]"                        // The initial volume of the video
+    width$="[[width]]">                         // The width of player
+                                                // video source and tracks 
+    <source src="/path/to/video.mp4" type="video/mp4">
+    <source src="/path/to/video.webm" type="video/webm">
+    <track label="English" kind="subtitles" srclang="en" src="path/to/subtitles/en.vtt" default>
+    <track label="Deutsch" kind="subtitles" srclang="de" src="path/to/subtitles/de.vtt">
+    <track label="Español" kind="subtitles" srclang="es" src="path/to/subtitles/es.vtt">
+  </a11y-media-player>
+
+ Basic customization of player:
+--a11y-media-text-color: text color, default is #bbbbbb
+--a11y-media-bg-color: background color, default is #000000
+--a11y-media-faded-bg-color: a subtler version of background color, default is #444444
+--a11y-media-hover-color: text color on hover, default is #ffffff
+--a11y-media-accent-color: an accent color, default is #00b0ff
+--a11y-media-faded-accent-color: a subtler version of accent color, default is #4E7373
+ 
+ Custom styles for player buttons:
+--a11y-media-button-color: button text color, default is --a11y-media-text-color
+--a11y-media-button-bg-color: button background color, default is --a11y-media-bg-color
+--a11y-media-button-hover-color: button text color when focused/hovered, default is --a11y-media-hover-color
+--a11y-media-button-hover-bg-color: button background color when focused/hovered, default is --a11y-media-bg-color
+ 
+ Custom styles for player settings menu:
+--a11y-media-settings-menu-color: settings menu text color, default is --a11y-media-text-color
+--a11y-media-settings-menu-bg-color: settings menu background color, default is --a11y-media-bg-color
+ 
+ Custom styles for player toggle buttons:
+--a11y-toggle-off-color: color of toggle button when off, default is #f8f8f8
+--a11y-toggle-on-color: color of toggle button when on, default is --a11y-media-accent-color
+ 
+ Custom styles for player slider buttons:
+--a11y-media-slider-primary-color: primary slider color, default is --a11y-media-accent-color
+--a11y-media-slider-buffer-color: slider buffer color, default is --a11y-media-faded-accent-color
+--a11y-media-slider-pin-color: color of the pin that shows slider value, default is #444444
+--a11y-media-slider-knob-color: slider knob color, default is --a11y-media-accent-color
+
+ Custom styles for player volume slider:
+--a11y-media-volume-primary-color: volume slider color, default is #00b0ff
+--a11y-media-volume-pin-color: color of the pin that shows volume slider value, default is #444444
+--a11y-media-volume-knob-color: volume slider knob color, default is #00b0ff
+--a11y-media-volume-knob-start-color: knob color at the start of volume slider, default is --a11y-media-hover-color
+--a11y-media-volume-knob-end-color: knob color at the end of volume slider, default is --a11y-media-volume-knob-color
+
+ Custom styles for player speed slider:
+--a11y-media-speed-primary-color: speed slider color, default is #00b0ff
+--a11y-media-speed-pin-color: color of the pin that shows speed slider value, default is #444444
+--a11y-media-speed-knob-color: volume slider knob color, default is #00b0ff
+--a11y-media-speed-knob-start-color: knob color at the start of speed slider, default is --a11y-media-speed-knob-color
+--a11y-media-speed-knob-end-color: knob color at the end of speed slider, default is --a11y-media-speed-knob-color
+-->
+
+<dom-module id="a11y-media-player">
+  <template>
+    <style is="custom-style">
+      :host {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        max-height: 80vh;
+      }
+    </style>
+    <video 
+      autoplay$="[[autoplay]]" 
+      hidden$="[[audioOnly]]"
+      id="video" 
+      lang$="[[lang]]"
+      loop$="[[loop]]" 
+      muted$="[[muted]]" 
+      preload="metadata">
+      <slot></slot>
+      HTML5 video not supported 
+    </video>
+    <a11y-media-play-button 
+      audio-only$="[[audioOnly]]" 
+      hidden$="[[noHeight]]"
+      id="playbutton" 
+      pause-label$="[[pauseLabel]]" 
+      playing$="[[__playing]]"
+      play-label$="[[playLabel]]" 
+      thumbnail-src$="[[thumbnailSrc]]">
+    </a11y-media-play-button>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'a11y-media-player',
+
+      listeners: {
+        'controls-change': '_onControlsChanged',
+        'play-button-tapped': 'play'
+      },
+      
+      behaviors: [
+        a11yMediaBehaviors.GeneralFunctions,
+        a11yMediaBehaviors.PlayerBehaviors
+      ],
+      
+      properties: {
+        /**
+          * Language
+          */
+        lang: {
+          type: String,
+          value: 'en',
+          reflectToAttribute: true,
+        },
+      },
+      ready: function(){
+        let root = this, tracks = new Array();
+        root.__resumePlaying = false;
+
+        //adjusts video width and height based on attributes
+        if (root.width === 'unset' && root.height === 'unset'){
+          root.style.width = '100%';  
+        } else if (root.width === 'unset' && root.height !== 'unset') {
+          root.style.height = root.height;
+        } else {
+          root.style.width = root.width;  
+        }
+        // handles loaded metadata
+        root.$.video.addEventListener('loadedmetadata',function(){
+          // adjusts aspect ratio
+          if (root.width !== 'unset') root.setAttribute('width',root.width);
+          if (root.height !== 'unset') root.setAttribute('height',root.height);
+          let aspect = root.$.video.videoHeight/root.$.video.videoWidth * 100, defaultTrack = -1;
+          root.$.media.style.paddingTop = aspect+'%';
+          // tell the player what the video duration is
+          root.fire('media-duration',root.$.video);
+          
+          // gets cues from tracks
+          for(i in root.$.video.textTracks) {
+            if (root.$.video.textTracks[i] !== null) {
+              let track = root.$.video.textTracks[i];
+              if(track.label !== undefined || track.language !== undefined){
+                if (track.default) defaultTrack = defaultTrack ? defaultTrack : track.default;
+                track.oncuechange = function(e){
+                  root.fire('cue-change',root.$.video);
+                };
+              }
+            }
+          }
+          // tell the player that there is a track and select it
+          if (root.$.video.textTracks.length > 0) {
+            root.fire('has-tracks', root.$.video);
+            if (defaultTrack) {
+              root.selectTrack(defaultTrack);
+            } else {
+              root.selectTrack(0);    
+            }
+          }
+        });
+      },
+      /** 
+       * plays the media 
+       */
+      play: function(){
+        this.$.video.play();
+      },
+      /** 
+       * pauses the media 
+       */
+      pause: function(){
+        this.$.video.pause();
+      },
+      /** 
+       * stops the media 
+       */
+      stop: function(){
+        this.pause();
+        this.seek(0);
+      },
+      /** 
+       * restarts the media 
+       */
+      restart: function(){
+        this.seek(0);
+        this.play();
+      },
+      /** 
+       * seeks media backward at a set increment
+       */
+      rewind: function(amt){
+        amt = amt !== undefined ? amt : 1;
+        this.seek(Math.max(this.$.video.currentTime - amt,0));
+      },
+      /** 
+       * seeks media forward at a set increment
+       */
+      forward: function(amt){
+        amt = amt !== undefined ? amt : 1;
+        this.seek(Math.min(this.$.video.currentTime + amt,this.__src.duration));
+      },
+      /** 
+       * seeks to a specific time 
+       */
+      seek: function(time){
+        this.$.video.currentTime = time;
+      },
+      /** 
+       * selects a specific track by index
+       */
+      selectTrack: function(index){
+        for(i in this.$.video.textTracks) {
+          if (index === i) {
+            this.$.video.textTracks[i].mode = 'showing';
+            this.fire('select-track',{
+              'media': root, 
+              'id': i, 
+              'track': this.$.video.textTracks[i] });
+          } else if (this.$.video.textTracks[i] !== null) {
+            this.$.video.textTracks[i].mode = 'hidden';
+          }
+        }
+      },
+      /** 
+       * set volume of media
+       */
+      setVolume: function(value){
+        this.$.video.volume = value !== null ? value/100 : 0.7;
+      },
+      /** 
+       * set speed/playback rate of media
+       */
+      setPlaybackRate: function(value){
+        this.$.video.playbackRate = value !== null ? value : 1;
+      },
+      /** 
+       * toggles autoplay:
+       * toggleAutoplay(true) to check the toggle, 
+       * toggleAutoplay(false) for unchecking, and 
+       * toggleAutoplay to toggle  
+       */
+      toggleAutoplay: function(mode){
+        this.$.video.autoplay = mode === undefined ? !this.$.video.autoplay : mode;
+      },
+      /** 
+       * toggles looping:
+       * toggleLoop(true) to check the toggle, toggleLoop(false) for unchecking, and toggleLoop to toggle  
+       */
+      toggleLoop: function(mode){
+        this.$.video.loop = mode === undefined ? !this.$.video.loop : mode;
+      },
+      /**
+        * set play/pause button 
+        */
+      _convertTime: function(val,max){
+        max = max === undefined ? val : max;
+        let a = (val) => { return val < 10 ? '0' + val : val; }, 
+        b = (val,i,none) => { return max >= i ? a(Math.floor(val/i))+':' : none },
+        c = (val) => { return val < 100 ? val+'0' : val };
+        return b(val,3600,'')+b(val%3600,60,'00:')+a(Math.round(val%60));
+      }
+    });
+  </script>
+</dom-module>

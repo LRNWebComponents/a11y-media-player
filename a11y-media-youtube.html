@@ -1,0 +1,46 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="a11y-media-youtube-utility.html">
+
+
+<!--
+`a11y-media-youtube`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+
+-->
+
+<dom-module id="a11y-media-youtube">
+  <template>
+    <div id="youtube" video-id$="[[videoId]]"></div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'a11y-media-youtube',
+      properties: {
+        videoId: {
+          type: String,
+          value: 'u1zgFlCw8Aw'
+        },
+        player: {
+          type: Object,
+          value: {}
+        }
+      },
+
+      attached: function(){
+        Polymer.A11yMediaYoutubeUtility.requestAvailability();
+      },
+      ready: function(){
+        let root = this, video = 'http://www.youtube.com/watch?v=u1zgFlCw8Aw', width = 600, progressBar = false;
+        this.fire('youtube-player',this);
+
+        Polymer.A11yMediaYoutubeUtility.addPlayer(root.$.youtube);
+      },
+    });
+  </script>
+</dom-module>
