@@ -14,7 +14,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
     cue$="[[cue]]"                                  // An array of cue data
     order$="[[cue.order]]"                          // The index of the current cue
     disable-interactive$="[[disableInteractive]]"   // Is cue interactive? 
-    controls$="[[mediaId]]"                         // The id of the a11y-media-player element
+    controls$="[[mediaId]]"                         // The id of the a11y-media-standalone-player element
     hide-timestamps$="[[hideTimestamps]]" >         // Hide cue timestamp?
   </a11y-media-transcript-cue>
 
@@ -40,8 +40,10 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       :host {
         cursor: default;
         display: table-row;
-        background-color: #ffffff;
         color: #000000;
+        background-color: #ffffff;
+        --a11y-media-transcript-focused-cue-color: var(--a11y-media-transcript-color);
+        --a11y-media-transcript-focused-cue-bg-color: var(--a11y-media-transcript-bg-color);
       }
       :host[hide-timestamps] {
         display: inline;
@@ -55,9 +57,9 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       }
       :host simple-search-content {
         --simple-search-match: {
-          background-color: #ffffff;
+          color: #000000;
+          background-color: #eeeeee;
           border: none;
-          color: #eeeeee;
           border-radius: 0.25em;
         };
       }
@@ -73,80 +75,29 @@ A single cue in a11y-media-transcriptas static text or as an button that control
       }
       @media screen {
         :host {
-          background-color: var(--a11y-media-transcript-bg-color, #ffffff);
-          color: var(--a11y-media-transcript-text-color, #000000);
+          color: var(--a11y-media-transcript-color);
+          background-color: var(--a11y-media-transcript-bg-color);
         }
         :host simple-search-content {
           --simple-search-match: {
+            color: var(--a11y-media-transcript-match-color);
+            background-color: var(--a11y-media-transcript-match-bg-color);
             border: none;
-            background-color: var(--a11y-media-transcript-matched-cue-bg, var(--a11y-media-transcript-text-color, #000000));
-            color: var(--a11y-media-transcript-matched-cue-text, var(--a11y-media-transcript-bg-color, #ffffff));
           };
         }
         :host:not([active]):not([disabled]):active,
         :host:not([active]):not([disabled]):focus,
         :host:not([active]):not([disabled]):hover {
           cursor: pointer;
-          font-weight: var(--a11y-media-transcript-focused-cue-weight, normal);
-          color: var(--a11y-media-transcript-focused-cue-text, var(--a11y-media-transcript-text-color, #000000));
-          background-color: var(--a11y-media-transcript-focused-cue-bg, var(--a11y-media-transcript-bg-color, #ffffff));
-          outline: 1px dotted var(--a11y-media-transcript-text-color, #000000);
+          color: var(--a11y-media-transcript-focused-cue-color);
+          background-color: var(--a11y-media-transcript-focused-cue-bg-color);
+          outline: 1px dotted var(--a11y-media-transcript-focused-cue-color);
+          @apply --a11y-media-transcript-focused-cue;
         }
         :host[active] {
-          font-weight: var(--a11y-media-transcript-active-cue-weight, normal);
-          color: var(--a11y-media-transcript-active-cue-text, --a11y-media-transcript-text-color);
-          background-color: var(--a11y-media-transcript-active-cue-bg, #eeeeee);
-        }
-        :host[accent-color="red"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #ffd9d6);
-        }
-        :host[accent-color="pink"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #ffd7e5);
-        }
-        :host[accent-color="purple"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #f7d7fd);
-        }
-        :host[accent-color="deep-purple"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #e1d2ff);
-        }
-        :host[accent-color="indigo"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #c7d2ff);
-        }
-        :host[accent-color="blue"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #b9e2ff);
-        }
-        :host[accent-color="light-blue"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #bdecff);
-        }
-        :host[accent-color="cyan"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #cbfdf1);
-        }
-        :host[accent-color="teal"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #c8ffff);
-        }
-        :host[accent-color="green"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #d1ffdd);
-        }
-        :host[accent-color="light-green"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #deffb6);
-        }
-        :host[accent-color="lime"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #f4ff81);
-        }
-        :host[accent-color="yellow"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #ffff8d);
-        }
-        :host[accent-color="amber"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #fff1c1);
-        }
-        :host[accent-color="orange"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #ffdda3);
-        }
-        :host[accent-color="deep-orange"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #ffddd3);
-        }
-        :host[accent-color="brown"][active] {
-          background-color: var(--a11y-media-transcript-active-cue-bg, #d7ccc8);
+          color: var(--a11y-media-transcript-active-cue-color);
+          background-color: var(--a11y-media-transcript-active-cue-bg-color);
+          @apply --a11y-media-transcript-active-cue;
         }
       }
     </style>

@@ -3,7 +3,7 @@
 
 <!--
 `a11y-media-play-button`
-A giant play button that overlays the media in a11y-media-player
+A giant play button that overlays the media in a11y-media-standalone-player
 
 @demo demo/index.html
 
@@ -63,10 +63,11 @@ Custom styles:
       }
       :host #background {
         opacity: 0.3;
-        background: var(--a11y-play-button-bg-color, #000000);
+        background: var(--a11y-play-button-bg-color);
       }
+      :host #button:focus #background,
       :host #button:hover #background {
-        background: var(--a11y-play-button-focus-bg-color, var(--a11y-play-button-bg-color, #000000));
+        background: var(--a11y-play-button-focus-bg-color);
         opacity: 0.1;
       }
       :host #arrow {
@@ -159,7 +160,7 @@ Custom styles:
         * get label based on whether or not the video is playing
         */
         attached: function(){
-          this.$.text.innerHTML = this.playLabel;
+          this.$.text.innerText = this.playLabel;
       },
       /**
         * get label based on whether or not the video is playing

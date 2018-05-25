@@ -1,11 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
+<link rel="import" href="../simple-colors/simple-colors.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-transcript-cue.html">
 
 <!--
 `a11y-media-transcript`
-A transcript element to pair with a11y-media-player
+A transcript element to pair with a11y-media-standalone-player
 
 @demo demo/index.html
 
@@ -30,11 +31,19 @@ A transcript element to pair with a11y-media-player
 
 <dom-module id="a11y-media-transcript">
   <template>
+    <style include="simple-colors"></style>
     <style is="custom-style">
       :host {
         display: block;
         padding: 15px;
-        background-color: var(--a11y-media-transcript-bg-color, #ffffff);
+        --a11y-media-transcript-color: --simple-colors-foreground1;
+        --a11y-media-transcript-bg-color: --simple-colors-background1;
+        --a11y-media-transcript-active-cue-color: --simple-colors-foreground1;
+        --a11y-media-transcript-active-cue-bg-color: --simple-colors-background1;
+        --a11y-media-transcript-focused-cue-color: --simple-colors-foreground1;
+        --a11y-media-transcript-focused-cue-bg-color: --simple-colors-background2;
+        --a11y-media-transcript-match-color: --simple-colors-background1;
+        --a11y-media-transcript-match-bg-color: --simple-colors-accent-foreground1;
       }
       :host[hidden] {
         display: none;

@@ -4,15 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>a11y-media-player demo</title>
+    <title>a11y-media-standalone-player demo</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../a11y-media-player.html">
+    <link rel="import" href="../a11y-media-standalone-player.html">
     <link rel="import" href="../a11y-media-youtube.html">
-    <link rel="import" href="../a11y-media-group.html">
+    <link rel="import" href="../a11y-media-player.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
       .vertical-section-container.centered > * {
@@ -43,30 +43,30 @@
         </template>
       </demo-snippet>
         
-      <!--h3>a11y-media-group demo</h3>
+      <h3>a11y-media-player demo</h3>
       <demo-snippet>
         <template>
-          <a11y-media-group accent-color="light-blue" dark thumbnail-src="samples/stclair.jpg" media-title="a11y-media-group demo video">
+          <a11y-media-player accent-color="light-blue" dark thumbnail-src="samples/stclair.jpg" media-title="a11y-media-player demo video">
             <source src="http://personal.psu.edu/lnm105/stclair.mp4" type="video/mp4">
             <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
-          </a11y-media-group>
+          </a11y-media-player>
         </template>
       </demo-snippet>
       
-      <h3>a11y-media-group demo, light, with no timestamps, no interactive transcript, and no search feature</h3>
+      <h3>a11y-media-player demo, light, with no timestamps, no interactive transcript, and no search feature</h3>
       <demo-snippet>
         <template>
-          <a11y-media-group accent-color="pink" disable-interactive disable-search hide-timestamps>
+          <a11y-media-player accent-color="pink" disable-interactive disable-search hide-timestamps>
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-group>
+          </a11y-media-player>
         </template>
       </demo-snippet>  
       
-      <h3>a11y-media-group demo, dark, with custom styles and custom microcopy</h3>
+      <!--h3>a11y-media-player demo, dark, with custom styles and custom microcopy</h3>
       <demo-snippet>
         <template>
           <style is="custom-style">
@@ -81,7 +81,7 @@
                 --a11y-media-transcript-matched-cue-text: #ffffff;
               }
             </style>
-            <a11y-media-group id="custom1" accent-color="red" dark lang="es" 
+            <a11y-media-player id="custom1" accent-color="red" dark lang="es" 
               audio-label="audio" 
               auto-scroll-label="desplazamiento automático"
               captions-label="subtítulos"
@@ -114,67 +114,67 @@
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt" default>
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt">
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
-          </a11y-media-group>
+          </a11y-media-player>
         </template>
       </demo-snippet-->  
 
-      <!--h3>a11y-media-group, customized</h3>
+      <!--h3>a11y-media-player, customized</h3>
       <demo-snippet>
         <p>Transcript can be located anywhere, even in a different <tt>&lt;div/&gt;</tt>.</p>
         <template>
-          <a11y-media-group accent-color="purple">
+          <a11y-media-player accent-color="purple">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
             <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
             <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-group>
+          </a11y-media-player>
         </template>
       </demo-snippet-->
       
-      <!--h3>a11y-media-group as audio</h3>
+      <!--h3>a11y-media-player as audio</h3>
       <demo-snippet>
         <template>
-          <a11y-media-group accent-color="deep-orange" dark audio-only hide-timestamps>
+          <a11y-media-player accent-color="deep-orange" dark audio-only hide-timestamps>
             <source src="http://personal.psu.edu/lnm105/stclair.wav" type="audio/wav">
             <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
-          </a11y-media-group>
+          </a11y-media-player>
         </template>
       </demo-snippet>
       
       <div class="smaller-examples">
 
-        <h3>Standalone a11y-media-player demo</h3>
+        <h3>Standalone a11y-media-standalone-player demo</h3>
         <demo-snippet>
           <template>
-            <a11y-media-player accent-color="indigo">
+            <a11y-media-standalone-player accent-color="indigo">
               <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm"> 
               <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg"> 
               <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
               <source src="http://techslides.com/demos/sample-videos/small.3gp" type="video/3gp">
-            </a11y-media-player>
+            </a11y-media-standalone-player>
           </template>
         </demo-snippet>
         
-        <h3>Standalone a11y-media-player as audio</h3>
+        <h3>Standalone a11y-media-standalone-player as audio</h3>
         <demo-snippet>
           <template>
-            <a11y-media-player accent-color="cyan" dark audio-only thumbnail-src="samples/stclair.jpg" width="200px">
+            <a11y-media-standalone-player accent-color="cyan" dark audio-only thumbnail-src="samples/stclair.jpg" width="200px">
               <source src="http://personal.psu.edu/lnm105/stclair.wav" type="audio/wav">
               <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
-            </a11y-media-player>
+            </a11y-media-standalone-player>
           </template>
         </demo-snippet>
         
-        <h3>a11y-media-player demo with width set</h3>
+        <h3>a11y-media-standalone-player demo with width set</h3>
         <demo-snippet>
           <template>
-            <a11y-media-player accent-color="red" width="200px">
+            <a11y-media-standalone-player accent-color="red" width="200px">
               <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm"> 
               <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg"> 
               <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
               <source src="http://techslides.com/demos/sample-videos/small.3gp" type="video/3gp">
-            </a11y-media-player>
+            </a11y-media-standalone-player>
           </template>
         </demo-snippet>
       </div-->
