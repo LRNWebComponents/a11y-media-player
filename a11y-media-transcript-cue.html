@@ -42,8 +42,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         display: table-row;
         color: #000000;
         background-color: #ffffff;
-        --a11y-media-transcript-focused-cue-color: var(--a11y-media-transcript-color);
-        --a11y-media-transcript-focused-cue-bg-color: var(--a11y-media-transcript-bg-color);
+        transition: color 0.25s, background-color 0.25s;
       }
       :host[hide-timestamps] {
         display: inline;
@@ -83,6 +82,7 @@ A single cue in a11y-media-transcriptas static text or as an button that control
             color: var(--a11y-media-transcript-match-color);
             background-color: var(--a11y-media-transcript-match-bg-color);
             border: none;
+            font-weight: normal;
           };
         }
         :host:not([active]):not([disabled]):active,

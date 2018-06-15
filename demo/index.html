@@ -36,12 +36,12 @@
   <body>
     <div class="vertical-section-container centered">
         
-      <h3>Standalone a11y-media-youtube demo</h3>
+      <!--h3>Standalone a11y-media-youtube demo</h3>
       <demo-snippet>
         <template>
           <a11y-media-youtube accent-color="indigo"></a11y-media-youtube>
         </template>
-      </demo-snippet>
+      </demo-snippet-->
         
       <h3>a11y-media-player demo</h3>
       <demo-snippet>
@@ -66,22 +66,10 @@
         </template>
       </demo-snippet>  
       
-      <!--h3>a11y-media-player demo, dark, with custom styles and custom microcopy</h3>
+      <h3>a11y-media-player demo, dark, with dark transcript and custom microcopy</h3>
       <demo-snippet>
         <template>
-          <style is="custom-style">
-              #custom1 {
-                --a11y-media-transcript-bg-color: #000000;
-                --a11y-media-transcript-text-color: #bbbbbb;
-                --a11y-media-transcript-focused-cue-bg: #222222;
-                --a11y-media-transcript-focused-cue-text: #eeeeee;
-                --a11y-media-transcript-active-cue-bg: #000000;
-                --a11y-media-transcript-active-cue-text: #ffffff;
-                --a11y-media-transcript-matched-cue-bg: #333333;
-                --a11y-media-transcript-matched-cue-text: #ffffff;
-              }
-            </style>
-            <a11y-media-player id="custom1" accent-color="red" dark lang="es" 
+            <a11y-media-player id="custom1" accent-color="red" dark dark-transcript lang="es" 
               audio-label="audio" 
               auto-scroll-label="desplazamiento automático"
               captions-label="subtítulos"
@@ -116,9 +104,9 @@
             <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
           </a11y-media-player>
         </template>
-      </demo-snippet-->  
+      </demo-snippet>  
 
-      <!--h3>a11y-media-player, customized</h3>
+      <h3>a11y-media-player, customized</h3>
       <demo-snippet>
         <p>Transcript can be located anywhere, even in a different <tt>&lt;div/&gt;</tt>.</p>
         <template>
@@ -130,9 +118,9 @@
             <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
           </a11y-media-player>
         </template>
-      </demo-snippet-->
+      </demo-snippet>
       
-      <!--h3>a11y-media-player as audio</h3>
+      <h3>a11y-media-player as audio</h3>
       <demo-snippet>
         <template>
           <a11y-media-player accent-color="deep-orange" dark audio-only hide-timestamps>
@@ -177,7 +165,7 @@
             </a11y-media-standalone-player>
           </template>
         </demo-snippet>
-      </div-->
+      </div>
     </div>
   </body>
 </html>

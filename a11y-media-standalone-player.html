@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
 <link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
+<link rel="import" href="../simple-colors/simple-colors.html">
 <link rel="import" href="screenfull-lib.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-play-button.html">
@@ -91,12 +92,12 @@ A LRN element
 
 <dom-module id="a11y-media-standalone-player">
   <template>
-    <style include="simple-colors"></style>
-    <style is="custom-style">
+    <style is="custom-style" include="simple-colors">
       :host {
         display: block;
         max-width: 100%;
         transition: position 0.5s ease, max-width 1s ease;
+        background-color: var(--simple-colors-background2);
         --a11y-media-color: var(--simple-colors-foreground2);
         --a11y-media-bg-color: var(--simple-colors-background2);
         --a11y-media-hover-color: var(--simple-colors-foreground1);
@@ -334,8 +335,9 @@ A LRN element
       
       behaviors: [
         a11yMediaBehaviors.GeneralFunctions,
-        a11yMediaBehaviors.PlayerBehaviors
-      ],
+        a11yMediaBehaviors.PlayerBehaviors, 
+        simpleColorsBehaviors 
+      ], 
       
       properties: {
         /**
@@ -349,15 +351,10 @@ A LRN element
       },
 
       /**
-        * initializes slider metadata
-        */
-      created: function(){
-      },
-
-      /**
         * calls responsive-utility to get parent's responsive size
         */ 
       attached: function(){
+        Polymer.SimpleColorsUtility.requestAvailability();
         Polymer.A11yMediaUtility.requestAvailability();
         this._addResponsiveUtility();
         this.fire('a11y-player',this);

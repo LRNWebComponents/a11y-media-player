@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../simple-search/simple-search.html">
+<link rel="import" href="../simple-colors/simple-colors.html">
 <link rel="import" href="a11y-media-behaviors.html">
 <link rel="import" href="a11y-media-button.html">
 
@@ -29,92 +30,30 @@ A controls for the transcript element
   <template>
     <style is="custom-style">
         :host {
-          background-color: var(--a11y-media-transcript-bg-color, #ffffff);
-          color: var(--a11y-media-transcript-text-color, #666666);
+          --a11y-media-transcript-color: var(--simple-colors-foreground1);
+          --a11y-media-transcript-bg-color: var(--simple-colors-background1);
+          --a11y-media-hover-color: var(--simple-colors-foreground1);
+          --a11y-media-hover-bg-color: var(--simple-colors-background2);
+          --a11y-media-accent-color: var(--simple-colors-accent-foreground1);
+          --a11y-media-faded-accent-color: var(--simple-colors-accent-foreground3);
+          background-color: var(--a11y-media-transcript-bg-color);
+          color: var(--a11y-media-transcript-text-color);
         }
         :host simple-search {
-          --paper-input-container-input-color: var(--a11y-media-transcript-text-color, #666666);
-          --paper-input-container-focus-color: var(--a11y-media-transcript-focus-color, #000000);
-          --paper-input-container-color: var(--a11y-media-transcript-text-color, #666666);
+          --paper-input-container-input-color: var(--a11y-media-transcript-color);
+          --paper-input-container-focus-color: var(--a11y-media-accent-color);
+          --paper-input-container-color: var(--a11y-media-transcript-color);
           --paper-input-container: {
             padding: 0 15px;
           };
         }
         :host simple-search, 
         :host a11y-media-button {
-          --a11y-media-button-toggle-color: var(--a11y-media-transcript-focus-color, #000000);
-          --a11y-media-button-color: var(--a11y-media-transcript-text-color, #666666);
-          --a11y-media-button-bg-color:  var(--a11y-media-transcript-bg-color, #ffffff);
-          --a11y-media-button-hover-color: var(--a11y-media-transcript-focus-color, #000000);
-          --a11y-media-button-hover-bg-color:  var(--a11y-media-transcript-bg-color, #ffffff);
-        }
-        :host[accent-color="red"] simple-search,
-        :host[accent-color="red"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #d50000;
-        }
-        :host[accent-color="pink"] simple-search,
-        :host[accent-color="pink"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #f50057;
-        }
-        :host[accent-color="purple"] simple-search,
-        :host[accent-color="purple"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #d500f9;
-        }
-        :host[accent-color="deep-purple"] simple-search,
-        :host[accent-color="deep-purple"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #651fff;
-        }
-        :host[accent-color="indigo"] simple-search,
-        :host[accent-color="indigo"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #304ffe;
-        }
-        :host[accent-color="blue"] simple-search,
-        :host[accent-color="blue"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #1565c0;
-        }
-        :host[accent-color="light-blue"] simple-search,
-        :host[accent-color="light-blue"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #0091ea;
-        }
-        :host[accent-color="cyan"] simple-search,
-        :host[accent-color="cyan"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #0097a7;
-        }
-        :host[accent-color="teal"] simple-search,
-        :host[accent-color="teal"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #00897b;
-        }
-        :host[accent-color="green"] simple-search,
-        :host[accent-color="green"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #02993c;
-        }
-        :host[accent-color="light-green"] simple-search,
-        :host[accent-color="light-green"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #448f02;
-        }
-        :host[accent-color="lime"] simple-search,
-        :host[accent-color="lime"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #6f8e00;
-        }
-        :host[accent-color="yellow"] simple-search,
-        :host[accent-color="yellow"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #9a8000;
-        }
-        :host[accent-color="amber"] simple-search,
-        :host[accent-color="amber"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #bf7f00;
-        }
-        :host[accent-color="orange"] simple-search,
-        :host[accent-color="orange"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #e65100;
-        }
-        :host[accent-color="deep-orange"] simple-search,
-        :host[accent-color="deep-orange"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #ff3d00;
-        }
-        :host[accent-color="brown"] simple-search,
-        :host[accent-color="brown"] a11y-media-button { 
-          --a11y-media-transcript-focus-color: #5d4037;
+          --a11y-media-button-toggle-color: var(--a11y-media-faded-accent-color);
+          --a11y-media-button-color: var(--a11y-media-transcript-color);
+          --a11y-media-button-bg-color:  var(--a11y-media-transcript-bg-color);
+          --a11y-media-button-hover-color: var(--a11y-media-accent-color);
+          --a11y-media-button-hover-bg-color:  var(--a11y-media-transcript-bg-color);
         }
         :host #searchbar {
           display: flex;
@@ -184,7 +123,8 @@ A controls for the transcript element
       
       behaviors: [
         a11yMediaBehaviors.GeneralFunctions,
-        a11yMediaBehaviors.TranscriptBehaviors 
+        a11yMediaBehaviors.TranscriptBehaviors,, 
+        simpleColorsBehaviors   
       ],
 
       properties: {
@@ -210,6 +150,7 @@ A controls for the transcript element
         */ 
       attached: function(){
         let root = this;
+        Polymer.SimpleColorsUtility.requestAvailability();
         root.search = root.$.search;
         root.fire('searchbar-added',root.$.search);
         root.$.scroll.addEventListener('button-clicked',function(e){
