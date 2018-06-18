@@ -124,8 +124,8 @@ A LRN element
         --a11y-media-button-toggle-color: var(--a11y-media-faded-accent-color);
 
         /* giant play button */
-        --a11y-play-button-bg-color: var(--simple-colors-foreground1);
-        --a11y-play-button-focus-bg-color: var(--simple-colors-foreground1);
+        --a11y-play-button-bg-color: var(--simple-colors-background1);
+        --a11y-play-button-focus-bg-color: var(--simple-colors-background1);
         
         /* toggle button */
         --paper-toggle-button-unchecked-bar-color: var(--a11y-media-color);
@@ -235,6 +235,15 @@ A LRN element
       <div id="player">
         <div id="player-inner">
           <div id="media" hidden$="[[noHeight]]">
+            <a11y-media-play-button 
+              audio-only$="[[audioOnly]]" 
+              hidden$="[[noHeight]]"
+              id="playbutton" 
+              pause-label$="[[pauseLabel]]" 
+              playing$="[[__playing]]"
+              play-label$="[[playLabel]]" 
+              thumbnail-src$="[[thumbnailSrc]]">
+            </a11y-media-play-button>
             <video 
               autoplay$="[[autoplay]]" 
               hidden$="[[audioOnly]]"
@@ -257,15 +266,6 @@ A LRN element
               <slot></slot>
               HTML5 audio not supported 
             </audio>
-            <a11y-media-play-button 
-              audio-only$="[[audioOnly]]" 
-              hidden$="[[noHeight]]"
-              id="playbutton" 
-              pause-label$="[[pauseLabel]]" 
-              playing$="[[__playing]]"
-              play-label$="[[playLabel]]" 
-              thumbnail-src$="[[thumbnailSrc]]">
-            </a11y-media-play-button>
           </div>
         </div>
         <paper-slider 
@@ -330,7 +330,8 @@ A LRN element
 
       listeners: {
         'controls-change': '_onControlsChanged',
-        'play-button-tapped': 'play'
+        'play-button-tapped': 'play',
+        'thumbnail-aspect': '_setPaddingTop'
       },
       
       behaviors: [
@@ -409,7 +410,6 @@ A LRN element
           if (root.height !== 'unset') root.setAttribute('height',root.height);
           let aspect = root.__src.videoHeight/root.__src.videoWidth * 100;
           root.$.media.style.paddingTop = aspect+'%';
-          root.$.playbutton.style.paddingTop = aspect+'%';
           // gets and converts video duration
           root.__duration = root.__src.duration > 0 ? root.__src.duration: 0; 
           root.__status = root._convertTime(0,root.__src.duration)+'/'+root._convertTime(root.__src.duration);
@@ -707,6 +707,9 @@ A LRN element
         b = (val,i,none) => { return max >= i ? a(Math.floor(val/i))+':' : none },
         c = (val) => { return val < 100 ? val+'0' : val };
         return b(val,3600,'')+b(val%3600,60,'00:')+a(Math.round(val%60));
+      },
+      _setPaddingTop: function(e){
+        this.$.media.style.paddingTop = e.detail+'%';
       }
     });
   </script>
