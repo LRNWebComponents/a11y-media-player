@@ -1,5 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="a11y-media-youtube-utility.html">
+<link rel="import" href="a11y-media-behaviors.html">
+<link rel="import" href="a11y-media-controls.html">
 
 
 <!--
@@ -14,13 +16,73 @@ A LRN element
 
 <dom-module id="a11y-media-youtube">
   <template>
+    <style is="custom-style">
+      #youtube, #controls {
+        width: 600px;
+      }
+    </style>
     <div id="youtube" video-id$="[[videoId]]"></div>
+    <a11y-media-controls 
+      audio-label$="[[audioLabel]]" 
+      captions-label$="[[captionsLabel]]" 
+      captions-icon$="[[captionsIcon]]" 
+      captions-menu-label$="[[captionsMenuLabel]]" 
+      captions-menu-off$="[[captionsMenuOff]]" 
+      cc$="[[cc]]"
+      forward-label$="[[forwardLabel]]" 
+      forward-icon$="[[forwardIcon]]" 
+      fullscreen-label$="[[fullscreenLabel]]" 
+      fullscreen-icon$="[[fullscreenIcon]]" 
+      has-captions$="[[hasCaptions]]"
+      has-transcript$="[[hasTranscript]]"
+      id="controls"
+      lang$="[[uiLanguage]]"
+      length="[[__length]]"
+      loop-label$="[[loopLabel]]" 
+      mute-label$="[[muteLabel]]" 
+      mute-icon$="[[muteIcon]]" 
+      muted$="[[muted]]"
+      pause-label$="[[pauseLabel]]" 
+      pause-icon$="[[pauseIcon]]" 
+      play-label$="[[playLabel]]" 
+      play-icon$="[[playIcon]]" 
+      playing$="[[__playing]]"
+      print-label$="[[printLabel]]" 
+      print-icon$="[[printIcon]]" 
+      restart-label$="[[restartLabel]]" 
+      restart-icon$="[[restartIcon]]" 
+      search-transcript$="[[searchTranscript]]" 
+      settings-label$="[[settingsLabel]]" 
+      settings-icon$="[[settingsIcon]]" 
+      rewind-label$="[[rewindLabel]]" 
+      rewind-icon$="[[rewindIcon]]" 
+      speed-label$="[[speedLabel]]"  
+      transcript-label$="[[transcriptLabel]]" 
+      transcript-icon$="[[transcriptIcon]]"
+      transcript-menu-label$="[[transcriptMenuLabel]]"
+      unmute-label$="[[unmuteLabel]]" 
+      unmute-icon$="[[unmuteIcon]]" 
+      volume="[[__volume]]"
+      volume-label$="[[volumeLabel]]" 
+      video-label$="[[videoLabel]]">
+    </a11y-media-controls>
   </template>
 
   <script>
     Polymer({
 
       is: 'a11y-media-youtube',
+
+      listeners: {
+        'controls-change': '_onControlsChanged'
+      },
+      
+      behaviors: [
+        a11yMediaBehaviors.GeneralFunctions,
+        a11yMediaBehaviors.PlayerBehaviors, 
+        simpleColorsBehaviors 
+      ], 
+
       properties: {
         videoId: {
           type: String,
@@ -36,11 +98,24 @@ A LRN element
         Polymer.A11yMediaYoutubeUtility.requestAvailability();
       },
       ready: function(){
-        let root = this, video = 'http://www.youtube.com/watch?v=u1zgFlCw8Aw', width = 600, progressBar = false;
-        this.fire('youtube-player',this);
-
-        Polymer.A11yMediaYoutubeUtility.addPlayer(root.$.youtube);
-      },
+        let root = this, video = 'http://www.youtube.com/watch?v=u1zgFlCw8Aw', width = 600, progressBar = false, installPlayer = function(player){
+          root.player = player;
+          let play = function(){ root.player.playVideo()}, pause = function(){ root.player.pauseVideo()};
+          root.__src = {
+            play: play, 
+            pause: pause
+          };
+          console.log(root.__src.play);
+        };
+        this.fire('youtube-player',this); 
+        if(Polymer.A11yMediaYoutubeUtility.apiReady){
+          installPlayer(Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube));
+        } else {
+          document.addEventListener('youtube-api-ready', function(e) {
+            installPlayer(Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube));
+          });
+        }
+      }
     });
   </script>
 </dom-module>

@@ -276,16 +276,6 @@ A LRN element
       toggleLoop: function(mode){
         this.$.video.loop = mode === undefined ? !this.$.video.loop : mode;
       },
-      /**
-        * set play/pause button 
-        */
-      _convertTime: function(val,max){
-        max = max === undefined ? val : max;
-        let a = (val) => { return val < 10 ? '0' + val : val; }, 
-        b = (val,i,none) => { return max >= i ? a(Math.floor(val/i))+':' : none },
-        c = (val) => { return val < 100 ? val+'0' : val };
-        return b(val,3600,'')+b(val%3600,60,'00:')+a(Math.round(val%60));
-      }
     });
   </script>
 </dom-module>

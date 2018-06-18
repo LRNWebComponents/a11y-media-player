@@ -55,7 +55,7 @@ A button used in a11y-media-controls
         overflow: hidden;
       }
     </style>
-    <button id="button" aria-role="button" tabindex="0" aria-label$="[[label]]" controls="[[controls]]" disabled$="[[disabled]]" toggle$="[[toggle]]">
+    <button id="button" aria-role="button" aria-pressed$="[[toggle]]" tabindex="0" aria-label$="[[label]]" controls="[[controls]]" disabled$="[[disabled]]" toggle$="[[toggle]]">
       <iron-icon icon$="[[icon]]"></iron-icon>
     </button>
     <paper-tooltip for="button">[[label]]</paper-tooltip>
@@ -99,7 +99,8 @@ A button used in a11y-media-controls
          */
          toggle: {
           type: Boolean,
-          value: null
+          value: false,
+          reflectToAttribute: true
         },
         /*
          * Is it disabled?

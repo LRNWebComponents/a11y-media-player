@@ -34,10 +34,11 @@ Utily to control
         created: function() {
           console.log('created');
           let root = Polymer.A11yMediaYoutubeUtility;
+          root.ready = 
           document.addEventListener('youtube-api-ready', function(e) {
             for(let i=0; i<root.players.length; i++){
-              console.log('delayed init',root.players[i]);
-              root.initYoutubePlayer(root.players[i]);
+              let player = root.initYoutubePlayer(root.players[i]);
+              root.players[i].player = player;
             }
             root.apiReady = true;
           });
@@ -84,13 +85,13 @@ Utily to control
         });
         return player;
       };
-      Polymer.A11yMediaYoutubeUtility.addPlayer = function(player){
+      Polymer.A11yMediaYoutubeUtility.addPlayer = function(container){
         let root = this;
-        console.log('addPlayer',player);
-        root.players.push(player);
+        console.log('addPlayer',container);
+        root.players.push(container);
         if(root.apiReady){
+          container.player = root.initYoutubePlayer(player);
           console.log('immediate init',player);
-          return root.initYoutubePlayer(player);
         }
         return false;
       };

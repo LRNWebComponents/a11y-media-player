@@ -216,7 +216,7 @@ The controls bar for the a11y-media-standalone-player.
         class="captions" 
         icon="[[captionsIcon]]" 
         label="[[captionsLabel]]" 
-        toggle$="[[cc]]">
+        toggle="[[cc]]">
       </a11y-media-button>
       <a11y-media-button 
         class="transcript"   
@@ -225,7 +225,7 @@ The controls bar for the a11y-media-standalone-player.
         disabled$="[[compactControls]]" 
         icon="[[transcriptIcon]]" 
         label="[[transcriptLabel]]"
-        toggle$="[[!hideTranscript]]">
+        toggle="[[!hideTranscript]]">
       </a11y-media-button>
       <paper-menu-button id="settings" vertical-align="bottom" horizontal-align="right" ignore-select>
         <paper-icon-button icon$="[[settingsIcon]]" slot="dropdown-trigger" alt="[[settingsLabel]]"></paper-icon-button>
@@ -234,7 +234,7 @@ The controls bar for the a11y-media-standalone-player.
             <div class="setting">
               <div class="setting-text">[[captionsMenuLabel]]</div>
               <div class="setting-control">
-                <dropdown-select id="tracks" no-label-float value="" label="tracks">
+                <dropdown-select id="tracks" no-label-float value="">
                   <paper-item value="">[[captionsMenuOff]]</paper-item>
                   <template is="dom-repeat" items="{{tracks}}" as="option">
                     <paper-item value$="{{option.value}}">{{option.text}}</paper-item>
@@ -288,7 +288,7 @@ The controls bar for the a11y-media-standalone-player.
           <a11y-media-button 
             icon="[[fullscreenIcon]]" 
             label="[[fullscreenLabel]]" 
-            toggle$="[[fullscreen]]" 
+            toggle="[[fullscreen]]" 
             step="1">
           </a11y-media-button>
         </template>
