@@ -409,6 +409,7 @@ A LRN element
           if (root.height !== 'unset') root.setAttribute('height',root.height);
           let aspect = root.__src.videoHeight/root.__src.videoWidth * 100;
           root.$.media.style.paddingTop = aspect+'%';
+          root.$.playbutton.style.paddingTop = aspect+'%';
           // gets and converts video duration
           root.__duration = root.__src.duration > 0 ? root.__src.duration: 0; 
           root.__status = root._convertTime(0,root.__src.duration)+'/'+root._convertTime(root.__src.duration);
