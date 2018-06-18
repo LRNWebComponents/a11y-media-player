@@ -172,6 +172,12 @@ A LRN element
         top: unset;
         bottom: 5px;
       }
+      :host #audio-only {
+        text-align: center;
+        font-style: italic;
+        width: 100%;
+        line-height: 160%;
+      }
       :host #print-only {
         display: none;
       }
@@ -320,6 +326,7 @@ A LRN element
         volume-label$="[[volumeLabel]]" 
         video-label$="[[videoLabel]]">
       </a11y-media-controls>
+      <div id="audio-only" hidden$="[[!audioOnly]]">(audio only)</div>
     </div>
   </template>
 
