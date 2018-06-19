@@ -32,15 +32,8 @@ Utily to control
          * Makes sure there is a utility ready and listening for elements.
          */
         created: function() {
-          console.log('created');
-          let root = Polymer.A11yMediaYoutubeUtility;
-          root.ready = 
           document.addEventListener('youtube-api-ready', function(e) {
-            for(let i=0; i<root.players.length; i++){
-              let player = root.initYoutubePlayer(root.players[i]);
-              root.players[i].player = player;
-            }
-            root.apiReady = true;
+            Polymer.A11yMediaYoutubeUtility.apiReady = true;
           });
         },
       });
@@ -64,7 +57,7 @@ Utily to control
 
       Polymer.A11yMediaYoutubeUtility.initYoutubePlayer = function(elem){
         let initialize = function(){
-        }, player = new YT.Player(elem.id, {
+        }, player = new YT.Player(elem.youtubeId, {
           width: 600, //elem.width,
           height: 400, //elem.height,
           videoId: 'dxPVyieptwA', //elem.videoId,
@@ -84,16 +77,6 @@ Utily to control
           }
         });
         return player;
-      };
-      Polymer.A11yMediaYoutubeUtility.addPlayer = function(container){
-        let root = this;
-        console.log('addPlayer',container);
-        root.players.push(container);
-        if(root.apiReady){
-          container.player = root.initYoutubePlayer(player);
-          console.log('immediate init',player);
-        }
-        return false;
       };
     })();
   </script>

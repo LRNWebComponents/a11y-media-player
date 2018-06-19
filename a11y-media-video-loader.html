@@ -22,7 +22,7 @@ A LRN element
     volume$="[[volume]]"                        // The initial volume of the video
     width$="[[width]]"                          // The width of player
     you-tube="[[youTube]]"                      // The youTube object
-    you-tube-id$="[[youTubeID]]">               // The id of a yourtube video
+    youtube-id$="[[youTubeID]]">               // The id of a yourtube video
                                                 // video source and tracks 
     <source src="/path/to/video.mp4" type="video/mp4">
     <source src="/path/to/video.webm" type="video/webm">
@@ -35,15 +35,17 @@ A LRN element
 <dom-module id="a11y-media-video-loader">
   <template>
     <style>
-      #audio, #video, #youtube {
+      #audio, #video, .youtube {
         width: 100%;
         max-width: 100%;
         max-height: 80vh;
       }
     </style>
     <video id="video" 
+      media-type$="[[mediaType]]"
       autoplay$="[[autoplay]]"  
-      hidden$="[[isVideo]]"
+      is-video$="[[isVideo]]"  
+      hidden$="[[!isVideo]]"
       lang$="[[lang]]"
       preload="metadata">
       <template is="dom-repeat" items="[[sources]]" as="source">
@@ -56,8 +58,9 @@ A LRN element
       HTML5 video not supported 
     </video>
     <audio id="audio" 
-      autoplay$="[[autoplay]]"  
-      hidden$="[[isAudio]]"
+      autoplay$="[[autoplay]]"   
+      is-audio$="[[isAudio]]" 
+      hidden$="[[!isAudio]]"
       lang$="[[lang]]"
       preload="metadata">
       <template is="dom-repeat" items="[[sources]]" as="source">
@@ -69,7 +72,6 @@ A LRN element
       <slot></slot>
       HTML5 video not supported 
     </audio>
-    <div id="youtube" video-id$="[[youTubeId]]" hidden$="[[isYouTube]]"></div>
   </template>
 
   <script>
@@ -82,18 +84,37 @@ A LRN element
         a11yMediaBehaviors.GeneralFunctions 
       ], 
 
+      attached: function(){
+        if(this.isYoutube) {
+          Polymer.A11yMediaYoutubeUtility.requestAvailability();
+          let div = document.createElement('div');
+          div.setAttribute('id',this.youtubeId);
+          div.classList.add('youtube');
+          this.appendChild(div);
+        }
+      },
+
       ready: function(){
         let root = this;
-        if(root.isYouTube) {
-          root.media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube);
-          root.duration = root.media.getDuration(); 
-          root.status = root._convertTime(0,root.duration)+'/'+root._convertTime(root.duration);
-          root.volume = root.muted ? 0 : Math.max(this.volume,10);
-          root.setMute(root.muted);
-          root.setCC(root.cc);
-          root.setLoop(root.loop);
-          root.setVolume(root.volume);
-          root.setPlaybackRate(root.playbackRate);
+        if(root.isYoutube) {
+          let initPlayer = function(){
+            Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root);
+            root.duration = root.media.getDuration(); 
+            root.status = root._convertTime(0,root.duration)+'/'+root._convertTime(root.duration);
+            root.volume = root.muted ? 0 : Math.max(this.volume,10);
+            root.setMute(root.muted);
+            root.setCC(root.cc);
+            root.setLoop(root.loop);
+            root.setVolume(root.volume);
+            root.setPlaybackRate(root.playbackRate);
+          }
+          if (!Polymer.A11yMediaYoutubeUtility.apiReady) {
+            initPlayer();
+          } else {
+            document.addEventListener('youtube-api-ready',function(){
+              initPlayer();
+            });
+          }
         } else {
           if (root.isAudio) {
             root.media = root.$.audio;
@@ -165,7 +186,7 @@ A LRN element
        * gets the buffered time
        */
       getBufferedTime: function(){
-        if(this.isYouTube) {
+        if(this.isYoutube) {
           return this.media.getVideoLoadedFraction() * this.media.getDuration();
         } else {
           return this.media.buffered.length > 0 ? this.media.buffered.end(0) : this.getCurrentTime();
@@ -175,7 +196,7 @@ A LRN element
        * gets the current time
        */
       getCurrentTime: function(){
-        return this.isYouTube ? this.media.getCurrentTime() : this.media.currentTime;
+        return this.isYoutube ? this.media.getCurrentTime() : this.media.currentTime;
       },
       /** 
        * selects a specific track by index
@@ -194,13 +215,13 @@ A LRN element
        * plays the media 
        */
       play: function(){
-        this.isYouTube ? this.media.playVideo() : this.media.play();
+        this.isYoutube ? this.media.playVideo() : this.media.play();
       },
       /** 
        * pauses the media 
        */
       pause: function(){
-        this.isYouTube ? this.media.pauseVideo() : this.media.pause(); 
+        this.isYoutube ? this.media.pauseVideo() : this.media.pause(); 
       },
       /** 
        * stops the media 
@@ -234,13 +255,13 @@ A LRN element
        * seeks to a specific time 
        */
       seek: function(time){
-        this.isYouTube ? this.media.seekTo = time : this.media.currentTime = time;
+        this.isYoutube ? this.media.seekTo = time : this.media.currentTime = time;
       },
       /** 
        * sets captions 
        */
       setCC: function(mode){
-        if(!this.isYouTube) {
+        if(!this.isYoutube) {
           this.media.cc = mode;
           if (this.selectedTrack !== undefined && mode == true) {
             this.selectedTrack.mode = 'showing';
@@ -255,31 +276,31 @@ A LRN element
        * sets volume of media
        */
       setVolume: function(value){
-        this.isYouTube ? this.media.setVolume(value) : this.media.volume = value/100;
+        this.isYoutube ? this.media.setVolume(value) : this.media.volume = value/100;
       },
       /** 
        * sets speed/playback rate of media
        */
       setPlaybackRate: function(value){
-        this.isYouTube ? this.setPlaybackRate(value) : this.media.playbackRate = value !== null ? value : 1;
+        this.isYoutube ? this.setPlaybackRate(value) : this.media.playbackRate = value !== null ? value : 1;
       },
       /** 
        * sets autoplay
        */
       setAutoplay: function(mode){
-        this.isYouTube ? this.play() : this.media.autoplay = mode;
+        this.isYoutube ? this.play() : this.media.autoplay = mode;
       },
       /** 
        * sets looping
        */
       setLoop: function(mode){
-        this.isYouTube ? this.setLoop(mode) : this.media.loop = mode;
+        this.isYoutube ? this.setLoop(mode) : this.media.loop = mode;
       },
       /** 
        * sets mute
        */
       setMute: function(mode,value){
-        if (this.isYouTube) {
+        if (this.isYoutube) {
           mode ? this.media.mute(): this.media.unMute();
         } else {
           this.media.muted = mode;
