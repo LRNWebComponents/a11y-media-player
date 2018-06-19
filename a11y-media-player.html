@@ -218,7 +218,7 @@ Advanced styles for sliders:
       :host #controls {
         width: 100%;
       }
-      :host #video {
+      :host #loader {
         position: absolute;
         top: 0;
         left: 0;
@@ -314,7 +314,7 @@ Advanced styles for sliders:
         }
         :host:not([thumbnail-src]) #media, 
         :host #slider, 
-        :host #video, 
+        :host #loader, 
         :host #audio, 
         :host #controls {
           display: none;
@@ -346,30 +346,18 @@ Advanced styles for sliders:
               play-label$="[[playLabel]]" 
               thumbnail-src$="[[thumbnailSrc]]">
             </a11y-media-play-button>
-            <a11y-media-video-loader id="video" 
+            <a11y-media-video-loader id="loader" 
               autoplay$="[[autoplay]]" 
               cc$="[[cc]]"
-              hidden$="[[audioOnly]]"
               lang$="[[lang]]"
               loop$="[[loop]]" 
               muted$="[[muted]]" 
+              media-type$="[[mediaType]]" 
               playback-rate$="[[playbackRate]]"
               preload="metadata"
               volume$="[[volume]]">
               <slot></slot>
-              HTML5 video not supported 
             </a11y-media-video-loader>
-            <!--audio 
-              autoplay$="[[autoplay]]" 
-              hidden$="[[!audioOnly]]"
-              id="audio" 
-              lang$="[[lang]]"
-              loop$="[[loop]]" 
-              muted$="[[muted]]" 
-              preload="metadata">
-              <slot></slot>
-              HTML5 audio not supported 
-            </audio-->
           </div>
         </div>
         <paper-slider id="slider" 
@@ -442,9 +430,9 @@ Advanced styles for sliders:
         this.fire('a11y-player',this);
       },
       ready: function(){
-        let root = this, tracks = new Array();
+        let root = this, tracks = new Array(), tag = 'a11y-media-'+root.mediaType+'-loader';
         root.target = root.$$('#transcript');
-        root.__media = root.$.video;
+        root.__media = root.$.loader;
         root.__status = 'Loading...';
         root.__slider = root.$.slider;
         root.__volume = root.muted ? 0 : Math.max(this.volume,10);

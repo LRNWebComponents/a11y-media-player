@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="a11y-media-behaviors.html">
+<link rel="import" href="a11y-media-youtube-utility.html">
 
 
 <!--
@@ -19,7 +20,9 @@ A LRN element
     muted$="[[muted]]"                          // Is video muted?
     playback-rate$="[[playbackRate]]"           // The playback rate of the video
     volume$="[[volume]]"                        // The initial volume of the video
-    width$="[[width]]">                         // The width of player
+    width$="[[width]]"                          // The width of player
+    you-tube="[[youTube]]"                      // The youTube object
+    you-tube-id$="[[youTubeID]]">               // The id of a yourtube video
                                                 // video source and tracks 
     <source src="/path/to/video.mp4" type="video/mp4">
     <source src="/path/to/video.webm" type="video/webm">
@@ -32,15 +35,15 @@ A LRN element
 <dom-module id="a11y-media-video-loader">
   <template>
     <style>
-      #video {
+      #audio, #video, #youtube {
         width: 100%;
         max-width: 100%;
         max-height: 80vh;
       }
     </style>
     <video id="video" 
-      autoplay$="[[autoplay]]" 
-      hidden$="[[audioOnly]]"
+      autoplay$="[[autoplay]]"  
+      hidden$="[[isVideo]]"
       lang$="[[lang]]"
       preload="metadata">
       <template is="dom-repeat" items="[[sources]]" as="source">
@@ -52,6 +55,21 @@ A LRN element
       <slot></slot>
       HTML5 video not supported 
     </video>
+    <audio id="audio" 
+      autoplay$="[[autoplay]]"  
+      hidden$="[[isAudio]]"
+      lang$="[[lang]]"
+      preload="metadata">
+      <template is="dom-repeat" items="[[sources]]" as="source">
+        <source src$="[[source.src]]" type$="[[source.type]]">
+      </template>
+      <template is="dom-repeat" items="[[tracks]]" as="track">
+        <source src$="[[track.src]]" label$="[[track.label]]" kind$="[[track.kind]]" srclang$="[[track.srclang]]" default$="[[track.default]]">
+      </template>
+      <slot></slot>
+      HTML5 video not supported 
+    </audio>
+    <div id="youtube" video-id$="[[youTubeId]]" hidden$="[[isYouTube]]"></div>
   </template>
 
   <script>
@@ -66,77 +84,98 @@ A LRN element
 
       ready: function(){
         let root = this;
-        root.media = root.$.video !== undefined ? root.$.video : root.$.audio
-
-        // handles loaded metadata
-        root.media.addEventListener('loadedmetadata',function(){
-
-          root.duration = root.media.duration > 0 ? root.media.duration: 0; 
-          root.tracks = [];
+        if(root.isYouTube) {
+          root.media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube);
+          root.duration = root.media.getDuration(); 
+          root.status = root._convertTime(0,root.duration)+'/'+root._convertTime(root.duration);
           root.volume = root.muted ? 0 : Math.max(this.volume,10);
-          root.seekable = root.media.seekable;
-          root.setVolume(root.volume);
-          root.setMute(root.muted,root.volume);
+          root.setMute(root.muted);
           root.setCC(root.cc);
           root.setLoop(root.loop);
+          root.setVolume(root.volume);
           root.setPlaybackRate(root.playbackRate);
-
-          // adjusts aspect ratio
-          root.aspectRatio = root.media.videoWidth/root.media.videoHeight;
-          root.fire('media-loaded',this);
-          
-          // gets cues from tracks
-          let tdata = [];
-          for(var i=0; i< root.media.textTracks.length; i++) {
-            if (root.media.textTracks[i] !== null) {
-              let track = root.media.textTracks[i], loaded = track.cues !== undefined, complete = 0, label = track.label, lang = track.language, text = label !== undefined ? label : lang !== undefined ? lang : 'Track '+i, cues, loadCueData = setInterval(() => {
-                track.mode = 'showing';
-                if (track.cues !== undefined && track.cues.length > 0) {
-                  track.mode = 'hidden';
-                  getCueData();
-                  clearInterval(loadCueData);
-                }
-              },1), getCueData = function(){
-                track.mode = 'hidden';
-              
-                let cues = Object.keys(track.cues).map(function(key) { 
-                  return {
-                    "order": track.cues[key].id,
-                    "seek": track.cues[key].startTime,
-                    "start": root._convertTime(track.cues[key].startTime,root.media.duration),
-                    "end": root._convertTime(track.cues[key].endTime,root.media.duration), 
-                    "text": track.cues[key].text
-                  };
-                });
-                tdata.push({
-                  "text": text, 
-                  "language": lang, 
-                  "value": i-1,
-                  "cues": cues
-                });
-                track.oncuechange = function(e){
-                  root.fire('active-cue-change',Object.keys(e.currentTarget.activeCues).map(function(key) { 
-                    return e.currentTarget.activeCues[key].id;
-                  }));
-                };
-                root.set('tracks', tdata);
-                root.fire('tracks-loaded',root);
-              };
-            }
+        } else {
+          if (root.isAudio) {
+            root.media = root.$.audio;
+          } else {
+            root.media = root.$.video;
           }
-        });
+
+          // handles loaded metadata
+          root.media.addEventListener('loadedmetadata',function(){
+
+            root.duration = root.media.duration > 0 ? root.media.duration: 0; 
+            root.tracks = [];
+            root.volume = root.muted ? 0 : Math.max(this.volume,10);
+            root.seekable = root.media.seekable;
+            root.setVolume(root.volume);
+            root.setMute(root.muted,root.volume);
+            root.setCC(root.cc);
+            root.setLoop(root.loop);
+            root.setPlaybackRate(root.playbackRate);
+
+            // adjusts aspect ratio
+            root.aspectRatio = root.media.videoWidth/root.media.videoHeight;
+            root.fire('media-loaded',this);
+            
+            // gets cues from tracks
+            let tdata = [];
+            for(var i=0; i< root.media.textTracks.length; i++) {
+              if (root.media.textTracks[i] !== null) {
+                let track = root.media.textTracks[i], loaded = track.cues !== undefined, complete = 0, label = track.label, lang = track.language, text = label !== undefined ? label : lang !== undefined ? lang : 'Track '+i, cues, loadCueData = setInterval(() => {
+                  track.mode = 'showing';
+                  if (track.cues !== undefined && track.cues.length > 0) {
+                    track.mode = 'hidden';
+                    getCueData();
+                    clearInterval(loadCueData);
+                  }
+                },1), getCueData = function(){
+                  track.mode = 'hidden';
+                
+                  let cues = Object.keys(track.cues).map(function(key) { 
+                    return {
+                      "order": track.cues[key].id,
+                      "seek": track.cues[key].startTime,
+                      "start": root._convertTime(track.cues[key].startTime,root.media.duration),
+                      "end": root._convertTime(track.cues[key].endTime,root.media.duration), 
+                      "text": track.cues[key].text
+                    };
+                  });
+                  tdata.push({
+                    "text": text, 
+                    "language": lang, 
+                    "value": i-1,
+                    "cues": cues
+                  });
+                  track.oncuechange = function(e){
+                    root.fire('active-cue-change',Object.keys(e.currentTarget.activeCues).map(function(key) { 
+                      return e.currentTarget.activeCues[key].id;
+                    }));
+                  };
+                  root.set('tracks', tdata);
+                  root.fire('tracks-loaded',root);
+                };
+              }
+            }
+          });
+        }
+
       },
       /** 
        * gets the buffered time
        */
       getBufferedTime: function(){
-        return this.media.buffered.length > 0 ? this.media.buffered.end(0) : this.getCurrentTime();
+        if(this.isYouTube) {
+          return this.media.getVideoLoadedFraction() * this.media.getDuration();
+        } else {
+          return this.media.buffered.length > 0 ? this.media.buffered.end(0) : this.getCurrentTime();
+        }
       },
       /** 
        * gets the current time
        */
       getCurrentTime: function(){
-        return this.media.currentTime;
+        return this.isYouTube ? this.media.getCurrentTime() : this.media.currentTime;
       },
       /** 
        * selects a specific track by index
@@ -155,13 +194,13 @@ A LRN element
        * plays the media 
        */
       play: function(){
-        this.media.play();
+        this.isYouTube ? this.media.playVideo() : this.media.play();
       },
       /** 
        * pauses the media 
        */
       pause: function(){
-        this.media.pause(); 
+        this.isYouTube ? this.media.pauseVideo() : this.media.pause(); 
       },
       /** 
        * stops the media 
@@ -195,50 +234,56 @@ A LRN element
        * seeks to a specific time 
        */
       seek: function(time){
-        this.media.currentTime = time;
+        this.isYouTube ? this.media.seekTo = time : this.media.currentTime = time;
       },
       /** 
        * sets captions 
        */
       setCC: function(mode){
-        this.media.cc = mode;
-        if (this.selectedTrack !== undefined && mode == true) {
-          this.selectedTrack.mode = 'showing';
-          this.$.video.textTracks.value = this.selectedTrackId;
-        } else if (this.selectedTrack !== undefined && this.selectedTrack !== null) {
-          this.selectedTrack.mode = 'hidden';
-          this.$.video.textTracks.value = '';
+        if(!this.isYouTube) {
+          this.media.cc = mode;
+          if (this.selectedTrack !== undefined && mode == true) {
+            this.selectedTrack.mode = 'showing';
+            this.$.video.textTracks.value = this.selectedTrackId;
+          } else if (this.selectedTrack !== undefined && this.selectedTrack !== null) {
+            this.selectedTrack.mode = 'hidden';
+            this.$.video.textTracks.value = '';
+          }
         }
       },
       /** 
        * sets volume of media
        */
       setVolume: function(value){
-        this.media.volume = value/100;
+        this.isYouTube ? this.media.setVolume(value) : this.media.volume = value/100;
       },
       /** 
        * sets speed/playback rate of media
        */
       setPlaybackRate: function(value){
-        this.media.playbackRate = value !== null ? value : 1;
+        this.isYouTube ? this.setPlaybackRate(value) : this.media.playbackRate = value !== null ? value : 1;
       },
       /** 
        * sets autoplay
        */
       setAutoplay: function(mode){
-        this.media.autoplay = mode;
+        this.isYouTube ? this.play() : this.media.autoplay = mode;
       },
       /** 
        * sets looping
        */
       setLoop: function(mode){
-        this.media.loop = mode;
+        this.isYouTube ? this.setLoop(mode) : this.media.loop = mode;
       },
       /** 
        * sets mute
        */
       setMute: function(mode,value){
-        this.media.muted = mode;
+        if (this.isYouTube) {
+          mode ? this.media.mute(): this.media.unMute();
+        } else {
+          this.media.muted = mode;
+        }
       },
     });
   </script>

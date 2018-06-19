@@ -103,6 +103,20 @@ A set of behaviors for a11y-media components.
         type: String,
         value: 'unset'
       },
+      /** 
+        * the id for the video 
+        */
+      youTubeId: {
+        type: String,
+        value: null
+      },
+      /** 
+        * the YouTube player object
+        */
+      youTube: {
+        type: Object,
+        value: {}
+      }
 
     },
   };
@@ -225,12 +239,40 @@ A set of behaviors for a11y-media components.
         reflectToAttribute: true,
       },
       /**
+        * is HTML5 audio player?
+        */
+      isAudio: {
+        type: Boolean,
+        value: '_testAttribute(mediaType,"audio")'
+      },
+      /**
+        * is HTML5 video player?
+        */
+      isVideo: {
+        type: Boolean,
+        value: '_testAttribute(mediaType,"video")'
+      },
+      /**
+        * is YouTube?
+        */
+      isYouTube: {
+        type: Boolean,
+        value: '_testAttribute(mediaType,"youtube")'
+      },
+      /**
         * optional title of media (shows when printed)
         */
       mediaTitle: {
         type: String,
         value: '',
         reflectToAttribute: true,
+      },
+      /**
+        * type of media: video, audio, youtube
+        */
+      mediaType: {
+        type: String,
+        value: 'video'
       },
       /**
         * Is it an audio player with no thumbnail?
