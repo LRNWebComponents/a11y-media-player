@@ -36,24 +36,24 @@
   <body>
     <div class="vertical-section-container centered">
         
-      <h3>Standalone a11y-media-youtube demo</h3>
+      <!--h3>Standalone a11y-media-youtube demo</h3>
       <demo-snippet>
         <template>
           <a11y-media-youtube accent-color="indigo" dark></a11y-media-youtube>
         </template>
-      </demo-snippet>
+      </demo-snippet-->
         
       <h3>a11y-media-player demo</h3>
       <demo-snippet>
         <template>
-          <a11y-media-player accent-color="light-blue" dark thumbnail-src="samples/stclair.jpg" media-title="a11y-media-player demo video">
+          <a11y-media-standalone-player accent-color="light-blue" dark thumbnail-src="samples/stclair.jpg" media-title="a11y-media-player demo video">
             <source src="http://personal.psu.edu/lnm105/stclair.mp4" type="video/mp4">
             <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
-          </a11y-media-player>
+          </a11y-media-media-standalone-player>
         </template>
       </demo-snippet>
       
-      <h3>a11y-media-player demo, light, with no timestamps, no interactive transcript, and no search feature</h3>
+      <!--h3>a11y-media-player demo, light, with no timestamps, no interactive transcript, and no search feature</h3>
       <demo-snippet>
         <template>
           <a11y-media-player accent-color="pink" disable-interactive disable-search hide-timestamps>
@@ -69,6 +69,11 @@
       <h3>a11y-media-player demo, dark, with dark transcript and custom microcopy</h3>
       <demo-snippet>
         <template>
+            <style>
+              #custom1 {
+                max-width: 80%;
+              }
+            </style>
             <a11y-media-player id="custom1" accent-color="red" dark dark-transcript lang="es" 
               audio-label="audio" 
               auto-scroll-label="desplazamiento automático"
@@ -164,7 +169,7 @@
               <source src="http://techslides.com/demos/sample-videos/small.3gp" type="video/3gp">
             </a11y-media-standalone-player>
           </template>
-        </demo-snippet>
+        </demo-snippet-->
       </div>
     </div>
   </body>

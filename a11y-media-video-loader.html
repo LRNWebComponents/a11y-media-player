@@ -11,25 +11,13 @@ A LRN element
 @microcopy - the mental model for this element
 
   <a11y-media-video-loader 
-    accent-color$="[[accentColor]]"             // Optional accent color for controls, 
-                                                // using the following materialize colors: 
-                                                // red, pink, purple, deep-purple, indigo, blue, 
-                                                // light blue, cyan, teal, green, light green, lime, 
-                                                // yellow, amber, orange, deep-orange, and brown. 
-                                                // Default is null. 
-    allow-fullscreen$="[[allowFullscreen]]"         // Allow fullscreen mode?
-    audio-only$="[[audioOnly]]"                 // Is media audio only?
     autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
-    cc$="[[cc]]"                                // Are closed captions toggled?
-    custom-microcopy$="[[customMicrocopy]]"     // Optional customization or text and icons
-    dark$="[[dark]]"                            // Is the color scheme dark? Default is light.    
-    disableFullscreen$="[[disableFullscreen]]"  // Is full screen mode disabled?
-    fullscreen$="[[fullscreen]]"                // Is full screen mode toggled on?
+    cc$="[[cc]]"                                // Are closed captions toggled? 
     height$="[[height]]"                        // The height of player
-    hide-elapsed-time$="[[hideElapsedTime]]"    // Is elapsed time hidden?
     lang$="[[lang]]"                            // The language of the media
     loop$="[[loop]]"                            // Is video on a loop?
     muted$="[[muted]]"                          // Is video muted?
+    playback-rate$="[[playbackRate]]"           // The playback rate of the video
     volume$="[[volume]]"                        // The initial volume of the video
     width$="[[width]]">                         // The width of player
                                                 // video source and tracks 
@@ -43,12 +31,17 @@ A LRN element
 
 <dom-module id="a11y-media-video-loader">
   <template>
+    <style>
+      #video {
+        width: 100%;
+        max-width: 100%;
+        max-height: 80vh;
+      }
+    </style>
     <video id="video" 
       autoplay$="[[autoplay]]" 
       hidden$="[[audioOnly]]"
       lang$="[[lang]]"
-      loop$="[[loop]]" 
-      muted$="[[muted]]" 
       preload="metadata">
       <template is="dom-repeat" items="[[sources]]" as="source">
         <source src$="[[source.src]]" type$="[[source.type]]">
@@ -56,6 +49,7 @@ A LRN element
       <template is="dom-repeat" items="[[tracks]]" as="track">
         <source src$="[[track.src]]" label$="[[track.label]]" kind$="[[track.kind]]" srclang$="[[track.srclang]]" default$="[[track.default]]">
       </template>
+      <slot></slot>
       HTML5 video not supported 
     </video>
   </template>
@@ -73,82 +67,85 @@ A LRN element
       ready: function(){
         let root = this;
         root.media = root.$.video !== undefined ? root.$.video : root.$.audio
-        root.status = 'Loading...';
 
         // handles loaded metadata
-        root.addEventListener('loadedmetadata',function(){
+        root.media.addEventListener('loadedmetadata',function(){
 
           root.duration = root.media.duration > 0 ? root.media.duration: 0; 
-          root.status = root._convertTime(0,root.media.duration)+'/'+root._convertTime(root.media.duration);
           root.tracks = [];
           root.volume = root.muted ? 0 : Math.max(this.volume,10);
-          
+          root.seekable = root.media.seekable;
+          root.setVolume(root.volume);
+          root.setMute(root.muted,root.volume);
+          root.setCC(root.cc);
+          root.setLoop(root.loop);
+          root.setPlaybackRate(root.playbackRate);
+
           // adjusts aspect ratio
-          root.aspectRatio = root.media.videoHeight/root.media.videoWidth * 100;
-          if(root.width === undefined && root.height === undefined) {
-            root.width = root.media.videoWidth;
-            root.height = root.media.videoHeight;
-          } else (root.width === undefined){
-            root.width = (root.height * root.aspectRatio / 100);
-          } else {
-            root.height = (root.width / root.aspectRatio / 100);
-          }
-          console.log(root);
+          root.aspectRatio = root.media.videoWidth/root.media.videoHeight;
+          root.fire('media-loaded',this);
           
           // gets cues from tracks
-          let tracks = [];
-          for(i in root.media.textTracks) {
+          let tdata = [];
+          for(var i=0; i< root.media.textTracks.length; i++) {
             if (root.media.textTracks[i] !== null) {
-              let track = root.media.textTracks[i], loaded = track.cues !== undefined, complete = 0, label = track.label, lang = track.language, text = label !== undefined ? label : lang !== undefined ? lang : 'Track '+i, cues;
-              
-              root.setAttribute('has-captions',true);
-              if(!loaded) {
+              let track = root.media.textTracks[i], loaded = track.cues !== undefined, complete = 0, label = track.label, lang = track.language, text = label !== undefined ? label : lang !== undefined ? lang : 'Track '+i, cues, loadCueData = setInterval(() => {
                 track.mode = 'showing';
-                let temp = setInterval(() => {
-                  if (track.cues.length > 0) {
-                    track.mode = 'hidden';
-                    let cues = Object.keys(track.cues).map(function(key) { 
-                      return {
-                        "order": track.cues[key].id,
-                        "seek": track.cues[key].startTime,
-                        "start": root._convertTime(track.cues[key].startTime,root.media.duration),
-                        "end": root._convertTime(track.cues[key].endTime,root.media.duration), 
-                        "text": track.cues[key].text
-                      };
-                      tracks.push({
-                        'text': text, 
-                        'language': track.language, 
-                        'value': i,
-                        'curs': cues
-                      });
-                      track.oncuechange = function(e){
-                        this.fire('active-cue-change',Object.keys(e.currentTarget.activeCues).map(function(key) { 
-                          return e.currentTarget.activeCues[key].id;
-                        }));
-                      };
-                    });
-                    complete++;
-                    if (complete === tracks.length && root.__transcript !== null) {
-                      root.set('tracks', tracks);
-                      root.fire('tracks-loaded',root.tracks);
-                    }
-                    clearInterval(temp);
-                  }
-                },1);
-              }
+                if (track.cues !== undefined && track.cues.length > 0) {
+                  track.mode = 'hidden';
+                  getCueData();
+                  clearInterval(loadCueData);
+                }
+              },1), getCueData = function(){
+                track.mode = 'hidden';
+              
+                let cues = Object.keys(track.cues).map(function(key) { 
+                  return {
+                    "order": track.cues[key].id,
+                    "seek": track.cues[key].startTime,
+                    "start": root._convertTime(track.cues[key].startTime,root.media.duration),
+                    "end": root._convertTime(track.cues[key].endTime,root.media.duration), 
+                    "text": track.cues[key].text
+                  };
+                });
+                tdata.push({
+                  "text": text, 
+                  "language": lang, 
+                  "value": i-1,
+                  "cues": cues
+                });
+                track.oncuechange = function(e){
+                  root.fire('active-cue-change',Object.keys(e.currentTarget.activeCues).map(function(key) { 
+                    return e.currentTarget.activeCues[key].id;
+                  }));
+                };
+                root.set('tracks', tdata);
+                root.fire('tracks-loaded',root);
+              };
             }
           }
         });
       },
       /** 
+       * gets the buffered time
+       */
+      getBufferedTime: function(){
+        return this.media.buffered.length > 0 ? this.media.buffered.end(0) : this.getCurrentTime();
+      },
+      /** 
+       * gets the current time
+       */
+      getCurrentTime: function(){
+        return this.media.currentTime;
+      },
+      /** 
        * selects a specific track by index
        */
       selectTrack: function(index){
+        this.selectedTrack = this.media.textTracks[index];
         for(i in this.media.textTracks) {
           if (index == i) {
             this.media.textTracks[i].mode = 'showing';
-            this.selectedTrack = this.media.textTracks[i];
-            this.selectedTrackId = i;
           } else if (this.media.textTracks[i] !== null) {
             this.media.textTracks[i].mode = 'hidden';
           }
@@ -201,61 +198,47 @@ A LRN element
         this.media.currentTime = time;
       },
       /** 
-       * toggles captions:
-       * toggleCC(true) to check the toggle, toggleCC(false) for unchecking, and toggleCC to toggle  
+       * sets captions 
        */
-      toggleCC: function(mode){
-        mode = mode === undefined ? !this.cc : mode;
-        this.cc = mode;
+      setCC: function(mode){
+        this.media.cc = mode;
         if (this.selectedTrack !== undefined && mode == true) {
           this.selectedTrack.mode = 'showing';
           this.$.video.textTracks.value = this.selectedTrackId;
-        } else if (this.selectedTrack !== undefined) {
+        } else if (this.selectedTrack !== undefined && this.selectedTrack !== null) {
           this.selectedTrack.mode = 'hidden';
           this.$.video.textTracks.value = '';
         }
       },
       /** 
-       * set volume of media
+       * sets volume of media
        */
       setVolume: function(value){
-        this.media.volume = value;
-        this.media.muted = value === null || value === 0;
+        this.media.volume = value/100;
       },
       /** 
-       * set speed/playback rate of media
+       * sets speed/playback rate of media
        */
       setPlaybackRate: function(value){
         this.media.playbackRate = value !== null ? value : 1;
       },
       /** 
-       * toggles autoplay:
-       * toggleAutoplay(true) to check the toggle, 
-       * toggleAutoplay(false) for unchecking, and 
-       * toggleAutoplay to toggle  
+       * sets autoplay
        */
-      toggleAutoplay: function(mode){
-        mode = mode === undefined ? !this.muted : mode;
+      setAutoplay: function(mode){
         this.media.autoplay = mode;
       },
       /** 
-       * toggles looping:
-       * toggleLoop(true) to check the toggle, toggleLoop(false) for unchecking, and toggleLoop to toggle  
+       * sets looping
        */
-      toggleLoop: function(mode){
-        mode = mode === undefined ? !this.loop : mode;
+      setLoop: function(mode){
         this.media.loop = mode;
       },
       /** 
-       * toggles mute:
-       * toggleMute(true) to check the toggle, 
-       * toggleMute(false) for unchecking, and 
-       * toggleMute to toggle  
+       * sets mute
        */
-      toggleMute: function(mode,value){
-        mode = mode === undefined ? !this.muted : mode;
+      setMute: function(mode,value){
         this.media.muted = mode;
-        this.media.volume = mode ? 0 : Math.max(value,1);
       },
     });
   </script>

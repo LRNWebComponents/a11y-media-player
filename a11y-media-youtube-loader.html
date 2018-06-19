@@ -11,25 +11,14 @@ A LRN element
 @microcopy - the mental model for this element
 
   <a11y-media-youtube-loader 
-    accent-color$="[[accentColor]]"             // Optional accent color for controls, 
-                                                // using the following materialize colors: 
-                                                // red, pink, purple, deep-purple, indigo, blue, 
-                                                // light blue, cyan, teal, green, light green, lime, 
-                                                // yellow, amber, orange, deep-orange, and brown. 
-                                                // Default is null. 
-    allow-fullscreen$="[[allowFullscreen]]"         // Allow fullscreen mode?
-    audio-only$="[[audioOnly]]"                 // Is media audio only?
     autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
-    cc$="[[cc]]"                                // Are closed captions toggled?
-    custom-microcopy$="[[customMicrocopy]]"     // Optional customization or text and icons
-    dark$="[[dark]]"                            // Is the color scheme dark? Default is light.    
-    disableFullscreen$="[[disableFullscreen]]"  // Is full screen mode disabled?
-    fullscreen$="[[fullscreen]]"                // Is full screen mode toggled on?
+    cc$="[[cc]]"                                // Are closed captions toggled? 
     height$="[[height]]"                        // The height of player
-    hide-elapsed-time$="[[hideElapsedTime]]"    // Is elapsed time hidden?
     lang$="[[lang]]"                            // The language of the media
     loop$="[[loop]]"                            // Is video on a loop?
     muted$="[[muted]]"                          // Is video muted?
+    playback-rate$="[[playbackRate]]"           // The playback rate of the video
+    video-id="[[videoId]]"                      // The youTube video ID
     volume$="[[volume]]"                        // The initial volume of the video
     width$="[[width]]">                         // The width of player
                                                 // video source and tracks 
@@ -81,7 +70,11 @@ A LRN element
           root.duration = root.media.getDuration(); 
           root.status = root._convertTime(0,root.duration)+'/'+root._convertTime(root.duration);
           root.volume = root.muted ? 0 : Math.max(this.volume,10);
+          root.toggleMute(root.muted);
+          root.toggleCC(root.cc);
+          root.toggleLoop(root.loop);
           root.setVolume(root.volume);
+          root.setPlaybackRate(root.playbackRate);
 
           // adjusts aspect ratio
           if(root.width !== undefined && root.height !== undefined){
@@ -179,6 +172,18 @@ A LRN element
         }
       },*/
       /** 
+       * gets the buffered time
+       */
+      getBufferedTime: function(){
+        return 0; //TODO
+      },
+      /** 
+       * gets the current time
+       */
+      getCurrentTime: function(){
+        return this.media.getCurrentTime();
+      },
+      /** 
        * plays the media 
        */
       play: function(){
@@ -209,14 +214,14 @@ A LRN element
        */
       rewind: function(amt){
         amt = amt !== undefined ? amt : 1;
-        this.seek(Math.max(this.media.getCurrentTime() - amt, 0));
+        this.seek(Math.max(this.getCurrentTime() - amt, 0));
       },
       /** 
        * seeks media forward at a set increment
        */
       forward: function(amt){
         amt = amt !== undefined ? amt : 1;
-        this.seek(Math.min(this.media.getCurrentTime() + amt,this.media.duration));
+        this.seek(Math.min(this.getCurrentTime() + amt,this.media.duration));
       },
       /** 
        * seeks to a specific time 

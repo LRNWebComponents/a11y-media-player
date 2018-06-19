@@ -101,7 +101,6 @@ Utily to control
         _checkScroll: function(){
           let root = this, wintop = window.pageYOffset, winbottom = wintop + window.innerHeight;
           if(root.stickyPlayer !== undefined && root.stickyPlayer !== null){
-            console.log(wintop,root.__playerTop,root.__playerMiddle,root.__playerBottom,winbottom);
             if (root.stickyPlayer.__playing && (root.__playerLowerMiddle > winbottom || root.__playerUpperMiddle < wintop)) {
               root.stickyPlayer.toggleSticky(true);
             } else {

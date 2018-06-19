@@ -42,7 +42,7 @@ A transcript element to pair with a11y-media-standalone-player
         --a11y-media-transcript-active-cue-color: var(--simple-colors-foreground1);
         --a11y-media-transcript-active-cue-bg-color: var(--simple-colors-accent-background1);
         --a11y-media-transcript-focused-cue-color: var(--simple-colors-foreground1);
-        --a11y-media-transcript-focused-cue-bg-color: var(--simple-colors-background1);
+        --a11y-media-transcript-focused-cue-bg-color: var(--simple-colors-background2);
         --a11y-media-transcript-match-color: var(--simple-colors-background1);
         --a11y-media-transcript-match-bg-color: var(--simple-colors-accent-foreground1);
       }
@@ -55,11 +55,11 @@ A transcript element to pair with a11y-media-standalone-player
         display: none;
       }
       :host #inner[active] {
-        display: block;
-      }
-      :host[hideTimestamps] #inner[active] {
         display: table;
         width: 100%;
+      }
+      :host #inner[active][hideTimestamps] {
+        display: block;
       }
       :host .sr-only:not(:focus) {
         position: absolute;
@@ -109,9 +109,9 @@ A transcript element to pair with a11y-media-standalone-player
       },
       
       behaviors: [
+        simpleColorsBehaviors,  
         a11yMediaBehaviors.GeneralFunctions,
         a11yMediaBehaviors.TranscriptBehaviors,
-        simpleColorsBehaviors  
       ],
 
       properties: {
@@ -250,7 +250,7 @@ A transcript element to pair with a11y-media-standalone-player
        * determines if this is the currently selected transcript to show or hide
        */
       _getActiveTranscript: function(track,selected){
-        return track.value === selected;
+        return parseInt(track.value) === parseInt(selected);
       },
     });
   </script>
