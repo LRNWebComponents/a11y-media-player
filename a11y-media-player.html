@@ -29,8 +29,6 @@ A LRN element
                                                 // yellow, amber, orange, deep-orange, and brown. 
                                                 // Default is null. 
     audio-only$="[[audioOnly]]"                 // Is media audio only?
-    allow-fullscreen$="[[allowFullscreen]]"     // Allow fullscreen mode?
-    audio-only$="[[audioOnly]]"                 // Is media audio only?
     autoplay$="[[autoplay]]"                    // Is player set to autoplay (not recommended for a11y)?
     cc$="[[cc]]"                                // Are closed captions toggled?
     custom-microcopy$="[[customMicrocopy]]"     // Optional customization or text and icons
@@ -459,7 +457,7 @@ Advanced styles for sliders:
         root.__slider = root.$.slider;
         root.__volume = root.muted ? 0 : Math.max(this.volume,10);
         root.__resumePlaying = false;
-        root.__showFullscreen = this.allowFullscreen && screenfull.enabled;
+        root.__showFullscreen = !this.disableFullscreen && screenfull.enabled;
         root.__duration = 0; 
         root.$.controls.setStatus(root.__status);
         let aspect = 16/9;
@@ -528,10 +526,8 @@ Advanced styles for sliders:
         root.$.transcript.setMedia(root.$.player);
 
         // handles fullscreen
-        if(root.__showFullscreen) {
-          console.log(this.fullscreen);
-          screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen;
-          console.log(this.fullscreen); });
+        if(root.__showFullscreen) {   
+          screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen });
         }
         // handles dragging with a mouse
         root.$.slider.addEventListener('dragging-changed', (e) => {
