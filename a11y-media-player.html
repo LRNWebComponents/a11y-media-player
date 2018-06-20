@@ -466,11 +466,17 @@ Advanced styles for sliders:
         root.$.playbutton.style.height = (100/aspect)+'%';
 
         if(this.isYoutube) {
+          let tracks = root.$.video.media.textTracks;
+          let options = {
+            "width": root.width !== undefined && root.width !== null ? root.width: 1120,
+            "height": root.height !== undefined && root.height !== null ? root.height: 630,
+            "videoId": root.youtubeId
+          }
           if(Polymer.A11yMediaYoutubeUtility.apiReady){
-            root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube);
+            root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube,options);
           } else {
             document.addEventListener('youtube-api-ready', function(e) {
-              root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube);
+              root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube,options);
             });
           }
         } else {

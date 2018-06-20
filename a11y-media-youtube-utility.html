@@ -33,11 +33,7 @@ Utily to control
          */
         created: function() {
           let root = Polymer.A11yMediaYoutubeUtility;
-          root.ready = 
           document.addEventListener('youtube-api-ready', function(e) {
-            for(let i=0; i<root.players.length; i++){
-              root.players[i].player = root.initYoutubePlayer(root.players[i]);
-            }
             root.apiReady = true;
           });
         },
@@ -60,16 +56,16 @@ Utily to control
         document.body.appendChild(Polymer.A11yMediaYoutubeUtility.instance);
       };
 
-      Polymer.A11yMediaYoutubeUtility.initYoutubePlayer = function(elem){
+      Polymer.A11yMediaYoutubeUtility.initYoutubePlayer = function(elem,options){
         let initialize = function(){
         }, player = new YT.Player(elem.id, {
-          width: 600, //elem.width,
-          height: 400, //elem.height,
-          videoId: 'dxPVyieptwA', //elem.videoId,
+          width: options.width, 
+          height: options.height, 
+          videoId: options.videoId, 
           playerVars: {
             color: 'white',
             controls: 0,
-            autoplay: 0,
+            autoplay: options.autoplay,
             disablekb: 1,
             enablejsapi: 1,
             iv_load_policy: 3,
@@ -106,14 +102,6 @@ Utily to control
           }
         });
         return player;
-      };
-      Polymer.A11yMediaYoutubeUtility.addPlayer = function(container){
-        let root = this;
-        root.players.push(container);
-        if(root.apiReady){
-          container.player = root.initYoutubePlayer(player);
-        }
-        return false;
       };
     })();
   </script>

@@ -30,8 +30,8 @@ A set of behaviors for a11y-media components.
         * The width of the media player. 
         */
       height: {
-        type: String,
-        value: 'unset'
+        type: Number,
+        value: null
       },
       /**
         * is HTML5 audio player?
@@ -128,8 +128,8 @@ A set of behaviors for a11y-media components.
         * The width of the media player. 
         */
       width: {
-        type: String,
-        value: 'unset'
+        type: Number,
+        value: null
       },
       /** 
         * the id for the video 
@@ -145,8 +145,68 @@ A set of behaviors for a11y-media components.
         type: Object,
         value: {}
       }
-
     },
+    /*loadTrackMetadata: function(media){
+
+
+        // handles loaded metadata
+        root.media.addEventListener('loadedmetadata',function(){
+
+          root.duration = root.media.duration > 0 ? root.media.duration: 0; 
+          root.tracks = [];
+          root.volume = root.muted ? 0 : Math.max(this.volume,10);
+          root.seekable = root.media.seekable;
+          root.setVolume(root.volume);
+          root.setMute(root.muted,root.volume);
+          root.setCC(root.cc);
+          root.setLoop(root.loop);
+          root.setPlaybackRate(root.playbackRate);
+
+          // adjusts aspect ratio
+          root.aspectRatio = root.media.videoWidth/root.media.videoHeight;
+          root.fire('media-loaded',this);
+          
+          // gets cues from tracks
+          let tdata = [];
+          for(var i=0; i< root.media.textTracks.length; i++) {
+            if (root.media.textTracks[i] !== null) {
+              let track = root.media.textTracks[i], loaded = track.cues !== undefined, complete = 0, label = track.label, lang = track.language, text = label !== undefined ? label : lang !== undefined ? lang : 'Track '+i, cues, loadCueData = setInterval(() => {
+                track.mode = 'showing';
+                if (track.cues !== undefined && track.cues.length > 0) {
+                  track.mode = 'hidden';
+                  getCueData();
+                  clearInterval(loadCueData);
+                }
+              },1), getCueData = function(){
+                track.mode = 'hidden';
+              
+                let cues = Object.keys(track.cues).map(function(key) { 
+                  return {
+                    "order": track.cues[key].id,
+                    "seek": track.cues[key].startTime,
+                    "start": root._convertTime(track.cues[key].startTime,root.media.duration),
+                    "end": root._convertTime(track.cues[key].endTime,root.media.duration), 
+                    "text": track.cues[key].text
+                  };
+                });
+                tdata.push({
+                  "text": text, 
+                  "language": lang, 
+                  "value": i-1,
+                  "cues": cues
+                });
+                track.oncuechange = function(e){
+                  root.fire('active-cue-change',Object.keys(e.currentTarget.activeCues).map(function(key) { 
+                    return e.currentTarget.activeCues[key].id;
+                  }));
+                };
+                root.set('tracks', tdata);
+                root.fire('tracks-loaded',root);
+              };
+            }
+          }
+        });
+    }*/
   };
   window.a11yMediaBehaviors.GeneralFunctions = {
     /**
