@@ -10,6 +10,7 @@
 <link rel="import" href="a11y-media-transcript.html">
 <link rel="import" href="a11y-media-transcript-controls.html">
 <link rel="import" href="a11y-media-utility.html">
+<link rel="import" href="a11y-media-youtube-utility.html">
 
 
 <!--
@@ -151,6 +152,14 @@ Advanced styles for sliders:
         --paper-slider-knob-start-border-color: var(--a11y-media-bg-color);
         --paper-slider-knob-end-border-color: var(--a11y-media-bg-color);
       }
+      :host {  
+        width: 100%;
+        display: block;
+        outline: 1px solid #bbbbbb;
+      }
+      :host[dark] {  
+        outline: 1px solid black;
+      }
       :host #player {
         display: block;
         max-width: 100%;
@@ -188,21 +197,8 @@ Advanced styles for sliders:
         top: unset;
         bottom: 5px;
       }
-      :host #audio-only {
-        text-align: center;
-        font-style: italic;
-        width: 100%;
-        line-height: 160%;
-      }
-      :host #print-only {
-        display: none;
-      }
       :host #player-inner {
         z-index: 1;
-      }
-      :host #slider,
-      :host #controls {
-        z-index: 2 !important;
       }
       :host #media {
         display: flex;
@@ -212,28 +208,41 @@ Advanced styles for sliders:
       :host[no-height] #media {
         display: none;
       }
+      :host #audio,
+      :host #controls,
       :host #media,
-      :host #media > *, 
-      :host #slider,
-      :host #controls {
+      :host #playbutton,
+      :host #slider, 
+      :host #video,
+      :host #youtube {
         width: 100%;
       }
-      :host #loader {
+      :host #audio,
+      :host #video, 
+      :host #youtube {
         position: absolute;
         top: 0;
         left: 0;
       }
-      :host #player-inner, 
-      :host #media > * {
+      :host #audio,
+      :host #player-inner,
+      :host #playbutton, 
+      :host #video,
+      :host #youtube {
         max-height: 80vh;
       }
-      :host {  
-        width: 100%;
-        display: block;
-        outline: 1px solid #bbbbbb;
+      :host #controls,
+      :host #slider {
+        z-index: 2 !important;
       }
-      :host[dark] {  
-        outline: 1px solid black;
+      :host #audio-only {
+        text-align: center;
+        font-style: italic;
+        width: 100%;
+        line-height: 160%;
+      }
+      :host #print-only {
+        display: none;
       }
       @media screen {
         :host:not([stand-alone]):not([hide-transcript]):not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
@@ -314,7 +323,8 @@ Advanced styles for sliders:
         }
         :host:not([thumbnail-src]) #media, 
         :host #slider, 
-        :host #loader, 
+        :host #video, 
+        :host #youtube,
         :host #audio, 
         :host #controls {
           display: none;
@@ -346,19 +356,31 @@ Advanced styles for sliders:
               play-label$="[[playLabel]]" 
               thumbnail-src$="[[thumbnailSrc]]">
             </a11y-media-play-button>
-            <a11y-media-video-loader id="loader" 
+            <a11y-media-video-loader id="video" 
               autoplay$="[[autoplay]]" 
               cc$="[[cc]]"
+              hidden$="[[isYoutube]]"
               lang$="[[lang]]"
               loop$="[[loop]]" 
               muted$="[[muted]]" 
-              media-type$="[[mediaType]]" 
               playback-rate$="[[playbackRate]]"
               preload="metadata"
-              volume$="[[volume]]"
-              youtube-id$="[[youtubeId]]">
+              volume$="[[volume]]">
               <slot></slot>
+              HTML5 video not supported 
             </a11y-media-video-loader>
+            <div id="youtube" hidden$="[[!isYoutube]]" video-id$="[[videoId]]"></div>
+            <!--audio 
+              autoplay$="[[autoplay]]" 
+              hidden$="[[!audioOnly]]"
+              id="audio" 
+              lang$="[[lang]]"
+              loop$="[[loop]]" 
+              muted$="[[muted]]" 
+              preload="metadata">
+              <slot></slot>
+              HTML5 audio not supported 
+            </audio-->
           </div>
         </div>
         <paper-slider id="slider" 
@@ -429,19 +451,72 @@ Advanced styles for sliders:
         Polymer.A11yMediaUtility.requestAvailability();
         this._addResponsiveUtility();
         this.fire('a11y-player',this);
+        if(this.isYoutube) Polymer.A11yMediaYoutubeUtility.requestAvailability();
       },
       ready: function(){
-        let root = this, tracks = new Array(), tag = 'a11y-media-'+root.mediaType+'-loader';
+        let root = this, tracks = new Array();
         root.target = root.$$('#transcript');
-        root.__media = root.$.loader;
         root.__status = 'Loading...';
         root.__slider = root.$.slider;
         root.__volume = root.muted ? 0 : Math.max(this.volume,10);
         root.__resumePlaying = false;
         root.__showFullscreen = this.allowFullscreen && screenfull.enabled;
+        root.__duration = 0; 
         root.$.controls.setStatus(root.__status);
         let aspect = 16/9;
+        root.style.width = root.style.width = 'unset' ? '100%' : root.style.width;  
+        root.$.media.style.paddingTop = (100/aspect)+'%';
+        root.$.playbutton.style.height = (100/aspect)+'%';
 
+        if(this.isYoutube) {
+          if(Polymer.A11yMediaYoutubeUtility.apiReady){
+            root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube);
+          } else {
+            document.addEventListener('youtube-api-ready', function(e) {
+              root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube);
+            });
+          }
+        } else {
+          root.__media = root.$.video;
+          // handles loaded metadata
+          root.__media.addEventListener('media-loaded',function(){
+
+            // adjusts aspect ratio
+            aspect = root.__media.aspectRatio; 
+            root.$.media.style.paddingTop = (100/aspect)+'%';
+            root.$.playbutton.style.height = (100/aspect)+'%';
+            root.$.playbutton.removeAttribute('disabled');
+
+            // gets and converts video duration
+            root.__duration = root.__media.duration > 0 ? root.__media.duration: 0; 
+            root.__status = root._convertTime(0,root.__media.duration)+'/'+root._convertTime(root.__media.duration);
+            root.$.controls.setStatus(root.__status);
+          });
+          // handles loaded tracks
+          root.__media.addEventListener('tracks-loaded',function(){
+
+            // hides the video subtitles and captions and adds them to the tracks dropdown-select
+            if (root.__media.tracks.length > 0) {
+              root.hasCaptions = true;
+              root.selectTrack(0);
+            } else {
+              root.standAlone = false;
+            }
+
+            root.set('tracks', root.__media.tracks);
+            root.$.controls.setTracks(root.__media.tracks);
+            if(!root.standAlone && root.$.transcript !== undefined && root.$.transcript !== null){
+              root.$.transcript.setTracks(root.__media.tracks);
+              root.selectTrack(0);
+              root.$.transcript.addEventListener('cue-seek',function(e){
+                root.seek(e.detail.cue.seek);
+              });
+            }
+          });
+          root.__media.addEventListener('active-cue-change',function(e){
+            root.$.transcript.setActiveCues(e.detail);
+          });
+        }
         root.$.tcontrols.addEventListener('searchbar-added',function(e){
           root.search = e.detail;
         });
@@ -479,48 +554,6 @@ Advanced styles for sliders:
             root.__resumePlaying = false;
           }
         });
-        //pre-adjusts video width and height based on attributes
-        root.style.width = root.style.width = 'unset' ? '100%' : root.style.width;  
-        root.$.media.style.paddingTop = (100/aspect)+'%';
-        root.$.playbutton.style.height = (100/aspect)+'%';
-        // handles loaded metadata
-        root.__media.addEventListener('media-loaded',function(){
-
-          // adjusts aspect ratio
-          aspect = root.__media.aspectRatio; 
-          root.$.media.style.paddingTop = (100/aspect)+'%';
-          root.$.playbutton.style.height = (100/aspect)+'%';
-          root.$.playbutton.removeAttribute('disabled');
-
-          // gets and converts video duration
-          root.__duration = root.__media.duration > 0 ? root.__media.duration: 0; 
-          root.__status = root._convertTime(0,root.__media.duration)+'/'+root._convertTime(root.__media.duration);
-          root.$.controls.setStatus(root.__status);
-        });
-        // handles loaded tracks
-        root.__media.addEventListener('tracks-loaded',function(){
-
-          // hides the video subtitles and captions and adds them to the tracks dropdown-select
-          if (root.__media.tracks.length > 0) {
-            root.hasCaptions = true;
-            root.selectTrack(0);
-          } else {
-            root.standAlone = false;
-          }
-
-          root.set('tracks', root.__media.tracks);
-          root.$.controls.setTracks(root.__media.tracks);
-          if(!root.standAlone && root.$.transcript !== undefined && root.$.transcript !== null){
-            root.$.transcript.setTracks(root.__media.tracks);
-            root.selectTrack(0);
-            root.$.transcript.addEventListener('cue-seek',function(e){
-              root.seek(e.detail.cue.seek);
-            });
-          }
-        });
-        root.__media.addEventListener('active-cue-change',function(e){
-          root.$.transcript.setActiveCues(e.detail);
-        })
       },
       /** 
        * plays the media 
@@ -532,7 +565,8 @@ Advanced styles for sliders:
           // while playing, update the slider and length
           root.__playProgress = setInterval(() => {
             root.__elapsed = root.__media.getCurrentTime() > 0 ? root.__media.getCurrentTime() : 0;
-            root.__status = root._convertTime(root.__media.getCurrentTime(),root.__media.duration) +'/'+ root._convertTime(root.__media.duration);
+            root.__duration = root.__media.duration > 0 ? root.__media.duration: 0; 
+            root.__status = root._convertTime(root.__media.getCurrentTime(),root.__duration) +'/'+ root._convertTime(root.__duration);
             root.$.controls.setStatus(root.__status);
             // if the video reaches the end and is not set to loop, stop
             if(root.__elapsed === root.__duration && !root.loop){
@@ -584,7 +618,7 @@ Advanced styles for sliders:
        */
       forward: function(amt){
         amt = amt !== undefined ? amt : 1;
-        this.seek(Math.min(this.__media.getCurrentTime() + amt,this.__media.duration));
+        this.seek(Math.min(this.__media.getCurrentTime() + amt,this.__duration));
       },
       /** 
        * seeks to a specific time 
@@ -594,7 +628,7 @@ Advanced styles for sliders:
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
           this.__media.seek(time);
           this.__elapsed = time;
-          this.__status = this._convertTime(this.__media.getCurrentTime(),this.__media.duration) +'/'+ this._convertTime(this.__media.duration)
+          this.__status = this._convertTime(this.__media.getCurrentTime(),this.__duration) +'/'+ this._convertTime(this.__duration)
           this.$.controls.setStatus(this.__status);
           if (this.__resumePlaying) this.play();
         }
@@ -604,8 +638,12 @@ Advanced styles for sliders:
        * toggleCC(true) to check the toggle, toggleCC(false) for unchecking, and toggleCC to toggle  
        */
       toggleCC: function(mode){
-        this.cc = mode === undefined ? !this.cc : mode;
-        this.__media.setCC(this.cc);
+        if(this.isYoutube) {
+
+        } else {
+          this.cc = mode === undefined ? !this.cc : mode;
+          this.__media.setCC(this.cc);
+        }
       },
       /** 
        * set volume of media
@@ -619,7 +657,11 @@ Advanced styles for sliders:
        * set speed/playback rate of media
        */
       setPlaybackRate: function(value){
-        this.__media.setPlaybackRate(value !== null ? value : 1);
+        if(this.isYoutube) {
+
+        } else {
+          this.__media.setPlaybackRate(value !== null ? value : 1);
+        }
       },
       /** 
        * toggles autoplay:
@@ -628,8 +670,12 @@ Advanced styles for sliders:
        * toggleAutoplay to toggle  
        */
        toggleAutoplay: function(mode){
-        this.autoplay = mode === undefined ? !this.muted : mode;
-        this.__media.setAutoplay(this.autoplay);
+        if(this.isYoutube) {
+
+        } else {
+          this.autoplay = mode === undefined ? !this.muted : mode;
+          this.__media.setAutoplay(this.autoplay);
+        }
       },
       /** 
        * toggles looping:
@@ -638,8 +684,12 @@ Advanced styles for sliders:
        * and toggleLoop to toggle  
        */
       toggleLoop: function(mode){
-        this.loop = mode === undefined ? !this.loop : mode;
-        this.__media.setLoop(this.loop);
+        if(this.isYoutube) {
+
+        } else {
+          this.loop = mode === undefined ? !this.loop : mode;
+          this.__media.setLoop(this.loop);
+        }
       },
       /** 
        * toggles mute:
@@ -648,9 +698,13 @@ Advanced styles for sliders:
        * toggleMute to toggle  
        */
       toggleMute: function(mode){
-        this.muted = mode === undefined ? !this.muted : mode;
-        this.__volume = this.muted ? 0 : Math.max(this.volume,10);
-        this.__media.setMute(this.muted);
+        if(this.isYoutube) {
+
+        } else {
+          this.muted = mode === undefined ? !this.muted : mode;
+          this.__volume = this.muted ? 0 : Math.max(this.volume,10);
+          this.__media.setMute(this.muted);
+        }
       },
       /** 
        * toggles sticky attribute:
@@ -686,7 +740,7 @@ Advanced styles for sliders:
       _onControlsChanged: function(e){
         let root = this, action = e.detail.label !== undefined ? e.detail.label : e.detail.id;
         if (action === 'backward' || action === root.rewindLabel) {
-          root.rewind(root.media.duration/20);
+          root.rewind(root.__duration/20);
         } else if (action === 'closed captions' || action === 'captions' || action === root.captionsLabel  || action === root.captionsMenuLabel) {
           root.toggleCC();
         } else if (action === 'transcript' || action === 'transcript-toggle' || action === root.transcriptLabel  || action === root.transcriptMenuLabel) {
@@ -699,7 +753,7 @@ Advanced styles for sliders:
             root.selectTrack(e.detail.value);
           }
         } else if (action === 'forward' || action === root.forwardLabel) {
-          root.forward(root.media.duration/20);
+          root.forward(root.__duration/20);
         } else if (action === 'full screen' || action === root.fullscreenLabel) {
           screenfull.toggle(root);
         } else if (action === 'loop' || action === root.loopLabel) {

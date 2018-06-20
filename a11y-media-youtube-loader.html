@@ -34,7 +34,7 @@ A LRN element
   <template>
     <style is="custom-style">
       #youtube, #controls {
-        width: 100%;
+        width: 600px;
       }
     </style>
     <div id="youtube" video-id$="[[videoId]]"></div>
@@ -70,9 +70,9 @@ A LRN element
           root.duration = root.media.getDuration(); 
           root.status = root._convertTime(0,root.duration)+'/'+root._convertTime(root.duration);
           root.volume = root.muted ? 0 : Math.max(this.volume,10);
-          root.setMute(root.muted);
-          root.setCC(root.cc);
-          root.setLoop(root.loop);
+          root.toggleMute(root.muted);
+          root.toggleCC(root.cc);
+          root.toggleLoop(root.loop);
           root.setVolume(root.volume);
           root.setPlaybackRate(root.playbackRate);
 
@@ -230,57 +230,66 @@ A LRN element
         this.media.seekTo = time;
       },
       /** 
-       * sets captions 
+       * toggles captions:
+       * toggleCC(true) to check the toggle, toggleCC(false) for unchecking, and toggleCC to toggle  
        */
-      setCC: function(mode){
-        console.log('setCC');
-        /*TODO this.media.cc = mode;
+      toggleCC: function(mode){
+        mode = mode === undefined ? !this.cc : mode;
+        this.cc = mode;
         if (this.selectedTrack !== undefined && mode == true) {
           this.selectedTrack.mode = 'showing';
           this.$.video.textTracks.value = this.selectedTrackId;
-        } else if (this.selectedTrack !== undefined && this.selectedTrack !== null) {
+        } else if (this.selectedTrack !== undefined) {
           this.selectedTrack.mode = 'hidden';
           this.$.video.textTracks.value = '';
-        }*/
+        }
       },
       /** 
        * set volume of media
        */
       setVolume: function(value){
-        console.log('setVolume');
-        //TODO this.media.volume = value/100;
+        this.media.volume = value;
+        this.media.muted = value === null || value === 0;
       },
       /** 
        * set speed/playback rate of media
        */
       setPlaybackRate: function(value){
-        console.log('setPlaybackRate');
-        //TODO this.media.playbackRate(value !== null ? value : 1);
+        this.media.setPlaybackRate(value !== null ? value : 1);
       },
       /** 
-       * sets autoplay
+       * toggles autoplay:
+       * toggleAutoplay(true) to check the toggle, 
+       * toggleAutoplay(false) for unchecking, and 
+       * toggleAutoplay to toggle  
        */
-      setAutoplay: function(mode){
-        console.log('setAutoplay');
-        //TODO this.media.autoplay = mode;
+      toggleAutoplay: function(mode){
+        mode = mode === undefined ? !this.muted : mode;
+        this.media.autoplay = mode;
       },
       /** 
        * toggles looping:
-       * setLoop(true) to check the toggle, setLoop(false) for unchecking, and setLoop to toggle  
+       * toggleLoop(true) to check the toggle, toggleLoop(false) for unchecking, and toggleLoop to toggle  
        */
-      setLoop: function(mode){
-        console.log('setLoop');
-        //TODO this.media.loop(mode);
+      toggleLoop: function(mode){
+        mode = mode === undefined ? !this.loop : mode;
+        this.media.setLoop(mode);
       },
       /** 
        * toggles mute:
-       * setMute(true) to check the toggle, 
-       * setMute(false) for unchecking, and 
-       * setMute to toggle  
+       * toggleMute(true) to check the toggle, 
+       * toggleMute(false) for unchecking, and 
+       * toggleMute to toggle  
        */
-      setMute: function(mode,value){
-        console.log('setMute');
-        //TODO this.media.muted = mode;
+      toggleMute: function(mode,value){
+        mode = mode === undefined ? !this.muted : mode;
+        if(mode){
+          this.media.mute();
+          this.media.setVolume(0);
+        } else {
+          this.media.unMute();
+          this.media.setVolume(Math.max(value,1));
+        }
       },
     });
   </script>

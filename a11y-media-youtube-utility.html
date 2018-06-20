@@ -32,8 +32,13 @@ Utily to control
          * Makes sure there is a utility ready and listening for elements.
          */
         created: function() {
+          let root = Polymer.A11yMediaYoutubeUtility;
+          root.ready = 
           document.addEventListener('youtube-api-ready', function(e) {
-            Polymer.A11yMediaYoutubeUtility.apiReady = true;
+            for(let i=0; i<root.players.length; i++){
+              root.players[i].player = root.initYoutubePlayer(root.players[i]);
+            }
+            root.apiReady = true;
           });
         },
       });
@@ -57,7 +62,7 @@ Utily to control
 
       Polymer.A11yMediaYoutubeUtility.initYoutubePlayer = function(elem){
         let initialize = function(){
-        }, player = new YT.Player(elem.youtubeId, {
+        }, player = new YT.Player(elem.id, {
           width: 600, //elem.width,
           height: 400, //elem.height,
           videoId: 'dxPVyieptwA', //elem.videoId,
@@ -76,7 +81,35 @@ Utily to control
             onReady: initialize
           }
         });
+        player.play = function(){
+          player.playVideo();
+        }
+        player.pause = function(){
+          player.pauseVideo();
+        }
+        player.seek = function(time){
+          player.seek = time;
+        }
+        player.setMute = function(mode){
+          mode ? player.mute() : player.unMute();
+        }
+        player.duration = 10;
+        let int = setInterval(() => {
+          if (player.getDuration !== undefined) {
+            clearInterval(int);
+            player.duration = player.getDuration();
+          }
+        });
+        player.seekable = true;
         return player;
+      };
+      Polymer.A11yMediaYoutubeUtility.addPlayer = function(container){
+        let root = this;
+        root.players.push(container);
+        if(root.apiReady){
+          container.player = root.initYoutubePlayer(player);
+        }
+        return false;
       };
     })();
   </script>
