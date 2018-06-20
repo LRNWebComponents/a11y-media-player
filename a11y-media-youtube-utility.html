@@ -88,19 +88,23 @@ Utily to control
           player.pauseVideo();
         }
         player.seek = function(time){
-          player.seek = time;
+          player.seekTo(time);
         }
         player.setMute = function(mode){
           mode ? player.mute() : player.unMute();
         }
         player.duration = 10;
+        player.seekable = {
+          "length": 1,
+          "start": function(index){ return 0 },
+          "end": function(index){ return player.duration }
+        };
         let int = setInterval(() => {
           if (player.getDuration !== undefined) {
             clearInterval(int);
             player.duration = player.getDuration();
           }
         });
-        player.seekable = true;
         return player;
       };
       Polymer.A11yMediaYoutubeUtility.addPlayer = function(container){

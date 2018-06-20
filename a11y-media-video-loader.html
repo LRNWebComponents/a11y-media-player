@@ -43,12 +43,6 @@ A LRN element
       hidden$="[[audioOnly]]"
       lang$="[[lang]]"
       preload="metadata">
-      <template is="dom-repeat" items="[[sources]]" as="source">
-        <source src$="[[source.src]]" type$="[[source.type]]">
-      </template>
-      <template is="dom-repeat" items="[[tracks]]" as="track">
-        <source src$="[[track.src]]" label$="[[track.label]]" kind$="[[track.kind]]" srclang$="[[track.srclang]]" default$="[[track.default]]">
-      </template>
       <slot></slot>
       HTML5 video not supported 
     </video>
@@ -66,7 +60,7 @@ A LRN element
 
       ready: function(){
         let root = this;
-        root.media = root.$.video !== undefined ? root.$.video : root.$.audio
+        root.media = root.$.video !== undefined ? root.$.video : root.$.audio;
 
         // handles loaded metadata
         root.media.addEventListener('loadedmetadata',function(){

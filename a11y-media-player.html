@@ -197,7 +197,7 @@ Advanced styles for sliders:
         top: unset;
         bottom: 5px;
       }
-      :host #player-inner {
+      :host #innerplayer {
         z-index: 1;
       }
       :host #media {
@@ -225,7 +225,7 @@ Advanced styles for sliders:
         left: 0;
       }
       :host #audio,
-      :host #player-inner,
+      :host #innerplayer,
       :host #playbutton, 
       :host #video,
       :host #youtube {
@@ -263,20 +263,20 @@ Advanced styles for sliders:
           flex-grow: 1;
           flex-shrink: 1;
         }
-        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #player-outer {
+        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #outerplayer {
           width: 0%;
         }
-        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #transcript-outer {
+        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #outertranscript {
           width: 100%;
         }
-        :host[hide-transcript] #player-outer {
+        :host[hide-transcript] #outerplayer {
           min-width: 50%;
           max-width: 100%;
         }
-        :host[hide-transcript] #transcript-outer {
+        :host[hide-transcript] #outertranscript {
           display: none;
         }
-        :host #transcript-outer {
+        :host #outertranscript {
           position: relative;
         }
         :host #transcript {
@@ -312,7 +312,7 @@ Advanced styles for sliders:
           border: 1px solid #000000; 
           background-color: #ffffff;
         }
-        :host[sticky] #player-outer {
+        :host[sticky] #outerplayer {
           height: unset !important;
         }
         :host #player {
@@ -340,12 +340,12 @@ Advanced styles for sliders:
         }
       }
     </style>
-    <div id="player-outer" lang$="[[uiLanguage]]">
+    <div id="outerplayer" lang$="[[uiLanguage]]">
       <span id="print-only">
         [[mediaTitle]] (<span class="media-type" hidden$="[[audioOnly]]">[[videoLabel]]</span><span class="media-type" hidden$="[[!audioOnly]]">[[audioLabel]]</span>)
       </span>
       <div id="player">
-        <div id="player-inner">
+        <div id="innerplayer">
           <div id="media" hidden$="[[noHeight]]">
             <a11y-media-play-button id="playbutton" 
               audio-only$="[[audioOnly]]" 
@@ -367,7 +367,6 @@ Advanced styles for sliders:
               preload="metadata"
               volume$="[[volume]]">
               <slot></slot>
-              HTML5 video not supported 
             </a11y-media-video-loader>
             <div id="youtube" hidden$="[[!isYoutube]]" video-id$="[[videoId]]"></div>
             <!--audio 
@@ -393,7 +392,7 @@ Advanced styles for sliders:
       <a11y-media-controls id="controls"
         cc$="[[cc]]"
         has-captions$="[[hasCaptions]]"
-        has-transcript$="[[!standAlone]]"
+        has-transcript$="[[hasTranscript]]"
         lang$="[[uiLanguage]]"
         muted$="[[muted]]"
         playing$="[[__playing]]"
@@ -402,7 +401,7 @@ Advanced styles for sliders:
       </a11y-media-controls>
       <div id="audio-only" hidden$="[[!audioOnly]]">(audio only)</div>
     </div>
-    <div id="transcript-outer" hidden$="[[!standAlone]]" lang$="[[uiLanguage]]">
+    <div id="outertranscript" hidden$="[[!standAlone]]" lang$="[[uiLanguage]]">
       <a11y-media-transcript-controls id="tcontrols"
         accent-color$="[[accentColor]]" 
         dark$="[[darkTranscript]]"
@@ -480,7 +479,6 @@ Advanced styles for sliders:
           root.__media = root.$.video;
           // handles loaded metadata
           root.__media.addEventListener('media-loaded',function(){
-
             // adjusts aspect ratio
             aspect = root.__media.aspectRatio; 
             root.$.media.style.paddingTop = (100/aspect)+'%';
@@ -494,7 +492,7 @@ Advanced styles for sliders:
           });
           // handles loaded tracks
           root.__media.addEventListener('tracks-loaded',function(){
-
+            root.hasTranscript = !root.standAlone;
             // hides the video subtitles and captions and adds them to the tracks dropdown-select
             if (root.__media.tracks.length > 0) {
               root.hasCaptions = true;
@@ -531,13 +529,16 @@ Advanced styles for sliders:
 
         // handles fullscreen
         if(root.__showFullscreen) {
-          screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen });
+          console.log(this.fullscreen);
+          screenfull.on('change', () => { this.fullscreen = screenfull.isFullscreen;
+          console.log(this.fullscreen); });
         }
         // handles dragging with a mouse
         root.$.slider.addEventListener('dragging-changed', (e) => {
           // when dragging stops, seeks to that value and 
           // if the video was playing before the dragging, resumes it
           if (!root.$.slider.dragging) { 
+            console.log(root.$.slider.immediateValue);
             root.seek(root.$.slider.immediateValue);
             root.__resumePlaying = false;
           }
@@ -650,18 +651,15 @@ Advanced styles for sliders:
        */
       setVolume: function(value){
         this.volume = value !== null ? value : 70;
-        this.setVolume(this.volume);
+        this.__media.setVolume(this.volume);
         this.muted = this.volume === 0;
       },
       /** 
        * set speed/playback rate of media
        */
       setPlaybackRate: function(value){
-        if(this.isYoutube) {
-
-        } else {
-          this.__media.setPlaybackRate(value !== null ? value : 1);
-        }
+        value = value !== null ? value : 1;
+        this.__media.setPlaybackRate(value);
       },
       /** 
        * toggles autoplay:
@@ -698,13 +696,9 @@ Advanced styles for sliders:
        * toggleMute to toggle  
        */
       toggleMute: function(mode){
-        if(this.isYoutube) {
-
-        } else {
-          this.muted = mode === undefined ? !this.muted : mode;
-          this.__volume = this.muted ? 0 : Math.max(this.volume,10);
-          this.__media.setMute(this.muted);
-        }
+        this.muted = mode === undefined ? !this.muted : mode;
+        this.__volume = this.muted ? 0 : Math.max(this.volume,10);
+        this.__media.setMute(this.muted);
       },
       /** 
        * toggles sticky attribute:
@@ -721,6 +715,7 @@ Advanced styles for sliders:
        */
       toggleTranscript: function(mode){
         mode = mode === undefined ? this.hideTranscript : mode;
+        console.log(mode);
         this.hideTranscript = !mode;
         if (this.$.transcript !== undefined && this.$.transcript !== null) {
           this.fire('transcript-toggle',this);
@@ -755,7 +750,8 @@ Advanced styles for sliders:
         } else if (action === 'forward' || action === root.forwardLabel) {
           root.forward(root.__duration/20);
         } else if (action === 'full screen' || action === root.fullscreenLabel) {
-          screenfull.toggle(root);
+          this.toggleTranscript(this.fullscreen);
+          screenfull.toggle(root.$.outerplayer);
         } else if (action === 'loop' || action === root.loopLabel) {
           root.toggleLoop();
         } else if (action === 'mute' || action === 'unmute' || action === root.muteLabel || action === root.unmuteLabel ) {

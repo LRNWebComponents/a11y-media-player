@@ -38,21 +38,21 @@ A set of behaviors for a11y-media components.
         */
       isAudio: {
         type: Boolean,
-        value: '_testAttribute(mediaType,"audio")'
+        computed: '_testAttribute(mediaType,"audio")'
       },
       /**
         * is HTML5 video player?
         */
       isVideo: {
         type: Boolean,
-        value: '_testAttribute(mediaType,"video")'
+        computed: '_testAttribute(mediaType,"video")'
       },
       /**
         * is YouTube?
         */
       isYoutube: {
         type: Boolean,
-        value: '_testAttribute(mediaType,"youtube")'
+        computed: '_testAttribute(mediaType,"youtube")'
       },
       /**
         * Language
