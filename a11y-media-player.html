@@ -212,12 +212,14 @@ Advanced styles for sliders:
       :host #playbutton,
       :host #slider, 
       :host #video,
-      :host #youtube {
+      :host #youtube,
+      :host #ytcaptions {
         width: 100%;
       }
       :host #audio,
       :host #video, 
-      :host #youtube {
+      :host #youtube,
+      :host #ytcaptions {
         position: absolute;
         top: 0;
         left: 0;
@@ -226,7 +228,8 @@ Advanced styles for sliders:
       :host #innerplayer,
       :host #playbutton, 
       :host #video,
-      :host #youtube {
+      :host #youtube,
+      :host #ytcaptions {
         max-height: 80vh;
       }
       :host #controls,
@@ -368,6 +371,7 @@ Advanced styles for sliders:
               <slot></slot>
             </a11y-media-video-loader>
             <div id="youtube" hidden$="[[!isYoutube]]" video-id$="[[videoId]]"></div>
+            <div id="ytcaptions" hidden$="[[!isYoutube]]">TEST</div>
             <!--audio 
               autoplay$="[[autoplay]]" 
               hidden$="[[!audioOnly]]"
@@ -550,14 +554,15 @@ Advanced styles for sliders:
             if(root.isYoutube && root.tracks !== undefined && root.tracks !== null) {
               let track = root.tracks[this.$.transcript.selectedTranscript];
               if(track !== undefined && track !== null && track.cues !== undefined && track.cues !== null){
-                let active = [];
+                let active = [], caption = '';
                 for(let i=0; i < track.cues.length; i++){
                   if(track.cues[i].seek < root.__elapsed && track.cues[i].seekEnd > root.__elapsed) {
                     active.push(track.cues[i].order);
+                    caption = caption === '' ? track.cues[i].text : caption;
                   }
                 }
+                root.$.ytcaptions.innerText = caption;
                 root.$.transcript.setActiveCues(active);
-                //console.log(root.tracks,active,active.length); 
               }
             }
             root.__status = root._getHHMMSS(root.__media.getCurrentTime(),root.__duration) +'/'+ root._getHHMMSS(root.__duration);
