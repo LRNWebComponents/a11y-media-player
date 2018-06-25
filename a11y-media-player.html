@@ -259,6 +259,7 @@ Advanced styles for sliders:
           transition: all 0.5s;
         }
         :host[sticky]:not([sticky-corner="none"]) #player {
+          position: fixed;
           top: 5px;
           right: 5px;
           width: 200px;
@@ -268,9 +269,6 @@ Advanced styles for sliders:
           box-shadow: 1px 1px 20px 1px rgba(125,125,125);
           border-radius: 0.2em; 
           border-color: var(--a11y-media-bg-color);
-        }
-        :host[sticky-delay]:not([sticky-corner="none"]) #player {
-          position: fixed;
         }
         :host[dark][sticky]:not([sticky-corner="none"]) #player {
           border-color: var(--a11y-media-bg-color);
