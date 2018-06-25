@@ -68,6 +68,13 @@ A set of behaviors for a11y-media components.
         type: Boolean,
         value: false,
       },
+      /** 
+        * Dash.js manifest source?
+        */
+      manifest: {
+        type: String,
+        value: null
+      },
       /**
         * type of media: video, audio, youtube
         */
@@ -146,6 +153,12 @@ A set of behaviors for a11y-media components.
         value: {}
       }
     },
+    /**
+      * returns true if an attribute is set to a value
+      */ 
+    _testAttribute: function(attr,val){
+      return attr === val;
+    }
     /*loadTrackMetadata: function(media){
 
 

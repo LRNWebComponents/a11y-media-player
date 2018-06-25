@@ -361,6 +361,7 @@ Advanced styles for sliders:
               lang$="[[lang]]"
               loop$="[[loop]]" 
               muted$="[[muted]]" 
+              manifest$="[[manifest]]" 
               playback-rate$="[[playbackRate]]"
               preload="metadata"
               volume$="[[volume]]">
@@ -466,7 +467,6 @@ Advanced styles for sliders:
         root.$.playbutton.style.height = (100/aspect)+'%';
 
         if(this.isYoutube) {
-          let tracks = root.$.video.media.textTracks;
           let options = {
             "width": root.width !== undefined && root.width !== null ? root.width: 1120,
             "height": root.height !== undefined && root.height !== null ? root.height: 630,
@@ -477,6 +477,7 @@ Advanced styles for sliders:
           } else {
             document.addEventListener('youtube-api-ready', function(e) {
               root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube,options);
+              root._getTrackData(root.$.video.media);
             });
           }
         } else {
@@ -493,30 +494,7 @@ Advanced styles for sliders:
             root.__duration = root.__media.duration > 0 ? root.__media.duration: 0; 
             root.__status = root._convertTime(0,root.__media.duration)+'/'+root._convertTime(root.__media.duration);
             root.$.controls.setStatus(root.__status);
-          });
-          // handles loaded tracks
-          root.__media.addEventListener('tracks-loaded',function(){
-            root.hasTranscript = !root.standAlone;
-            // hides the video subtitles and captions and adds them to the tracks dropdown-select
-            if (root.__media.tracks.length > 0) {
-              root.hasCaptions = true;
-              root.selectTrack(0);
-            } else {
-              root.standAlone = false;
-            }
-
-            root.set('tracks', root.__media.tracks);
-            root.$.controls.setTracks(root.__media.tracks);
-            if(!root.standAlone && root.$.transcript !== undefined && root.$.transcript !== null){
-              root.$.transcript.setTracks(root.__media.tracks);
-              root.selectTrack(0);
-              root.$.transcript.addEventListener('cue-seek',function(e){
-                root.seek(e.detail.cue.seek);
-              });
-            }
-          });
-          root.__media.addEventListener('active-cue-change',function(e){
-            root.$.transcript.setActiveCues(e.detail);
+            root._getTrackData(root.$.video.media);
           });
         }
         root.$.tcontrols.addEventListener('searchbar-added',function(e){
@@ -728,8 +706,71 @@ Advanced styles for sliders:
        * selects a specific track by index
        */
       selectTrack: function(index){
-        this.__media.selectTrack(index);
+        this.$.video.selectTrack(index);
         this.$.transcript.selectedTranscript === index;
+      },
+      /** 
+       * loads track metadata
+       */
+      _getTrackData: function(){      
+        // gets cues from tracks
+        let root = this, media = root.$.video.media, tdata = new Array();
+        root.hasTranscript = !root.standAlone;
+        // hides the video subtitles and captions and adds them to the tracks dropdown-select
+        if (media.textTracks.length > 0) {
+          root.hasCaptions = true;
+          root.selectTrack(0);
+        } else {
+          root.standAlone = false;
+        }
+        //gets and updates track metadat
+        for(var i=0; i < media.textTracks.length; i++) {
+          if (media.textTracks[i] !== null) {
+            let track = media.textTracks[i], tidata = {}, loaded = track.cues !== undefined, complete = 0, label = track.label, lang = track.language, text = label !== undefined ? label : lang !== undefined ? lang : 'Track '+i, cues, loadCueData = setInterval(() => {
+              track.mode = 'showing';
+              if (track.cues !== undefined && track.cues.length > 0) {
+                track.mode = 'hidden';
+                getCueData();
+                clearInterval(loadCueData);
+              }
+            },1), getCueData = function(){
+              track.mode = 'hidden';
+            
+              let cues = Object.keys(track.cues).map(function(key) { 
+                return {
+                  "order": track.cues[key].id,
+                  "seek": track.cues[key].startTime,
+                  "start": root._convertTime(track.cues[key].startTime,root.media.duration),
+                  "end": root._convertTime(track.cues[key].endTime,root.media.duration), 
+                  "text": track.cues[key].text
+                };
+              });
+              tidata = {
+                "text": text, 
+                "language": lang, 
+                "value": i-1,
+                "cues": cues
+              };
+              tdata.push(tidata);
+              root.set('tracks', tdata);
+              root.$.controls.setTracks(tdata);
+              root.$.transcript.setTracks(tdata);
+        
+              track.oncuechange = function(e){
+                root.$.transcript.setActiveCues(
+                  Object.keys(e.currentTarget.activeCues).map(function(key) { 
+                    return e.currentTarget.activeCues[key].id;
+                  })
+                );
+              };
+            };
+          }
+        }
+        if(!root.standAlone && root.$.transcript !== undefined && root.$.transcript !== null){
+          root.$.transcript.addEventListener('cue-seek',function(e){
+            root.seek(e.detail.cue.seek);
+          });
+        }
       },
       /**
        * determine which button was clicked and act accordingly 
