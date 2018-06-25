@@ -257,7 +257,6 @@ A transcript element to pair with a11y-media-player
        * determines if this is the currently selected transcript to show or hide
        */
       setActiveTranscript: function(index){
-        console.log('setActiveTranscript',index);
         if(this.tracks !== undefined && this.tracks !== null){
           for(let i = 0; i < this.tracks.length; i++) {
             if (parseInt(index) === i) {

@@ -336,7 +336,6 @@ Advanced styles for sliders:
         :host #slider, 
         :host #loader, 
         :host #youtube,
-        :host #audio, 
         :host #controls {
           display: none;
         }
@@ -393,6 +392,7 @@ Advanced styles for sliders:
         </paper-slider>
       </div>
       <a11y-media-controls id="controls"
+        audio-only$="[[audioOnly]]" 
         audio-label$="[[audioLabel]]" 
         captions-icon$="[[captionsIcon]]"
         captions-label$="[[captionsLabel]]"
@@ -679,12 +679,8 @@ Advanced styles for sliders:
        * toggleCC(true) to check the toggle, toggleCC(false) for unchecking, and toggleCC to toggle  
        */
       toggleCC: function(mode){
-        if(this.isYoutube) {
-
-        } else {
-          this.cc = mode === undefined ? !this.cc : mode;
-          this.__media.setCC(this.cc);
-        }
+        this.cc = mode === undefined ? !this.cc : mode;
+        this.$.video.setCC(this.cc);
       },
       /** 
        * set volume of media
@@ -765,7 +761,6 @@ Advanced styles for sliders:
        * selects a specific track by index
        */
       selectTrack: function(index){
-        console.log('selectTrack',index);
         this.$.loader.selectTrack(index);
         this.$.transcript.setActiveTranscript(index);
       },

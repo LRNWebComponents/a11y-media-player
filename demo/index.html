@@ -33,6 +33,16 @@
   </head>
   <body>
     <div class="vertical-section-container centered">
+      
+      <!--h3>a11y-media-player demo with mutlibitrate streaming</h3>
+      <demo-snippet>
+        <template>
+          <a11y-media-player 
+            manifest="http://personal.psu.edu/lnm105/stclair_MpegDash/stclair_manifest.mpd">
+            <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
+          </a11y-media-media-player>
+        </template>
+      </demo-snippet-->
         
       <h3>a11y-media-player demo</h3>
       <demo-snippet>
@@ -97,18 +107,6 @@
         </template>
       </demo-snippet> 
         
-      <h3>Standalone a11y-media-player demo with width set</h3>
-      <demo-snippet>
-        <template>
-          <a11y-media-player accent-color="deep-purple" stand-alone width="250px">
-            <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm"> 
-            <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg"> 
-            <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
-            <source src="http://techslides.com/demos/sample-videos/small.3gp" type="video/3gp">
-          </a11y-media-player>
-        </template>
-      </demo-snippet>
-        
       <h3>a11y-media-youtube demo</h3>
       <demo-snippet>
         <template>
@@ -118,60 +116,49 @@
         </template>
       </demo-snippet>
       
-      <h3>stand-alone a11y-media-youtube demo, with width set</h3>
+      <h3>a11y-media-player as audio</h3>
       <demo-snippet>
         <template>
-          <a11y-media-player accent-color="lime" dark media-type="youtube" stand-alone width="400px" youtube-id="NP0mQeLWCCo">
-            <track label="English" kind="subtitles" srclang="en" src="samples/bueller.vtt" default>
-          </a11y-media-player>
-        </template>
-      </demo-snippet>
-    
-      <!--h3>a11y-media-player demo with mutlibitrate streaming</h3>
-      <demo-snippet>
-        <template>
-          <a11y-media-player 
-            manifest="http://personal.psu.edu/lnm105/stclair_MpegDash/stclair_manifest.mpd">
-            <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
-          </a11y-media-media-player>
-        </template>
-      </demo-snippet-->
-
-      <!--h3>a11y-media-player, customized</h3>
-      <demo-snippet>
-        <p>Transcript can be located anywhere, even in a different <tt>&lt;div/&gt;</tt>.</p>
-        <template>
-          <a11y-media-player accent-color="purple">
-            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/video/sintel-short.mp4" type="video/mp4">
-            <source src="http://iandevlin.github.io/mdn/video-player-with-captions/sintel-short.webm" type="video/webm">
-            <track label="English" kind="subtitles" srclang="en" src="vtt/sintel-en.vtt" default>
-            <track label="Deutsch" kind="subtitles" srclang="de" src="vtt/sintel-de.vtt">
-            <track label="Español" kind="subtitles" srclang="es" src="vtt/sintel-es.vtt">
-          </a11y-media-player>
-        </template>
-      </demo-snippet-->
-      
-      <!--h3>a11y-media-player as audio</h3>
-      <demo-snippet>
-        <template>
-          <a11y-media-player accent-color="deep-orange" dark audio-only hide-timestamps>
+          <a11y-media-player accent-color="deep-orange" audio-only dark hide-timestamps>
             <source src="http://personal.psu.edu/lnm105/stclair.wav" type="audio/wav">
             <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
           </a11y-media-player>
         </template>
       </demo-snippet>
       
-      <div class="smaller-examples"-->
+      <div class="smaller-examples">
         
-      <!--h3>Standalone a11y-media-player as audio and thumbnail image</h3>
-      <demo-snippet>
-        <template>
-          <a11y-media-player accent-color="cyan" dark audio-only thumbnail-src="samples/stclair.jpg" width="200px">
-            <source src="http://personal.psu.edu/lnm105/stclair.wav" type="audio/wav">
-            <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
-          </a11y-media-player>
-        </template>
-      </demo-snippet-->
+        <h3>Standalone a11y-media-player as audio and thumbnail image</h3>
+        <demo-snippet>
+          <template>
+            <a11y-media-player accent-color="cyan" audio-only dark stand-alone thumbnail-src="samples/stclair.jpg" width="200px">
+              <source src="http://personal.psu.edu/lnm105/stclair.wav" type="audio/wav">
+              <track label="English" kind="subtitles" srclang="en" src="samples/stclair.vtt" default>
+            </a11y-media-player>
+          </template>
+        </demo-snippet>
+        
+        <h3>stand-alone a11y-media-youtube demo, with width set</h3>
+        <demo-snippet>
+          <template>
+            <a11y-media-player accent-color="lime" dark media-type="youtube" stand-alone width="400px" youtube-id="NP0mQeLWCCo">
+              <track label="English" kind="subtitles" srclang="en" src="samples/bueller.vtt" default>
+            </a11y-media-player>
+          </template>
+        </demo-snippet>
+        
+        <h3>Standalone a11y-media-player demo with width set</h3>
+        <demo-snippet>
+          <template>
+            <a11y-media-player accent-color="deep-purple" stand-alone width="250px">
+              <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm"> 
+              <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg"> 
+              <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
+              <source src="http://techslides.com/demos/sample-videos/small.3gp" type="video/3gp">
+            </a11y-media-player>
+          </template>
+        </demo-snippet>
+      </div>
     </div>
   </body>
 </html>

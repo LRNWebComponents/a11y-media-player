@@ -48,6 +48,15 @@ A LRN element
       <slot></slot>
       HTML5 video not supported 
     </video>
+    <audio id="audio" 
+      autoplay$="[[autoplay]]" 
+      hidden$="[[!audioOnly]]"
+      lang$="[[lang]]"
+      src$="[[manifest]]"
+      preload="metadata">
+      <slot></slot>
+      HTML5 audio not supported 
+    </audio>
   </template>
 
   <script>
@@ -72,19 +81,6 @@ A LRN element
           console.log('manifest',this.manifest);
           dash.initialize(root.$.video, this.manifest, true);
         }*/
-        /* TODO 
-
-            <!--audio 
-              autoplay$="[[autoplay]]" 
-              hidden$="[[!audioOnly]]"
-              id="audio" 
-              lang$="[[lang]]"
-              loop$="[[loop]]" 
-              muted$="[[muted]]" 
-              preload="metadata">
-              <slot></slot>
-              HTML5 audio not supported 
-            </audio--> */
 
         // handles loaded metadata
         root.media.addEventListener('loadedmetadata',function(){

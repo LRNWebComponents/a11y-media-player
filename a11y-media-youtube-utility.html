@@ -91,16 +91,16 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
         iframe.duration = 10;
         iframe.play = function(){
           iframe.playVideo();
-        }
+        };
         iframe.pause = function(){
           iframe.pauseVideo();
-        }
+        };
         iframe.seek = function(time){
           iframe.seekTo(time);
-        }
+        };
         iframe.setMute = function(mode){
           mode ? iframe.mute() : iframe.unMute();
-        }
+        };
         iframe.seekable = {
           "length": 1,
           "start": function(index){ return 0 },
