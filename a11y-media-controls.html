@@ -125,7 +125,8 @@ The controls bar for the a11y-media-standalone-player.
       :host:not([has-captions]) .captions {
         display: none;
       }
-      :host:not([has-transcript]) .transcript {
+      :host:not([has-transcript]) .transcript,
+      :host.stand-alone .transcript {
         display: none;
       }
       :host .setting {

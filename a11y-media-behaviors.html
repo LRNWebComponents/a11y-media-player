@@ -11,6 +11,13 @@ A set of behaviors for a11y-media components.
   window.a11yMediaBehaviors = window.a11yMediaBehaviors || {};
   window.a11yMediaBehaviors.MediaProps = {
     properties: {
+      /**
+        * is HTML5 audio player?
+        */
+      audio: {
+        type: Boolean,
+        value: false
+      },
       /** 
         * autoplay is an option, 
         * but generally not recommended for a11y
@@ -34,25 +41,11 @@ A set of behaviors for a11y-media components.
         value: null
       },
       /**
-        * is HTML5 audio player?
-        */
-      isAudio: {
-        type: Boolean,
-        computed: '_testAttribute(mediaType,"audio")'
-      },
-      /**
-        * is HTML5 video player?
-        */
-      isVideo: {
-        type: Boolean,
-        computed: '_testAttribute(mediaType,"video")'
-      },
-      /**
         * is YouTube?
         */
       isYoutube: {
         type: Boolean,
-        computed: '_testAttribute(mediaType,"youtube")'
+        computed: '_hasAttribute(youtubeId)'
       },
       /**
         * Language
@@ -74,13 +67,6 @@ A set of behaviors for a11y-media components.
       manifest: {
         type: String,
         value: null
-      },
-      /**
-        * type of media: video, audio, youtube
-        */
-      mediaType: {
-        type: String,
-        value: 'video'
       },
       /** 
         * Is audio muted?
@@ -132,13 +118,6 @@ A set of behaviors for a11y-media components.
         value: 70
       },
       /** 
-        * The width of the media player. 
-        */
-      width: {
-        type: Number,
-        value: null
-      },
-      /** 
         * the id for the video 
         */
       youtubeId: {
@@ -154,72 +133,17 @@ A set of behaviors for a11y-media components.
       }
     },
     /**
+      * returns true if an attribute is not null
+      */ 
+    _hasAttribute: function(attr){
+      return attr !== undefined && attr !== null;
+    },
+    /**
       * returns true if an attribute is set to a value
       */ 
     _testAttribute: function(attr,val){
       return attr === val;
-    }
-    /*loadTrackMetadata: function(media){
-
-
-        // handles loaded metadata
-        root.media.addEventListener('loadedmetadata',function(){
-
-          root.duration = root.media.duration > 0 ? root.media.duration: 0; 
-          root.tracks = [];
-          root.volume = root.muted ? 0 : Math.max(this.volume,10);
-          root.seekable = root.media.seekable;
-          root.setVolume(root.volume);
-          root.setMute(root.muted,root.volume);
-          root.setCC(root.cc);
-          root.setLoop(root.loop);
-          root.setPlaybackRate(root.playbackRate);
-
-          // adjusts aspect ratio
-          root.aspectRatio = root.media.videoWidth/root.media.videoHeight;
-          root.fire('media-loaded',this);
-          
-          // gets cues from tracks
-          let tdata = [];
-          for(var i=0; i< root.media.textTracks.length; i++) {
-            if (root.media.textTracks[i] !== null) {
-              let track = root.media.textTracks[i], loaded = track.cues !== undefined, complete = 0, label = track.label, lang = track.language, text = label !== undefined ? label : lang !== undefined ? lang : 'Track '+i, cues, loadCueData = setInterval(() => {
-                track.mode = 'showing';
-                if (track.cues !== undefined && track.cues.length > 0) {
-                  track.mode = 'hidden';
-                  getCueData();
-                  clearInterval(loadCueData);
-                }
-              },1), getCueData = function(){
-                track.mode = 'hidden';
-              
-                let cues = Object.keys(track.cues).map(function(key) { 
-                  return {
-                    "order": track.cues[key].id,
-                    "seek": track.cues[key].startTime,
-                    "start": root._getHHMMSS(track.cues[key].startTime,root.media.duration),
-                    "end": root._getHHMMSS(track.cues[key].endTime,root.media.duration), 
-                    "text": track.cues[key].text
-                  };
-                });
-                tdata.push({
-                  "text": text, 
-                  "language": lang, 
-                  "value": i-1,
-                  "cues": cues
-                });
-                track.oncuechange = function(e){
-                  root.fire('active-cue-change',Object.keys(e.currentTarget.activeCues).map(function(key) { 
-                    return e.currentTarget.activeCues[key].id;
-                  }));
-                };
-                root.set('tracks', tdata);
-                root.fire('tracks-loaded',root);
-              };
-            }
-          }
-        });
-    }*/
+    },
   };
   window.a11yMediaBehaviors.GeneralFunctions = {
     /**
@@ -268,8 +192,8 @@ A set of behaviors for a11y-media components.
         reflectToAttribute: true,
       },
       /** 
-        * Allow this media to play concurrently with other a11y-media-standalone-players? 
-        * Default is to pause this a11y-media-standalone-player when other a11y-media-standalone-player starts playing.
+        * Allow this media to play concurrently with other a11y-media-players? 
+        * Default is to pause this a11y-media-player when other a11y-media-player starts playing.
         */ 
       allowConcurrent: {
         type: Boolean,
@@ -293,7 +217,7 @@ A set of behaviors for a11y-media components.
         reflectToAttribute: true
       },
       /** 
-        * disable fullscreen option 
+        * Enables darker player.
         */
       dark: {
         type: Boolean,
@@ -306,6 +230,14 @@ A set of behaviors for a11y-media components.
       disableFullscreen: {
         type: Boolean,
         value: false,
+      },
+      /**
+        * Determines if video and transcript are in a flex layout
+        */
+      flexLayout: {
+        type: Boolean,
+        computed: '_isFlexLayout(standAlone,hideTranscript,noHeight,stackedLayout)',
+        reflectToAttribute: true
       },
       /** 
         * Is fullscreen mode?
@@ -389,6 +321,21 @@ A set of behaviors for a11y-media components.
         notify: true,
         reflectToAttribute: true
       },
+      /**
+        * is YouTube?
+        */
+      showYoutubeCaptions: {
+        type: Boolean,
+        computed: '_showYoutubeCaptions(isYoutube,cc)'
+      },
+      /** 
+        * Is stand-alone player (without transcript)?
+        */
+      standAlone: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
       /** 
         * Is the video currently sticky, i.e. it is fixed to the corner when playing but scrolled off screen? 
         */
@@ -414,6 +361,13 @@ A set of behaviors for a11y-media components.
         type: String,
         value: null,
         reflectToAttribute: true
+      },
+      /** 
+        * The width of the media player. 
+        */
+      width: {
+        type: String,
+        value: null
       },
       /**
         * label/microcopy for audio
@@ -666,6 +620,18 @@ A set of behaviors for a11y-media components.
       */ 
     _testAttribute: function(attr,val){
       return attr === val;
+    },
+    /**
+      * show youtube closed captions layer?
+      */ 
+    _showYoutubeCaptions: function(isYoutube,cc){
+      return isYoutube && cc;
+    },
+    /**
+      * Determines if video and transcript are in a flex layout
+      */
+    _isFlexLayout: function(standAlone,hideTranscript,noHeight,stackedLayout){
+      return !standAlone && !hideTranscript && !noHeight && !stackedLayout;
     }
   };
   window.a11yMediaBehaviors.TranscriptBehaviors = {
@@ -733,13 +699,6 @@ A set of behaviors for a11y-media components.
       search: {
         type: Object,
         value: null,
-      },
-      /**
-        * selected transcript track id
-        */
-      selectedTranscript: {
-        type: String,
-        value: '0',
       },
       /**
         * label for search input  on transcript
@@ -824,6 +783,48 @@ A set of behaviors for a11y-media components.
       printIcon: {
         type: String,
         value: "print"
+      },
+      /**
+        * label for print button on player controls
+        */
+      searchLabel: {
+        type: String,
+        value: "search transcript"
+      },
+      /**
+        * label for print button on player controls
+        */
+      searchIcon: {
+        type: String,
+        value: "search"
+      },
+      /**
+        * label for print button on player controls
+        */
+      searchNextLabel: {
+        type: String,
+        value: "next result"
+      },
+      /**
+        * label for print button on player controls
+        */
+      searchNextIcon: {
+        type: String,
+        value: "arrow-forward"
+      },
+      /**
+        * label for print button on player controls
+        */
+      searchPrevLabel: {
+        type: String,
+        value: "previous result"
+      },
+      /**
+        * label for print button on player controls
+        */
+      searchPrevIcon: {
+        type: String,
+        value: "arrow-back"
       },
       /**
         * label for skip the transcript link before the transcript

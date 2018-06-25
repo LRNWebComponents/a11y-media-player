@@ -72,6 +72,19 @@ A LRN element
           console.log('manifest',this.manifest);
           dash.initialize(root.$.video, this.manifest, true);
         }*/
+        /* TODO 
+
+            <!--audio 
+              autoplay$="[[autoplay]]" 
+              hidden$="[[!audioOnly]]"
+              id="audio" 
+              lang$="[[lang]]"
+              loop$="[[loop]]" 
+              muted$="[[muted]]" 
+              preload="metadata">
+              <slot></slot>
+              HTML5 audio not supported 
+            </audio--> */
 
         // handles loaded metadata
         root.media.addEventListener('loadedmetadata',function(){
@@ -107,8 +120,8 @@ A LRN element
        */
       selectTrack: function(index){
         this.selectedTrack = this.media.textTracks[index];
-        for(i in this.media.textTracks) {
-          if (index == i) {
+        for(let i = 0; i < this.media.textTracks.length; i++) {
+          if (parseInt(index) === i) {
             this.media.textTracks[i].mode = 'showing';
           } else if (this.media.textTracks[i] !== null) {
             this.media.textTracks[i].mode = 'hidden';

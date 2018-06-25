@@ -218,6 +218,9 @@ Advanced styles for sliders:
         top: 0;
         left: 0;
       }
+      :host #youtube {
+        height: 100%;
+      }
       :host #youtubecc {
         position: absolute;
         font-size: 20px;
@@ -253,20 +256,20 @@ Advanced styles for sliders:
         display: none;
       }
       @media screen {
-        :host:not([stand-alone]):not([hide-transcript]):not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
+        :host[flex-layout]:not([responsive-size*="s"]) {
           display: inline-flex;
           align-items: stretch;
           outline: 1px solid;
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#bbbbbb));
           background-color: var(--a11y-media-transcript-bg-color, #ffffff);
         }
-        :host[dark]:not([stand-alone]):not([hide-transcript]):not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) {
+        :host[dark][flex-layout]:not([responsive-size*="s"]) {
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
         }
         :host > div {
           transition: width 0.5s, height .5s;
         }
-        :host:not([stand-alone]):not([hide-transcript]):not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > div {
+        :host[flex-layout]:not([responsive-size*="s"]) > div {
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
@@ -379,18 +382,7 @@ Advanced styles for sliders:
               <slot></slot>
             </a11y-media-video-loader>
             <div id="youtube" hidden$="[[!isYoutube]]" video-id$="[[videoId]]"></div>
-            <div id="youtubecc" hidden$="[[!isYoutube]]"><span id="youtubecctxt"></div>
-            <!--audio 
-              autoplay$="[[autoplay]]" 
-              hidden$="[[!audioOnly]]"
-              id="audio" 
-              lang$="[[lang]]"
-              loop$="[[loop]]" 
-              muted$="[[muted]]" 
-              preload="metadata">
-              <slot></slot>
-              HTML5 audio not supported 
-            </audio-->
+            <div id="youtubecc" hidden$="[[!showYoutubeCaptions]]"><span id="youtubecctxt"></div>
           </div>
         </div>
         <paper-slider id="slider" 
@@ -401,25 +393,68 @@ Advanced styles for sliders:
         </paper-slider>
       </div>
       <a11y-media-controls id="controls"
+        audio-label$="[[audioLabel]]" 
+        captions-icon$="[[captionsIcon]]"
+        captions-label$="[[captionsLabel]]"
+        captions-menu-label$="[[captionsMenuLabel]]"
+        captions-menu-off$="[[captionsMenuOff]]"
         cc$="[[cc]]"
+        forward-icon$="[[forwardIcon]]"
+        forward-label$="[[forwardLabel]]"
+        fullscreen-icon$="[[fullscreenIcon]]"
+        fullscreen-label$="[[fullscreenLabel]]"
         has-captions$="[[hasCaptions]]"
         has-transcript$="[[hasTranscript]]"
         lang$="[[uiLanguage]]"
+        loop-icon$="[[loopIcon]]"
+        loop-label$="[[loopLabel]]"
+        mute-icon$="[[muteIcon]]"
+        mute-label$="[[muteLabel]]"
         muted$="[[muted]]"
+        pause-icon$="[[pauseIcon]]"
+        pause-label$="[[pauseLabel]]"
+        play-icon$="[[playIcon]]"
+        play-label$="[[playLabel]]"
         playing$="[[__playing]]"
+        restart-icon$="[[restartIcon]]"
+        restart-label$="[[restartLabel]]"
+        rewind-icon$="[[rewindIcon]]"
+        rewind-label$="[[rewindLabel]]"
         search-transcript$="[[searchTranscript]]" 
-        volume="[[__volume]]">
+        settings-icon$="[[settingsIcon]]"
+        settings-label$="[[settingsLabel]]"
+        speed-label$="[[speedLabel]]"
+        stand-alone$="[[standAlone]]"
+        transcript-icon$="[[transcriptIcon]]"
+        transcript-label$="[[transcriptLabel]]"
+        transcript-menu-label$="[[transcriptMenuLabel]]"
+        unmute-icon$="[[unmuteIcon]]"
+        unmute-label$="[[unmuteLabel]]" 
+        video-label$="[[videoLabel]]" 
+        volume="[[__volume]]"
+        volume-icon$="[[volumeIcon]]"
+        volume-label$="[[volumeLabel]]">
       </a11y-media-controls>
       <div id="audio-only" hidden$="[[!audioOnly]]">(audio only)</div>
     </div>
-    <div id="outertranscript" hidden$="[[!standAlone]]" lang$="[[uiLanguage]]">
+    <div id="outertranscript" hidden$="[[standAlone]]" lang$="[[uiLanguage]]">
       <a11y-media-transcript-controls id="tcontrols"
         accent-color$="[[accentColor]]" 
+        auto-scroll-icon$="[[autoScrollIcon]]"
+        auto-scroll-label$="[[autoScrollLabel]]"
         dark$="[[darkTranscript]]"
         disable-print-button$="[[disablePrintButton]]"
         disable-scroll$="[[disableScroll]]"
         disable-search$="[[disableSearch]]" 
-        lang$="[[uiLanguage]]">
+        lang$="[[uiLanguage]]"
+        print-icon$="[[printIcon]]"
+        print-label$="[[printLabel]]"
+        search-label$="[[searchLabel]]"
+        search-prev-label$="[[searchPrevLabel]]"
+        search-prev-icon$="[[searchPrevIcon]]"
+        search-next-label$="[[searchNextLabel]]"
+        search-next-icon$="[[searchNextIcon]]"
+        skip-transcript-link$="[[skipTranscriptLink]]">
       </a11y-media-transcript-controls>
       <a11y-media-transcript id="transcript" 
         accent-color$="[[accentColor]]"
@@ -428,8 +463,7 @@ Advanced styles for sliders:
         disable-search$="[[disableSearch]]"
         disable-interactive$="[[disableInteractive]]"
         hide-timestamps$="[[hideTimestamps]]"
-        search="[[search]]"
-        selected-transcript$="[[selectedTranscript]]">
+        search="[[search]]">
       </a11y-media-transcript>
     </div>
 </template>
@@ -474,14 +508,14 @@ Advanced styles for sliders:
         root.__duration = 0; 
         root.$.controls.setStatus(root.__status);
         let aspect = 16/9;
-        root.style.width = root.style.width = 'unset' ? '100%' : root.style.width;  
+        root.style.width = root.width !== null ? root.width : '100%';  
         root.$.sources.style.paddingTop = (100/aspect)+'%';
         root.$.playbutton.style.height = (100/aspect)+'%';
 
         if(this.isYoutube) {
           let options = {
-            "width": root.width !== undefined && root.width !== null ? root.width+'px': "100%",
-            "height": root.height !== undefined && root.height !== null ? root.height+'px': "100%",
+            "width": "100%",
+            "height": "100%",
             "videoId": root.youtubeId
           }
           if(Polymer.A11yMediaYoutubeUtility.apiReady){
@@ -731,25 +765,20 @@ Advanced styles for sliders:
        * selects a specific track by index
        */
       selectTrack: function(index){
+        console.log('selectTrack',index);
         this.$.loader.selectTrack(index);
-        this.$.transcript.selectedTranscript === index;
+        this.$.transcript.setActiveTranscript(index);
       },
       /** 
        * loads track metadata
        */
       _getTrackData: function(){      
         // gets cues from tracks
-        let root = this, media = root.$.loader.media, tdata = new Array();
+        let root = this, media = root.$.loader.media, tdata = new Array(), selected = 0;
         root.hasTranscript = !root.standAlone;
         // hides the video subtitles and captions and adds them to the tracks dropdown-select
-        if (media.textTracks.length > 0) {
-          root.hasCaptions = true;
-          root.selectTrack(0);
-        } else {
-          root.standAlone = false;
-        }
         //gets and updates track metadat
-        for(var i=0; i < media.textTracks.length; i++) {
+        for(let i=0; i < media.textTracks.length; i++) {
           if (media.textTracks[i] !== null) {
             let track = media.textTracks[i], tidata = {}, loaded = track.cues !== undefined, complete = 0, label = track.label, lang = track.language, text = label !== undefined ? label : lang !== undefined ? lang : 'Track '+i, cues, loadCueData = setInterval(() => {
               track.mode = 'showing';
@@ -774,13 +803,14 @@ Advanced styles for sliders:
               tidata = {
                 "text": text, 
                 "language": lang, 
-                "value": i-1,
+                "value": i,
                 "cues": cues
               };
               tdata.push(tidata);
               root.set('tracks', tdata);
               root.$.controls.setTracks(tdata);
               root.$.transcript.setTracks(tdata);
+              root.selectTrack(track.default ? i : 0);
         
               track.oncuechange = function(e){
                 root.$.transcript.setActiveCues(
@@ -788,10 +818,14 @@ Advanced styles for sliders:
                     return e.currentTarget.activeCues[key].id;
                   })
                 );
-                console.log(root.$.transcript.activeCues);
               };
             };
           }
+        }
+        if (media.textTracks.length > 0) {
+          root.hasCaptions = true;
+        } else {
+          root.standAlone = true;
         }
         if(!root.standAlone && root.$.transcript !== undefined && root.$.transcript !== null){
           root.$.transcript.addEventListener('cue-seek',function(e){

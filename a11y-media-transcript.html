@@ -6,7 +6,7 @@
 
 <!--
 `a11y-media-transcript`
-A transcript element to pair with a11y-media-standalone-player
+A transcript element to pair with a11y-media-player
 
 @demo demo/index.html
 
@@ -78,7 +78,7 @@ A transcript element to pair with a11y-media-standalone-player
     </style>
     <a id="transcript-desc" href="#bottom" class="sr-only">[[skipTranscriptLink]]</a>
     <template id="tracks" is="dom-repeat" items="[[tracks]]" as="track">
-      <div id="inner" class="transcript-from-track" lang="[[track.language]]" active$="[[_getActiveTranscript(track,selectedTranscript)]]">
+      <div id="inner" class="transcript-from-track" lang="[[track.language]]" active$="[[track.active]]">
         <template is="dom-repeat" items="[[track.cues]]" as="cue">
           <a11y-media-transcript-cue 
             accent-color$="[[accentColor]]"
@@ -152,6 +152,13 @@ A transcript element to pair with a11y-media-standalone-player
         role: {
           type: Number,
           computed: '_getRole(disableInteractive)',
+        },
+        /**
+          * selected transcript track id
+          */
+        selectedTranscript: {
+          type: String,
+          value: '0',
         },
         /** 
          * array of cues 
@@ -249,9 +256,20 @@ A transcript element to pair with a11y-media-standalone-player
       /** 
        * determines if this is the currently selected transcript to show or hide
        */
-      _getActiveTranscript: function(track,selected){
-        return parseInt(track.value) === parseInt(selected);
-      },
+      setActiveTranscript: function(index){
+        console.log('setActiveTranscript',index);
+        if(this.tracks !== undefined && this.tracks !== null){
+          for(let i = 0; i < this.tracks.length; i++) {
+            if (parseInt(index) === i) {
+              this.selectedTranscript = parseInt(index);
+              this.set('tracks.'+i+'.active',true);
+            } else if (this.tracks[i] !== null) {
+              this.set('tracks.'+i+'.active',false);
+            }
+          }
+        }
+        this.$.tracks.render();
+      }
     });
   </script>
 </dom-module>

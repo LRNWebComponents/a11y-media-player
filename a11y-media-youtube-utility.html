@@ -2,7 +2,7 @@
 
 <!--
 `a11y-media-youtube-utility`
-Utily to control
+Utility to insert, init and control YouTube iframe embeds with a11y-media-player.
 
 @demo demo/index.html
 
@@ -33,6 +33,7 @@ Utily to control
          */
         created: function() {
           let root = Polymer.A11yMediaYoutubeUtility;
+          root.counter = 0; //counter for unique id each youtube iframe
           document.addEventListener('youtube-api-ready', function(e) {
             root.apiReady = true;
           });
@@ -57,8 +58,15 @@ Utily to control
       };
 
       Polymer.A11yMediaYoutubeUtility.initYoutubePlayer = function(elem,options){
+        this.counter++;
+        //get unique id for each youtube iframe
+        let root = this, div = document.createElement('div'), id = "a11y-media-yt-"+this.counter;
+        div.setAttribute('id',id);
+        elem.appendChild(div);
+
+        // function to create and init iframe
         let initialize = function(){
-        }, player = new YT.Player(elem.id, {
+        }, iframe = new YT.Player(id, {
           width: options.width, 
           height: options.height, 
           videoId: options.videoId, 
@@ -77,32 +85,38 @@ Utily to control
             onReady: initialize
           }
         });
-        player.tracks = [];
-        player.duration = 10;
-        player.play = function(){
-          player.playVideo();
+
+        // add methods and properties to api so that it matches HTML5 video
+        iframe.tracks = [];
+        iframe.duration = 10;
+        iframe.play = function(){
+          iframe.playVideo();
         }
-        player.pause = function(){
-          player.pauseVideo();
+        iframe.pause = function(){
+          iframe.pauseVideo();
         }
-        player.seek = function(time){
-          player.seekTo(time);
+        iframe.seek = function(time){
+          iframe.seekTo(time);
         }
-        player.setMute = function(mode){
-          mode ? player.mute() : player.unMute();
+        iframe.setMute = function(mode){
+          mode ? iframe.mute() : iframe.unMute();
         }
-        player.seekable = {
+        iframe.seekable = {
           "length": 1,
           "start": function(index){ return 0 },
-          "end": function(index){ return player.duration }
+          "end": function(index){ return iframe.duration }
         };
+
+        // youtube API doesn't give length until video starts playing
         let int = setInterval(() => {
-          if (player.getDuration !== undefined) {
+          if (iframe.getDuration !== undefined) {
             clearInterval(int);
-            player.duration = player.getDuration();
+            iframe.duration = iframe.getDuration();
           }
         });
-        return player;
+
+        // return the iframe so that a11y-media-player can control it
+        return iframe;
       };
     })();
   </script>
