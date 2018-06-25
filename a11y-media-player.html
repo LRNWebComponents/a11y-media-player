@@ -168,33 +168,6 @@ Advanced styles for sliders:
         color: var(--a11y-media-color);
         background-color: var(--a11y-media-bg-color);
       }
-      :host[sticky]:not([sticky-corner="none"]) #player {
-        position: fixed;
-        top: 5px;
-        right: 5px;
-        max-width: 200px;
-        z-index: 999999;
-        border: 1px solid;
-        box-shadow: 1px 1px 20px 1px rgba(125,125,125);
-        border-radius: 0.2em; 
-        border-color: var(--a11y-media-bg-color);
-      }
-      :host[dark][sticky]:not([sticky-corner="none"]) #player {
-        border-color: var(--a11y-media-bg-color);
-      }
-      :host[sticky][sticky-corner="top-left"] #player {
-        right: unset;
-        left: 5px;
-      }
-      :host[sticky][sticky-corner="bottom-left"] #player {
-        top: unset;
-        right: unset;
-        bottom: 5px;
-      }
-      :host[sticky][sticky-corner="bottom-right"] #player {
-        top: unset;
-        bottom: 5px;
-      }
       :host #innerplayer {
         z-index: 1;
       }
@@ -226,6 +199,22 @@ Advanced styles for sliders:
         font-size: 20px;
         bottom: 0.5em;
         width: 100%;
+        transition: font-size 0.25s;
+      }
+      :host[responsive-size*="lg"] #youtubecc {
+        font-size: 14px;
+      }
+      :host[responsive-size*="md"] #youtubecc {
+        font-size: 14px;
+      }
+      :host[responsive-size*="sm"] #youtubecc {
+        font-size: 12px;
+      }
+      :host[responsive-size*="xs"] #youtubecc {
+        font-size: 10px;
+      }
+      :host[sticky] #youtubecc {
+        display: none;
       }
       :host #youtubecctxt {
         display: inline-block;
@@ -267,18 +256,52 @@ Advanced styles for sliders:
           outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
         }
         :host > div {
-          transition: width 0.5s, height .5s;
+          transition: all 0.5s;
         }
-        :host[flex-layout]:not([responsive-size*="s"]) > div {
+        :host[sticky]:not([sticky-corner="none"]) #player {
+          top: 5px;
+          right: 5px;
+          width: 200px;
+          max-width: 200px;
+          z-index: 999999;
+          border: 1px solid;
+          box-shadow: 1px 1px 20px 1px rgba(125,125,125);
+          border-radius: 0.2em; 
+          border-color: var(--a11y-media-bg-color);
+        }
+        :host[sticky-delay]:not([sticky-corner="none"]) #player {
+          position: fixed;
+        }
+        :host[dark][sticky]:not([sticky-corner="none"]) #player {
+          border-color: var(--a11y-media-bg-color);
+        }
+        :host[sticky][sticky-corner="top-left"] #player {
+          right: unset;
+          left: 5px;
+        }
+        :host[sticky][sticky-corner="bottom-left"] #player {
+          top: unset;
+          right: unset;
+          bottom: 5px;
+        }
+        :host[sticky][sticky-corner="bottom-right"] #player {
+          top: unset;
+          bottom: 5px;
+        }
+        :host[sticky]:not([responsive-size*="s"]) > #outerplayer {
+          width: 0%;
+        }
+        :host[sticky]:not([responsive-size*="s"]) > #outertranscript {
+          width: 100%;
+        }
+        :host[flex-layout]:not([sticky]):not([responsive-size*="s"]) > div {
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
         }
-        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #outerplayer {
-          width: 0%;
-        }
-        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) > #outertranscript {
-          width: 100%;
+        :host:not([sticky]) #innertranscript {
+          position: relative;
+          height: 100%;
         }
         :host[hide-transcript] #outerplayer {
           min-width: 50%;
@@ -286,9 +309,6 @@ Advanced styles for sliders:
         }
         :host[hide-transcript] #outertranscript {
           display: none;
-        }
-        :host #outertranscript {
-          position: relative;
         }
         :host #transcript {
           padding-top: 48px;
@@ -438,33 +458,35 @@ Advanced styles for sliders:
       <div id="audio-only" hidden$="[[!audioOnly]]">(audio only)</div>
     </div>
     <div id="outertranscript" hidden$="[[standAlone]]" lang$="[[uiLanguage]]">
-      <a11y-media-transcript-controls id="tcontrols"
-        accent-color$="[[accentColor]]" 
-        auto-scroll-icon$="[[autoScrollIcon]]"
-        auto-scroll-label$="[[autoScrollLabel]]"
-        dark$="[[darkTranscript]]"
-        disable-print-button$="[[disablePrintButton]]"
-        disable-scroll$="[[disableScroll]]"
-        disable-search$="[[disableSearch]]" 
-        lang$="[[uiLanguage]]"
-        print-icon$="[[printIcon]]"
-        print-label$="[[printLabel]]"
-        search-label$="[[searchLabel]]"
-        search-prev-label$="[[searchPrevLabel]]"
-        search-prev-icon$="[[searchPrevIcon]]"
-        search-next-label$="[[searchNextLabel]]"
-        search-next-icon$="[[searchNextIcon]]"
-        skip-transcript-link$="[[skipTranscriptLink]]">
-      </a11y-media-transcript-controls>
-      <a11y-media-transcript id="transcript" 
-        accent-color$="[[accentColor]]"
-        dark$="[[darkTranscript]]"
-        disable-scroll$="[[disableScroll]]"
-        disable-search$="[[disableSearch]]"
-        disable-interactive$="[[disableInteractive]]"
-        hide-timestamps$="[[hideTimestamps]]"
-        search="[[search]]">
-      </a11y-media-transcript>
+      <div id="innertranscript">
+        <a11y-media-transcript-controls id="tcontrols"
+          accent-color$="[[accentColor]]" 
+          auto-scroll-icon$="[[autoScrollIcon]]"
+          auto-scroll-label$="[[autoScrollLabel]]"
+          dark$="[[darkTranscript]]"
+          disable-print-button$="[[disablePrintButton]]"
+          disable-scroll$="[[disableScroll]]"
+          disable-search$="[[disableSearch]]" 
+          lang$="[[uiLanguage]]"
+          print-icon$="[[printIcon]]"
+          print-label$="[[printLabel]]"
+          search-label$="[[searchLabel]]"
+          search-prev-label$="[[searchPrevLabel]]"
+          search-prev-icon$="[[searchPrevIcon]]"
+          search-next-label$="[[searchNextLabel]]"
+          search-next-icon$="[[searchNextIcon]]"
+          skip-transcript-link$="[[skipTranscriptLink]]">
+        </a11y-media-transcript-controls>
+        <a11y-media-transcript id="transcript" 
+          accent-color$="[[accentColor]]"
+          dark$="[[darkTranscript]]"
+          disable-scroll$="[[disableScroll]]"
+          disable-search$="[[disableSearch]]"
+          disable-interactive$="[[disableInteractive]]"
+          hide-timestamps$="[[hideTimestamps]]"
+          search="[[search]]">
+        </a11y-media-transcript>
+      </div>
     </div>
 </template>
 
@@ -507,8 +529,10 @@ Advanced styles for sliders:
         root.__showFullscreen = !this.disableFullscreen && screenfull.enabled;
         root.__duration = 0; 
         root.$.controls.setStatus(root.__status);
+        // adjusts aspect ratio
         let aspect = 16/9;
-        root.style.width = root.width !== null ? root.width : '100%';  
+        root.width = root.width !== null ? root.width : '100%';  
+        root.style.maxWidth = root.width !== null ? root.width : '100%';  
         root.$.sources.style.paddingTop = (100/aspect)+'%';
         root.$.playbutton.style.height = (100/aspect)+'%';
 
@@ -680,7 +704,7 @@ Advanced styles for sliders:
        */
       toggleCC: function(mode){
         this.cc = mode === undefined ? !this.cc : mode;
-        this.$.video.setCC(this.cc);
+        this.$.loader.setCC(this.cc);
       },
       /** 
        * set volume of media
