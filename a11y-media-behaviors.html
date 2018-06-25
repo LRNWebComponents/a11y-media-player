@@ -244,9 +244,8 @@ A set of behaviors for a11y-media components.
       c = (val) => { return val < 100 ? val+'0' : val };
       return b(val,3600,'')+b(val%3600,60,'00:')+a(Math.round(val%60));
     },
-    /**
+    /** TODO - I may not need this
       * converts time in millesconds to HH:MM:SS
-      */
     _getSeconds: function(val){
       let total = 0, units = val.split(':').reverse();
       total = units[0] !== undefined && units[0] !== null ? units[0]/1000 : 0; //ms
@@ -256,6 +255,7 @@ A set of behaviors for a11y-media components.
       console.log(units,total);
       return total;
     }
+      */
   };
   window.a11yMediaBehaviors.PlayerBehaviors = {
     properties: {
@@ -366,6 +366,13 @@ A set of behaviors for a11y-media components.
         type: Boolean,
         computed: '_getNoHeight(audioOnly,thumbnailSrc)',
         reflectToAttribute: true
+      },
+      /**
+        * Hide the giant play button?
+        */
+      noPlayButton: {
+        type: Boolean,
+        computed: '_noPlayButton(noHeight,isYoutube)'
       },
       /**
         * Is media playing?
@@ -631,6 +638,12 @@ A set of behaviors for a11y-media components.
       */ 
     _getNoHeight: function(audioOnly,thumbnailSrc){
       return audioOnly && (thumbnailSrc === null || thumbnailSrc === undefined);
+    },
+    /**
+      * returns true if the player has no giant play button
+      */ 
+    _noPlayButton: function(noHeight,isYoutube){
+      return noHeight || isYoutube;
     },
     /**
       * returns true if an attribute is set to a value

@@ -198,38 +198,45 @@ Advanced styles for sliders:
       :host #innerplayer {
         z-index: 1;
       }
-      :host #media {
+      :host #sources {
         display: flex;
         align-items: stretch;
         position: relative;
       }
-      :host[no-height] #media {
+      :host[no-height] #sources {
         display: none;
       }
-      :host #audio,
       :host #controls,
-      :host #media,
-      :host #playbutton,
       :host #slider, 
-      :host #video,
-      :host #youtube,
-      :host #ytcaptions {
+      :host #sources,
+      :host #sources > * {
         width: 100%;
       }
-      :host #audio,
-      :host #video, 
-      :host #youtube,
-      :host #ytcaptions {
+      :host #loader, 
+      :host #youtube {
         position: absolute;
         top: 0;
         left: 0;
       }
-      :host #audio,
+      :host #youtubecc {
+        position: absolute;
+        font-size: 20px;
+        bottom: 0.5em;
+        width: 100%;
+      }
+      :host #youtubecctxt {
+        display: inline-block;
+        margin: 0 10px;
+        color: white;
+        background-color: black;
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 0.15em 0.25em;
+      }
+      :host #youtubecctxt:empty {
+        display: none;
+      }
       :host #innerplayer,
-      :host #playbutton, 
-      :host #video,
-      :host #youtube,
-      :host #ytcaptions {
+      :host #sources > * {
         max-height: 80vh;
       }
       :host #controls,
@@ -322,9 +329,9 @@ Advanced styles for sliders:
           padding: 15px;
           width: auto;
         }
-        :host:not([thumbnail-src]) #media, 
+        :host:not([thumbnail-src]) #sources, 
         :host #slider, 
-        :host #video, 
+        :host #loader, 
         :host #youtube,
         :host #audio, 
         :host #controls {
@@ -347,17 +354,18 @@ Advanced styles for sliders:
       </span>
       <div id="player">
         <div id="innerplayer">
-          <div id="media" hidden$="[[noHeight]]">
+          <div id="sources" hidden$="[[noHeight]]">
             <a11y-media-play-button id="playbutton" 
               audio-only$="[[audioOnly]]" 
               disabled="true"
-              hidden$="[[noHeight]]"
+              hidden$="[[noPlayButton]]"
+              disabled$="[[noPlayButton]]"
               pause-label$="[[pauseLabel]]" 
               playing$="[[__playing]]"
               play-label$="[[playLabel]]" 
               thumbnail-src$="[[thumbnailSrc]]">
             </a11y-media-play-button>
-            <a11y-media-video-loader id="video" 
+            <a11y-media-video-loader id="loader" 
               autoplay$="[[autoplay]]" 
               cc$="[[cc]]"
               hidden$="[[isYoutube]]"
@@ -371,7 +379,7 @@ Advanced styles for sliders:
               <slot></slot>
             </a11y-media-video-loader>
             <div id="youtube" hidden$="[[!isYoutube]]" video-id$="[[videoId]]"></div>
-            <div id="ytcaptions" hidden$="[[!isYoutube]]">TEST</div>
+            <div id="youtubecc" hidden$="[[!isYoutube]]"><span id="youtubecctxt"></div>
             <!--audio 
               autoplay$="[[autoplay]]" 
               hidden$="[[!audioOnly]]"
@@ -467,13 +475,13 @@ Advanced styles for sliders:
         root.$.controls.setStatus(root.__status);
         let aspect = 16/9;
         root.style.width = root.style.width = 'unset' ? '100%' : root.style.width;  
-        root.$.media.style.paddingTop = (100/aspect)+'%';
+        root.$.sources.style.paddingTop = (100/aspect)+'%';
         root.$.playbutton.style.height = (100/aspect)+'%';
 
         if(this.isYoutube) {
           let options = {
-            "width": root.width !== undefined && root.width !== null ? root.width: 1120,
-            "height": root.height !== undefined && root.height !== null ? root.height: 630,
+            "width": root.width !== undefined && root.width !== null ? root.width+'px': "100%",
+            "height": root.height !== undefined && root.height !== null ? root.height+'px': "100%",
             "videoId": root.youtubeId
           }
           if(Polymer.A11yMediaYoutubeUtility.apiReady){
@@ -481,16 +489,16 @@ Advanced styles for sliders:
           } else {
             document.addEventListener('youtube-api-ready', function(e) {
               root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube,options);
-              root._getTrackData(root.$.video.media);
+              root._getTrackData(root.$.loader.media);
             });
           }
         } else {
-          root.__media = root.$.video;
+          root.__media = root.$.loader;
           // handles loaded metadata
           root.__media.addEventListener('media-loaded',function(){
             // adjusts aspect ratio
             aspect = root.__media.aspectRatio; 
-            root.$.media.style.paddingTop = (100/aspect)+'%';
+            root.$.sources.style.paddingTop = (100/aspect)+'%';
             root.$.playbutton.style.height = (100/aspect)+'%';
             root.$.playbutton.removeAttribute('disabled');
 
@@ -498,7 +506,7 @@ Advanced styles for sliders:
             root.__duration = root.__media.duration > 0 ? root.__media.duration: 0; 
             root.__status = root._getHHMMSS(0,root.__media.duration)+'/'+root._getHHMMSS(root.__media.duration);
             root.$.controls.setStatus(root.__status);
-            root._getTrackData(root.$.video.media);
+            root._getTrackData(root.$.loader.media);
           });
         }
         root.$.tcontrols.addEventListener('searchbar-added',function(e){
@@ -561,7 +569,7 @@ Advanced styles for sliders:
                     caption = caption === '' ? track.cues[i].text : caption;
                   }
                 }
-                root.$.ytcaptions.innerText = caption;
+                root.$.youtubecctxt.innerText = caption;
                 root.$.transcript.setActiveCues(active);
               }
             }
@@ -723,7 +731,7 @@ Advanced styles for sliders:
        * selects a specific track by index
        */
       selectTrack: function(index){
-        this.$.video.selectTrack(index);
+        this.$.loader.selectTrack(index);
         this.$.transcript.selectedTranscript === index;
       },
       /** 
@@ -731,7 +739,7 @@ Advanced styles for sliders:
        */
       _getTrackData: function(){      
         // gets cues from tracks
-        let root = this, media = root.$.video.media, tdata = new Array();
+        let root = this, media = root.$.loader.media, tdata = new Array();
         root.hasTranscript = !root.standAlone;
         // hides the video subtitles and captions and adds them to the tracks dropdown-select
         if (media.textTracks.length > 0) {
