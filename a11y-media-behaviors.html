@@ -197,8 +197,8 @@ A set of behaviors for a11y-media components.
                   return {
                     "order": track.cues[key].id,
                     "seek": track.cues[key].startTime,
-                    "start": root._convertTime(track.cues[key].startTime,root.media.duration),
-                    "end": root._convertTime(track.cues[key].endTime,root.media.duration), 
+                    "start": root._getHHMMSS(track.cues[key].startTime,root.media.duration),
+                    "end": root._getHHMMSS(track.cues[key].endTime,root.media.duration), 
                     "text": track.cues[key].text
                   };
                 });
@@ -235,14 +235,26 @@ A set of behaviors for a11y-media components.
       root.fire('responsive-element',data2);
     },
     /**
-      * set play/pause button 
+      * converts time in millesconds to HH:MM:SS
       */
-    _convertTime: function(val,max){
+    _getHHMMSS: function(val,max){
       max = max === undefined ? val : max;
       let a = (val) => { return val < 10 ? '0' + val : val; }, 
       b = (val,i,none) => { return max >= i ? a(Math.floor(val/i))+':' : none },
       c = (val) => { return val < 100 ? val+'0' : val };
       return b(val,3600,'')+b(val%3600,60,'00:')+a(Math.round(val%60));
+    },
+    /**
+      * converts time in millesconds to HH:MM:SS
+      */
+    _getSeconds: function(val){
+      let total = 0, units = val.split(':').reverse();
+      total = units[0] !== undefined && units[0] !== null ? units[0]/1000 : 0; //ms
+      total += units[1] !== undefined && units[1] !== null ? units[1] : 0; //ss
+      total += units[2] !== undefined && units[2] !== null ? units[2]*60 : 0; //mm
+      total += units[3] !== undefined && units[3] !== null ? units[3]*3600 : 0; //hh
+      console.log(units,total);
+      return total;
     }
   };
   window.a11yMediaBehaviors.PlayerBehaviors = {

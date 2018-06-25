@@ -77,6 +77,8 @@ Utily to control
             onReady: initialize
           }
         });
+        player.tracks = [];
+        player.duration = 10;
         player.play = function(){
           player.playVideo();
         }
@@ -89,7 +91,6 @@ Utily to control
         player.setMute = function(mode){
           mode ? player.mute() : player.unMute();
         }
-        player.duration = 10;
         player.seekable = {
           "length": 1,
           "start": function(index){ return 0 },

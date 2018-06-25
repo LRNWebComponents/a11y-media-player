@@ -492,7 +492,7 @@ Advanced styles for sliders:
 
             // gets and converts video duration
             root.__duration = root.__media.duration > 0 ? root.__media.duration: 0; 
-            root.__status = root._convertTime(0,root.__media.duration)+'/'+root._convertTime(root.__media.duration);
+            root.__status = root._getHHMMSS(0,root.__media.duration)+'/'+root._getHHMMSS(root.__media.duration);
             root.$.controls.setStatus(root.__status);
             root._getTrackData(root.$.video.media);
           });
@@ -547,7 +547,20 @@ Advanced styles for sliders:
           root.__playProgress = setInterval(() => {
             root.__elapsed = root.__media.getCurrentTime() > 0 ? root.__media.getCurrentTime() : 0;
             root.__duration = root.__media.duration > 0 ? root.__media.duration: 0; 
-            root.__status = root._convertTime(root.__media.getCurrentTime(),root.__duration) +'/'+ root._convertTime(root.__duration);
+            if(root.isYoutube && root.tracks !== undefined && root.tracks !== null) {
+              let track = root.tracks[this.$.transcript.selectedTranscript];
+              if(track !== undefined && track !== null && track.cues !== undefined && track.cues !== null){
+                let active = [];
+                for(let i=0; i < track.cues.length; i++){
+                  if(track.cues[i].seek < root.__elapsed && track.cues[i].seekEnd > root.__elapsed) {
+                    active.push(track.cues[i].order);
+                  }
+                }
+                root.$.transcript.setActiveCues(active);
+                //console.log(root.tracks,active,active.length); 
+              }
+            }
+            root.__status = root._getHHMMSS(root.__media.getCurrentTime(),root.__duration) +'/'+ root._getHHMMSS(root.__duration);
             root.$.controls.setStatus(root.__status);
             // if the video reaches the end and is not set to loop, stop
             if(root.__elapsed === root.__duration && !root.loop){
@@ -609,7 +622,7 @@ Advanced styles for sliders:
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
           this.__media.seek(time);
           this.__elapsed = time;
-          this.__status = this._convertTime(this.__media.getCurrentTime(),this.__duration) +'/'+ this._convertTime(this.__duration)
+          this.__status = this._getHHMMSS(this.__media.getCurrentTime(),this.__duration) +'/'+ this._getHHMMSS(this.__duration)
           this.$.controls.setStatus(this.__status);
           if (this.__resumePlaying) this.play();
         }
@@ -695,7 +708,6 @@ Advanced styles for sliders:
        */
       toggleTranscript: function(mode){
         mode = mode === undefined ? this.hideTranscript : mode;
-        console.log(mode);
         this.hideTranscript = !mode;
         if (this.$.transcript !== undefined && this.$.transcript !== null) {
           this.fire('transcript-toggle',this);
@@ -740,8 +752,9 @@ Advanced styles for sliders:
                 return {
                   "order": track.cues[key].id,
                   "seek": track.cues[key].startTime,
-                  "start": root._convertTime(track.cues[key].startTime,root.media.duration),
-                  "end": root._convertTime(track.cues[key].endTime,root.media.duration), 
+                  "seekEnd": track.cues[key].endTime,
+                  "start": root._getHHMMSS(track.cues[key].startTime,root.media.duration),
+                  "end": root._getHHMMSS(track.cues[key].endTime,root.media.duration), 
                   "text": track.cues[key].text
                 };
               });
@@ -762,6 +775,7 @@ Advanced styles for sliders:
                     return e.currentTarget.activeCues[key].id;
                   })
                 );
+                console.log(root.$.transcript.activeCues);
               };
             };
           }
