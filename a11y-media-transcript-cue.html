@@ -82,9 +82,9 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         display: none;
       }
       :host simple-search-content {
-        --simple-search-match-text-color: #111;
-        --simple-search-match-bg-color: red;
-        --simple-search-match-border-color: #b0d5ff;
+        --simple-search-match-text-color: var(--a11y-media-transcript-match-color);
+        --simple-search-match-bg-color: var(--a11y-media-transcript-match-bg-color);
+        --simple-search-match-border-color:  var(--a11y-media-transcript-match-border-color);
         --simple-search-match: {
           border: none;
           border-radius: 0.25em;
@@ -98,12 +98,6 @@ A single cue in a11y-media-transcriptas static text or as an button that control
         :host:not([active]):not([disabled]):hover {
           color: #000000;
           background-color: #ffffff;
-        }
-        :host simple-search-content {
-          --simple-search-match: {
-            color: #000000;
-            background-color: #eeeeee;
-          };
         }
       }
     </style>
