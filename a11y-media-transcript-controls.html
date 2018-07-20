@@ -29,31 +29,31 @@ A controls for the transcript element
 <dom-module id="a11y-media-transcript-controls">
   <template>
     <style is="custom-style">
-        :host {
-          --a11y-media-transcript-color: var(--simple-colors-foreground1);
-          --a11y-media-transcript-bg-color: var(--simple-colors-background1);
-          --a11y-media-hover-color: var(--simple-colors-foreground1);
-          --a11y-media-hover-bg-color: var(--simple-colors-background2);
-          --a11y-media-accent-color: var(--simple-colors-accent-foreground3);
-          --a11y-media-faded-accent-color: var(--simple-colors-accent-foreground1);
+        :host { 
           background-color: var(--a11y-media-transcript-bg-color);
           color: var(--a11y-media-transcript-text-color);
-        }
-        :host simple-search {
-          --paper-input-container-input-color: var(--a11y-media-transcript-color);
-          --paper-input-container-focus-color: var(--a11y-media-accent-color);
-          --paper-input-container-color: var(--a11y-media-transcript-color);
-          --paper-input-container: {
+          --a11y-media-button-color: var(--a11y-media-transcript-color);
+          --a11y-media-button-bg-color: var(--a11y-media-transcript-bg-color);
+          --a11y-media-button-toggle-color: var(--a11y-media-transcript-accent-color);
+          --a11y-media-button-hover-color: var(--a11y-media-transcript-faded-accent-color);
+          --a11y-media-button-hover-bg-color:  var(--a11y-media-transcript-bg-color);
+          --simple-search-input-color: var(--a11y-media-transcript-color);
+          --simple-search-input-line-color: var(--a11y-media-transcript-accent-color);
+          --simple-search-button-color: var(--a11y-media-transcript-accent-color);
+          --simple-search-button-hover-color: var(--a11y-media-transcript-faded-accent-color);
+          --simple-search-button-bg-color: var(--a11y-media-transcript-bg-color);
+          --simple-search-button-border-color: var(--a11y-media-transcript-bg-color);
+          --simple-search-button-hover-border-color: var(--a11y-media-transcript-bg-color);
+          --simple-search-button-disabled-color: var(--simple-colors-background5);
+          --simple-search-button-disabled-bg-color: var(--simple-colors-background2);
+          --simple-search-button-disabled-border-color: var(--simple-colors-background3);
+          --simple-search-container: {
             padding: 0 15px;
           };
         }
-        :host simple-search, 
+        :host #search {
+        } 
         :host a11y-media-button {
-          --a11y-media-button-toggle-color: var(--a11y-media-faded-accent-color);
-          --a11y-media-button-color: var(--a11y-media-transcript-color);
-          --a11y-media-button-bg-color:  var(--a11y-media-transcript-bg-color);
-          --a11y-media-button-hover-color: var(--a11y-media-accent-color);
-          --a11y-media-button-hover-bg-color:  var(--a11y-media-transcript-bg-color);
         }
         :host #searchbar {
           display: flex;
@@ -80,11 +80,11 @@ A controls for the transcript element
     </style>
     <div id="searchbar">
       <div id="searching">
-        <simple-search 
+        <simple-search id="search" 
           disabled$="[[disableSearch]]" 
           controls="transcript" 
           hidden$="[[disableSearch]]"
-          id="search" 
+          no-label-float 
           next-button-icon$="[[searchNextIcon]]"
           next-button-label$="[[searchNextLabel]]"
           prev-button-icon$="[[searchPrevIcon]]"
@@ -95,9 +95,8 @@ A controls for the transcript element
         </simple-search>
       </div>
       <div id="scrolling">
-        <a11y-media-button 
+        <a11y-media-button id="scroll" 
           controls="transcript" 
-          id="scroll" 
           icon="[[autoScrollIcon]]" 
           label="[[autoScrollLabel]]" 
           toggle$="[[!disableScroll]]">
