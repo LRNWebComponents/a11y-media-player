@@ -595,7 +595,7 @@ Advanced styles for sliders:
           root.disableScroll = !root.disableScroll;
         });
         root.$.tcontrols.addEventListener('print-transcript',function(e){
-          this.fire('print-transcript',this);
+          this.fire('printing-transcript',this);
           root.$.transcript.print(root.mediaTitle);
         });
         root.$.transcript.setMedia(root.$.player);
