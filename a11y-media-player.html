@@ -112,10 +112,12 @@ Advanced styles for sliders:
       :host {  
         width: 100%;
         display: block;
-        outline: 1px solid #bbbbbb;
+        color: var(--simple-colors-foreground1);
+        background-color: var(--simple-colors-background2);
+        outline: 1px solid var(--simple-colors-background3);
       }
       :host[dark] {  
-        outline: 1px solid black;
+        outline: 1px solid var(--simple-colors-background1);
       }
       :host #outerplayer, :host #outerplayer * {
         --a11y-media-color: var(--simple-colors-foreground2);
@@ -287,27 +289,12 @@ Advanced styles for sliders:
           right: unset;
           left: 5px;
         }
-        :host[sticky][sticky-corner="bottom-left"] #player {
-          top: unset;
-          right: unset;
-          bottom: 5px;
-        }
-        :host[sticky][sticky-corner="bottom-right"] #player {
-          top: unset;
-          bottom: 5px;
-        }
-        :host[sticky]:not([responsive-size*="s"]) > #outerplayer {
-          width: 0%;
-        }
-        :host[sticky]:not([responsive-size*="s"]) > #outertranscript {
-          width: 100%;
-        }
-        :host[flex-layout]:not([sticky]):not([responsive-size*="s"]) > div {
+        :host[flex-layout]:not([responsive-size*="s"]) > div {
           width: 50%;
           flex-grow: 1;
           flex-shrink: 1;
         }
-        :host:not([sticky]) #innertranscript {
+        :host #innertranscript {
           position: relative;
           height: 100%;
         }
@@ -343,6 +330,18 @@ Advanced styles for sliders:
           left: 0;
           width: 100%;
           display: flex;
+        }
+        :host[sticky][sticky-corner="bottom-left"] #player {
+          top: unset;
+          right: unset;
+          bottom: 5px;
+        }
+        :host[sticky][sticky-corner="bottom-right"] #player {
+          top: unset;
+          bottom: 5px;
+        }
+        :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) #controls {
+          display: none;
         }
       }
 
@@ -549,13 +548,27 @@ Advanced styles for sliders:
             "width": "100%",
             "height": "100%",
             "videoId": root.youtubeId
-          }
-          if(Polymer.A11yMediaYoutubeUtility.apiReady){
+          }, ytInit = function(){
             root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube,options);
+            
+            // youtube API doesn't immediately give length of a video
+            let int = setInterval(() => {
+              if (root.__media.getDuration !== undefined) {
+                clearInterval(int);
+                root.__duration = root.__media.duration = root.__media.getDuration();
+                root.__status = root._getHHMMSS(0,root.__media.duration)+'/'+root._getHHMMSS(root.__media.duration);
+                root.$.controls.setStatus(root.__status);
+                root._getTrackData(root.$.loader.media);
+              }
+            });
+
+          };
+
+          if(Polymer.A11yMediaYoutubeUtility.apiReady){
+            ytInit();
           } else {
             document.addEventListener('youtube-api-ready', function(e) {
-              root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube,options);
-              root._getTrackData(root.$.loader.media);
+              ytInit();
             });
           }
         } else {

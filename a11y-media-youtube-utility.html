@@ -88,7 +88,7 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
 
         // add methods and properties to api so that it matches HTML5 video
         iframe.tracks = [];
-        iframe.duration = 10;
+        iframe.duration = 0;
         iframe.play = function(){
           iframe.playVideo();
         };
@@ -97,6 +97,7 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
         };
         iframe.seek = function(time){
           iframe.seekTo(time);
+          iframe.pauseVideo();
         };
         iframe.setMute = function(mode){
           mode ? iframe.mute() : iframe.unMute();
@@ -106,14 +107,6 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
           "start": function(index){ return 0 },
           "end": function(index){ return iframe.duration }
         };
-
-        // youtube API doesn't give length until video starts playing
-        let int = setInterval(() => {
-          if (iframe.getDuration !== undefined) {
-            clearInterval(int);
-            iframe.duration = iframe.getDuration();
-          }
-        });
 
         // return the iframe so that a11y-media-player can control it
         return iframe;
