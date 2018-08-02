@@ -176,9 +176,14 @@ A set of behaviors for a11y-media components.
   };
   window.a11yMediaBehaviors.PlayerBehaviors = {
     properties: {
-      /** 
-        * Accent color on controls. Default is blue.
-        */ 
+      /**
+       * Optional accent color for controls, 
+       * using the following materialize colors:  
+       * red, pink, purple, deep-purple, indigo, blue,  
+       * light blue, cyan, teal, green, light green, lime,  
+       * yellow, amber, orange, deep-orange, and brown. 
+       * Default is null. 
+       */
       accentColor: {
         type: String,
         value: null,

@@ -42,8 +42,14 @@ A LRN element
     hide-timestamps$="[[hideTimestamps]]"       // Hide cue timestamps?
     lang$="[[lang]]"                            // The language of the media
     loop$="[[loop]]"                            // Is video on a loop?
-    playback-rate$="[[playbackRate]]"           // Is video on a loop?
     muted$="[[muted]]"                          // Is video muted?
+    media-title$="[[mediaTitle]]"               // The title of the media
+    playback-rate$="[[playbackRate]]"           // The speed that video plays, default is 1 (for 100%)
+    sticky-corner$="[[stickyCorner]]"           // When user scrolls a playing video off-screen, 
+                                                   which corner will it stick to? Values are: 
+                                                   top-right (default), top-left, bottom-left, bottom-right, 
+                                                   and none (to turn sticky off)
+    thumbnail-src$="[[thumbnailSrc]]"           // Optional thumbanil/cover image url
     volume$="[[volume]]">                       // The initial volume of the video
                                                 // video source and tracks 
     <source src="/path/to/video.mp4" type="video/mp4">
@@ -253,7 +259,7 @@ Advanced styles for sliders:
         width: 100%;
         line-height: 160%;
       }
-      :host #print-only {
+      :host .print-only {
         display: none;
       }
       @media screen {
@@ -366,10 +372,10 @@ Advanced styles for sliders:
         :host #controls {
           display: none;
         }
-        :host #print-only {
+        :host .print-only {
           display: inline;
         }
-        :host #print-only .media-type {
+        :host .media-type {
           font-style: italic;
         }
         :host #searchbar {
@@ -378,8 +384,8 @@ Advanced styles for sliders:
       }
     </style>
     <div id="outerplayer" lang$="[[uiLanguage]]">
-      <span id="print-only">
-        [[mediaTitle]] (<span class="media-type" hidden$="[[audioOnly]]">[[videoLabel]]</span><span class="media-type" hidden$="[[!audioOnly]]">[[audioLabel]]</span>)
+      <span>
+        [[mediaTitle]] (<span class="media-type print-only" hidden$="[[audioOnly]]">[[videoLabel]]</span><span class="media-type" hidden$="[[!audioOnly]]">[[audioLabel]]</span>)
       </span>
       <div id="player">
         <div id="innerplayer">
