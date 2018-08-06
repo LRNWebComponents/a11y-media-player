@@ -384,9 +384,6 @@ Advanced styles for sliders:
       }
     </style>
     <div id="outerplayer" lang$="[[uiLanguage]]">
-      <div>
-        [[mediaTitle]] <span class="media-type print-only">(<span hidden$="[[audioOnly]]">[[videoLabel]]</span><span idden$="[[!audioOnly]]">[[audioLabel]]</span>)</span>
-      </div>
       <div id="player">
         <div id="innerplayer">
           <div id="sources" hidden$="[[noHeight]]">
@@ -468,7 +465,10 @@ Advanced styles for sliders:
         volume-icon$="[[volumeIcon]]"
         volume-label$="[[volumeLabel]]">
       </a11y-media-controls>
-      <div id="audio-only" hidden$="[[!audioOnly]]">(audio only)</div>
+      <div>
+        <p>[[mediaTitle]] <span class="media-type print-only">(<span hidden$="[[audioOnly]]">[[videoLabel]]</span><span idden$="[[!audioOnly]]">[[audioLabel]]</span>)</span></p>
+        <slot name="caption"></slot>
+      </div>
     </div>
     <div id="outertranscript" hidden$="[[standAlone]]" lang$="[[uiLanguage]]">
       <div id="innertranscript">
