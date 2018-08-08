@@ -267,11 +267,17 @@ Advanced styles for sliders:
           display: inline-flex;
           align-items: stretch;
           outline: 1px solid;
-          outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#bbbbbb));
-          background-color: var(--a11y-media-transcript-bg-color, #ffffff);
+          color: var(--simple-colors-foreground1);
+          background-color: var(--simple-colors-background2);
+          outline-color: var(--simple-colors-background3);
+          padding: 0;
         }
         :host[dark][flex-layout]:not([responsive-size*="s"]) {
-          outline-color: var(--a11y-media-outline-color, var(--a11y-media-bg-color,#000000));
+          outline-color: var(--simple-colors-background1);
+        }
+        :host .mediacaption:not(:empty) {
+          padding: 5px 15px;
+          background-color: var(--simple-colors-accent-background1);
         }
         :host > div {
           transition: all 0.5s;
@@ -465,10 +471,7 @@ Advanced styles for sliders:
         volume-icon$="[[volumeIcon]]"
         volume-label$="[[volumeLabel]]">
       </a11y-media-controls>
-      <div>
-        <p>[[mediaTitle]] <span class="media-type print-only">(<span hidden$="[[audioOnly]]">[[videoLabel]]</span><span idden$="[[!audioOnly]]">[[audioLabel]]</span>)</span></p>
-        <slot name="caption"></slot>
-      </div>
+      <div class="mediacaption">[[mediaCaption]]</div>
     </div>
     <div id="outertranscript" hidden$="[[standAlone]]" lang$="[[uiLanguage]]">
       <div id="innertranscript">
@@ -513,6 +516,12 @@ Advanced styles for sliders:
         'play-button-tapped': 'play',
         'thumbnail-aspect': '_setPaddingTop'
       },
+      properties: {
+        mediaCaption: {
+          type: String,
+          computed: '_getMediaCaption(audioOnly,audioLabel,mediaTitle)'
+        }
+      },
       
       behaviors: [ 
         simpleColorsBehaviors, 
@@ -535,7 +544,7 @@ Advanced styles for sliders:
       ready: function(){
         let root = this, tracks = new Array();
         root.target = root.$$('#transcript');
-        root.__status = 'Loading...';
+        root.__status = root.loadingLabel;
         root.__slider = root.$.slider;
         root.__volume = root.muted ? 0 : Math.max(this.volume,10);
         root.__resumePlaying = false;
@@ -814,6 +823,21 @@ Advanced styles for sliders:
       selectTrack: function(index){
         this.$.loader.selectTrack(index);
         this.$.transcript.setActiveTranscript(index);
+      },
+      /** 
+       * gets media caption
+       */
+      _getMediaCaption: function(audioOnly,audioLabel,mediaTitle){
+        let hasMediaTitle = mediaTitle !== undefined && mediaTitle !== null && mediaTitle !== '';
+        if(audioOnly && hasMediaTitle){
+          return mediaTitle+ ' ('+audioLabel+')'
+        } else if (audioOnly){
+          return audioLabel;
+        } else if(hasMediaTitle){
+          return mediaTitle;
+        } else {
+          return null;
+        }
       },
       /** 
        * loads track metadata
