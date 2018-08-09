@@ -259,8 +259,8 @@ Advanced styles for sliders:
         width: 100%;
         line-height: 160%;
       }
-      :host .print-only {
-        display: none;
+      :host .media-caption:not(:empty) {
+        padding: 5px 15px;
       }
       @media screen {
         :host[flex-layout]:not([responsive-size*="s"]) {
@@ -274,10 +274,6 @@ Advanced styles for sliders:
         }
         :host[dark][flex-layout]:not([responsive-size*="s"]) {
           outline-color: var(--simple-colors-background1);
-        }
-        :host .mediacaption:not(:empty) {
-          padding: 5px 15px;
-          background-color: var(--simple-colors-accent-background1);
         }
         :host > div {
           transition: all 0.5s;
@@ -355,20 +351,29 @@ Advanced styles for sliders:
         :host[sticky]:not([no-height]):not([stacked-layout]):not([responsive-size*="s"]) #controls {
           display: none;
         }
+        :host .print-only {
+          display: none;
+        }
+        :host .media-caption:not(:empty) {
+          background-color: var(--simple-colors-accent-background1);
+        }
       }
 
       @media print {
-        :host {
-          border: 1px solid #000000; 
+        :host, :host[dark] {
+          outline: 1px solid #aaaaaa; 
           background-color: #ffffff;
         }
         :host[sticky] #outerplayer {
           height: unset !important;
         }
+        :host .screen-only {
+          display: none;
+        }
         :host #player {
           color: #000000;
-          background-color: #f8f8f8;
-          padding: 15px;
+          background-color: #000000;
+          padding: 0;
           width: auto;
         }
         :host:not([thumbnail-src]) #sources, 
@@ -378,14 +383,17 @@ Advanced styles for sliders:
         :host #controls {
           display: none;
         }
-        :host .print-only {
-          display: inline;
-        }
         :host .media-type {
           font-style: italic;
         }
         :host #searchbar {
           display: none;
+        }
+        :host .media-caption:not(:empty) {
+          background-color: #cccccc;
+          color: #000000;
+          font-size: 120%;
+          padding: 5px 15px;
         }
       }
     </style>
@@ -471,7 +479,8 @@ Advanced styles for sliders:
         volume-icon$="[[volumeIcon]]"
         volume-label$="[[volumeLabel]]">
       </a11y-media-controls>
-      <div class="mediacaption">[[mediaCaption]]</div>
+      <div class="screen-only media-caption">[[mediaCaption]]</div>
+      <div class="print-only media-caption">[[printCaption]]</div>
     </div>
     <div id="outertranscript" hidden$="[[standAlone]]" lang$="[[uiLanguage]]">
       <div id="innertranscript">
@@ -520,6 +529,10 @@ Advanced styles for sliders:
         mediaCaption: {
           type: String,
           computed: '_getMediaCaption(audioOnly,audioLabel,mediaTitle)'
+        },
+        printCaption: {
+          type: String,
+          computed: '_getPrintCaption(audioOnly,audioLabel,videoLabel,mediaTitle)'
         }
       },
       
@@ -837,6 +850,21 @@ Advanced styles for sliders:
           return mediaTitle;
         } else {
           return null;
+        }
+      },
+      /** 
+       * gets print caption
+       */
+      _getPrintCaption: function(audioOnly,audioLabel,videoLabel,mediaTitle){
+        let hasMediaTitle = mediaTitle !== undefined && mediaTitle !== null && mediaTitle !== '';
+        if(audioOnly && hasMediaTitle){
+          return mediaTitle+ ' ('+audioLabel+')'
+        } else if (audioOnly){
+          return audioLabel;
+        } else if(hasMediaTitle){
+          return mediaTitle+ ' ('+videoLabel+')';
+        } else {
+          return videoLabel;
         }
       },
       /** 
