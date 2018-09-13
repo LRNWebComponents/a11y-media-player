@@ -659,16 +659,18 @@ Advanced styles for sliders:
                 root._getTrackData(root.$.loader.media);
               }
             });
-          }
+          }, checkApi = function(e) {
+            document.removeEventListener('youtube-api-ready', checkApi);
+            ytInit();
+          };
           if(Polymer.A11yMediaYoutubeUtility.apiReady){
             ytInit();
           } else {
-            document.addEventListener('youtube-api-ready', function(e) {
-              ytInit();
-            });
+            document.addEventListener('youtube-api-ready', checkApi);
           }
         }   
       },
+      
       /** 
        * plays the media 
        */
