@@ -548,14 +548,23 @@ Advanced styles for sliders:
         * calls responsive-utility to get parent's responsive size
         */ 
       attached: function(){
+        this.__playerAttached = true;
         Polymer.SimpleColorsUtility.requestAvailability();
         Polymer.A11yMediaUtility.requestAvailability();
         this._addResponsiveUtility();
         this.fire('a11y-player',this);
-        if(this.isYoutube) Polymer.A11yMediaYoutubeUtility.requestAvailability();
+        if(this.isYoutube) {
+          Polymer.A11yMediaYoutubeUtility.requestAvailability();
+          this._youTubeRequest();
+        }
       },
+
+      /**
+        * sets initial values and loads video or youtube iframe
+        */ 
       ready: function(){
         let root = this, tracks = new Array();
+        this.__playerReady = true;
         root.target = root.$$('#transcript');
         root.__status = root.loadingLabel;
         root.__slider = root.$.slider;
@@ -570,35 +579,8 @@ Advanced styles for sliders:
         root.style.maxWidth = root.width !== null ? root.width : '100%';  
         root.$.sources.style.paddingTop = (100/aspect)+'%';
         root.$.playbutton.style.height = (100/aspect)+'%';
-
         if(this.isYoutube) {
-          let options = {
-            "width": "100%",
-            "height": "100%",
-            "videoId": root.youtubeId
-          }, ytInit = function(){
-            root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube,options);
-            
-            // youtube API doesn't immediately give length of a video
-            let int = setInterval(() => {
-              if (root.__media.getDuration !== undefined) {
-                clearInterval(int);
-                root.__duration = root.__media.duration = root.__media.getDuration();
-                root.__status = root._getHHMMSS(0,root.__media.duration)+'/'+root._getHHMMSS(root.__media.duration);
-                root.$.controls.setStatus(root.__status);
-                root._getTrackData(root.$.loader.media);
-              }
-            });
-
-          };
-
-          if(Polymer.A11yMediaYoutubeUtility.apiReady){
-            ytInit();
-          } else {
-            document.addEventListener('youtube-api-ready', function(e) {
-              ytInit();
-            });
-          }
+          this._youTubeRequest();
         } else {
           root.__media = root.$.loader;
           // handles loaded metadata
@@ -637,7 +619,6 @@ Advanced styles for sliders:
           // when dragging stops, seeks to that value and 
           // if the video was playing before the dragging, resumes it
           if (!root.$.slider.dragging) { 
-            console.log(root.$.slider.immediateValue);
             root.seek(root.$.slider.immediateValue);
             root.__resumePlaying = false;
           }
@@ -654,6 +635,39 @@ Advanced styles for sliders:
             root.__resumePlaying = false;
           }
         });
+      },
+
+      /**
+        * gets YouTube iframe
+        */ 
+      _youTubeRequest: function(){
+        let root = this;
+        if(this.__playerAttached && this.__playerReady){
+          let options = {
+            "width": "100%",
+            "height": "100%",
+            "videoId": root.youtubeId
+          }, ytInit = function(){
+            root.__media = Polymer.A11yMediaYoutubeUtility.initYoutubePlayer(root.$.youtube,options);
+            // youtube API doesn't immediately give length of a video
+            let int = setInterval(() => {
+              if (root.__media.getDuration !== undefined) {
+                clearInterval(int);
+                root.__duration = root.__media.duration = root.__media.getDuration();
+                root.__status = root._getHHMMSS(0,root.__media.duration)+'/'+root._getHHMMSS(root.__media.duration);
+                root.$.controls.setStatus(root.__status);
+                root._getTrackData(root.$.loader.media);
+              }
+            });
+          }
+          if(Polymer.A11yMediaYoutubeUtility.apiReady){
+            ytInit();
+          } else {
+            document.addEventListener('youtube-api-ready', function(e) {
+              ytInit();
+            });
+          }
+        }   
       },
       /** 
        * plays the media 
@@ -890,7 +904,7 @@ Advanced styles for sliders:
             
               let cues = Object.keys(track.cues).map(function(key) { 
                 return {
-                  "order": track.cues[key].id,
+                  "order": track.cues[key].id !== "" ? track.cues[key].id : key,
                   "seek": track.cues[key].startTime,
                   "seekEnd": track.cues[key].endTime,
                   "start": root._getHHMMSS(track.cues[key].startTime,root.media.duration),

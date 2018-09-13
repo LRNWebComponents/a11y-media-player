@@ -211,6 +211,7 @@ A transcript element to pair with a11y-media-player
        * updates activeCues array and scrolls to position
        */
       setActiveCues: function(cues){
+        console.log('setActiveCues',cues);
         let root = this, offset = (root.$$('#inner') !== null && root.$$('#inner') !== undefined) ? root.$$('#inner').offsetTop : 0, cue = root.$$('#inner a11y-media-transcript-cue[active]');
         root.set('activeCues',cues.slice(0));
         if (!root.disableScroll && cue !== null & cue !== undefined) {

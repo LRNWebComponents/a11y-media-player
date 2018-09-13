@@ -33,10 +33,19 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
          */
         created: function() {
           let root = Polymer.A11yMediaYoutubeUtility;
-          root.counter = 0; //counter for unique id each youtube iframe
-          document.addEventListener('youtube-api-ready', function(e) {
+          root.ytapi = function(e) {
             root.apiReady = true;
-          });
+            document.removeEventListener('youtube-api-ready',root.ytapi);
+          };
+          root.counter = 0; //counter for unique id each youtube iframe
+          document.addEventListener('youtube-api-ready', root.ytapi);
+        },
+        
+        /**
+         * Cleanup.
+         */
+        detached: function() {
+          document.removeEventListener('youtube-api-ready',root.ytapi);
         },
       });
 
@@ -52,12 +61,12 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
       Polymer.A11yMediaYoutubeUtility.requestAvailability = function() {
         if (!Polymer.A11yMediaYoutubeUtility.instance) {
           Polymer.A11yMediaYoutubeUtility.instance = document.createElement('a11y-media-youtube-utility');
+          document.body.appendChild(Polymer.A11yMediaYoutubeUtility.instance);
         }
-
-        document.body.appendChild(Polymer.A11yMediaYoutubeUtility.instance);
       };
 
-      Polymer.A11yMediaYoutubeUtility.initYoutubePlayer = function(elem,options){
+      Polymer.A11yMediaYoutubeUtility.initYoutubePlayer = function(elem,options,attached){
+        console.log('A11yMediaYoutubeUtility.initYoutubePlayer',elem,attached);
         this.counter++;
         //get unique id for each youtube iframe
         let root = this, div = document.createElement('div'), id = "a11y-media-yt-"+this.counter;
@@ -65,8 +74,7 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
         elem.appendChild(div);
 
         // function to create and init iframe
-        let initialize = function(){
-        }, iframe = new YT.Player(id, {
+        let iframe = new YT.Player(id, {
           width: options.width, 
           height: options.height, 
           videoId: options.videoId, 
@@ -80,9 +88,6 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
             modestbranding: 1,
             showinfo: 0, 
             rel: 0
-          },
-          events: {
-            onReady: initialize
           }
         });
 
@@ -107,7 +112,7 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
           "start": function(index){ return 0 },
           "end": function(index){ return iframe.duration }
         };
-
+        console.log('A11yMediaYoutubeUtility.ytiframe',iframe);
         // return the iframe so that a11y-media-player can control it
         return iframe;
       };
