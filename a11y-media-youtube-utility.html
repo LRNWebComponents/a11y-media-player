@@ -66,7 +66,6 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
       };
 
       Polymer.A11yMediaYoutubeUtility.initYoutubePlayer = function(elem,options,attached){
-        console.log('A11yMediaYoutubeUtility.initYoutubePlayer',elem,attached);
         this.counter++;
         //get unique id for each youtube iframe
         let root = this, div = document.createElement('div'), id = "a11y-media-yt-"+this.counter;
@@ -112,7 +111,6 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
           "start": function(index){ return 0 },
           "end": function(index){ return iframe.duration }
         };
-        console.log('A11yMediaYoutubeUtility.ytiframe',iframe);
         // return the iframe so that a11y-media-player can control it
         return iframe;
       };
