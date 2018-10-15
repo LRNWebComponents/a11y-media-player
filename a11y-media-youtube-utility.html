@@ -51,6 +51,7 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
         //get unique id for each youtube iframe
         let root = this, div = document.createElement('div'), id = "a11y-media-yt-"+this.counter;
         div.setAttribute('id',id);
+        elem.innerHTML = "";
         elem.appendChild(div);
         // function to create and init iframe
         let iframe = new YT.Player(id, {

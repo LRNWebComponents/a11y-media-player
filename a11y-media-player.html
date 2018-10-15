@@ -916,8 +916,6 @@ Advanced styles for sliders:
         // gets cues from tracks
         let root = this, media = root.$.loader.media, tdata = new Array(), selected = 0;
         root.hasTranscript = !root.standAlone;
-        console.log('root.$.loader.media',root.$.loader.media);
-        console.log('media.textTracks',media.textTracks);
         // hides the video subtitles and captions and adds them to the tracks dropdown-select
         //gets and updates track metadata
         for(let i=0; i < media.textTracks.length; i++) {
