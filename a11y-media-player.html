@@ -203,7 +203,9 @@ Advanced styles for sliders:
         width: 100%;
       }
       :host #loader, 
-      :host #youtube {
+      :host #youtube,
+      :host #customcc,
+      :host #customcctxt {
         position: absolute;
         top: 0;
         left: 0;
@@ -211,14 +213,10 @@ Advanced styles for sliders:
       :host #youtube {
         height: 100%;
       }
-      :host[audio-only] #loader {
-        z-index: 2;
-      }
       :host #customcc {
-        position: absolute;
         font-size: 20px;
-        bottom: 0.5em;
         width: 100%;
+        height: 100%;
         transition: font-size 0.25s;
       }
       :host[responsive-size*="lg"] #customcc {
@@ -237,6 +235,8 @@ Advanced styles for sliders:
         display: none;
       }
       :host #customcctxt {
+        top: unset;
+        bottom: 0.5em;
         display: inline-block;
         margin: 0 10px;
         color: white;
@@ -423,7 +423,8 @@ Advanced styles for sliders:
               loop$="[[loop]]" 
               muted$="[[muted]]" 
               manifest$="[[manifest]]" 
-              playback-rate$="[[playbackRate]]"
+              playback-rate$="[[playbackRate]]" 
+              style$="[[_getThumbnailCSS(thumbnailSrc)]]"
               preload$="[[preload]]"
               volume$="[[volume]]">
               <slot></slot>
@@ -582,7 +583,6 @@ Advanced styles for sliders:
         root.width = root.width !== null ? root.width : '100%';  
         root.style.maxWidth = root.width !== null ? root.width : '100%';  
         root.$.sources.style.paddingTop = (100/aspect)+'%';
-        root.$.playbutton.style.height = (100/aspect)+'%';
         if(this.isYoutube) {
           root.disableInteractive = true;
           this._youTubeRequest();
@@ -593,7 +593,6 @@ Advanced styles for sliders:
             // adjusts aspect ratio
             aspect = root.__media.aspectRatio; 
             root.$.sources.style.paddingTop = (100/aspect)+'%';
-            root.$.playbutton.style.height = (100/aspect)+'%';
             root.$.playbutton.removeAttribute('disabled');
 
             // gets and converts video duration
@@ -627,6 +626,12 @@ Advanced styles for sliders:
         root.$.slider.addEventListener('focused-changed', (e) => {
           this._toggleSliderSeek(root.$.slider.focused,root.$.slider.value);
         });
+      },
+      /**
+        * get label based on whether or not the video is playing
+        */
+      _getThumbnailCSS: function(thumbnailSrc){
+          return thumbnailSrc != null ? 'background-image: url('+thumbnailSrc+'); background-size: cover;' : null;
       },
 
       /**

@@ -28,6 +28,8 @@ Custom styles:
         z-index: 2;
         opacity: 1;
         transition: opacity 0.5s; 
+        position: absolute;
+        height: 100%;
       }
       :host[disabled]:not([audio-only]),
       :host[playing]:not([audio-only]) {
@@ -96,7 +98,6 @@ Custom styles:
       }
     </style>
     <button id="button" aria-hidden$="[[disabled]]" tabindex="0" disabled$="[[disabled]]" controls="video" title$="[[label]]">
-      <img id="thumbnail" src$="[[thumbnailSrc]]">
       <div id="background"></div>
       <svg id="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"  width="30%" height="30%" opacity="0.7">
         <g>
@@ -172,12 +173,6 @@ Custom styles:
             }
           }, 10);
         }
-      },
-      /**
-        * get label based on whether or not the video is playing
-        */
-      _getThumbnailCSS: function(thumbnailSrc){
-          return thumbnailSrc != null ? 'background-image: url('+thumbnailSrc+'); background-size: cover;' : null;
       },
       /**
         * get label based on whether or not the video is playing
