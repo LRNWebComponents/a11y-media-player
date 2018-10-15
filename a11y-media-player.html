@@ -554,6 +554,7 @@ Advanced styles for sliders:
         this._addResponsiveUtility();
         this.fire('a11y-player',this);
         if(this.isYoutube) {
+          console.log('isYoutube');
           Polymer.A11yMediaYoutubeUtility.requestAvailability();
           this._youTubeRequest();
         }
@@ -563,8 +564,10 @@ Advanced styles for sliders:
         * sets initial values and loads video or youtube iframe
         */ 
       ready: function(){
-        let root = this, tracks = new Array();
-        this.__playerReady = true;
+        let root = this, tracks = new Array(); 
+        root.__playerReady = true;
+        root.__interactive = !root.disableInteractive;
+        console.log('root.__interactive',root.__interactive,'root.disableInteractive',root.disableInteractive);
         root.target = root.$$('#transcript');
         root.__status = root.loadingLabel;
         root.__slider = root.$.slider;
@@ -580,6 +583,7 @@ Advanced styles for sliders:
         root.$.sources.style.paddingTop = (100/aspect)+'%';
         root.$.playbutton.style.height = (100/aspect)+'%';
         if(this.isYoutube) {
+          root.disableInteractive = true;
           this._youTubeRequest();
         } else {
           root.__media = root.$.loader;
@@ -642,7 +646,7 @@ Advanced styles for sliders:
         */ 
       _youTubeRequest: function(){
         let root = this;
-        if(this.__playerAttached && this.__playerReady){
+        if(root.__playerAttached && root.__playerReady){
           let options = {
             "width": "100%",
             "height": "100%",
@@ -657,11 +661,15 @@ Advanced styles for sliders:
                 root.__status = root._getHHMMSS(0,root.__media.duration)+'/'+root._getHHMMSS(root.__media.duration);
                 root.$.controls.setStatus(root.__status);
                 root._getTrackData(root.$.loader.media);
+                console.log('updating root.__interactive',root.__interactive,'root.disableInteractive',root.disableInteractive);
+                root.disableInteractive = !root.__interactive;
               }
             });
           }, checkApi = function(e) {
-            document.removeEventListener('youtube-api-ready', checkApi);
-            ytInit();
+            if(Polymer.A11yMediaYoutubeUtility.apiReady){
+              document.removeEventListener('youtube-api-ready', checkApi);
+              ytInit();
+            }
           };
           if(Polymer.A11yMediaYoutubeUtility.apiReady){
             ytInit();

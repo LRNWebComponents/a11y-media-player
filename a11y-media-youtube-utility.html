@@ -11,48 +11,19 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
 -->
 
 <dom-module id="a11y-media-youtube-utility">
-  <template>
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <script>
-      function onYouTubeIframeAPIReady() {
-        console.log('youtube-api-ready');
-        var event = new CustomEvent('youtube-api-ready');
-        document.dispatchEvent(event);
-      }
-    </script>
-  </template>
   <script>
     (function() {
       'use strict';
   
       Polymer.A11yMediaYoutubeUtility = Polymer({
-
         is: 'a11y-media-youtube-utility',
-        
-        /**
-         * Makes sure there is a utility ready and listening for elements.
-         */
-        created: function() {
-          let root = Polymer.A11yMediaYoutubeUtility;
-          root.ytapi = function(e) {
-            root.apiReady = true;
-            document.removeEventListener('youtube-api-ready',root.ytapi);
-          };
-          root.counter = 0; //counter for unique id each youtube iframe
-          document.addEventListener('youtube-api-ready', root.ytapi);
-        },
-        
-        /**
-         * Cleanup.
-         */
-        detached: function() {
-          document.removeEventListener('youtube-api-ready',root.ytapi);
-        },
       });
 
       Polymer.A11yMediaYoutubeUtility.instance = null;
 
-      Polymer.A11yMediaYoutubeUtility.apiReady = false;
+      Polymer.A11yMediaYoutubeUtility.counter = 0;
+
+      Polymer.A11yMediaYoutubeUtility.apiReady = window.YT !== undefined;
 
       Polymer.A11yMediaYoutubeUtility.players = [];
 
@@ -63,6 +34,15 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
         if (!Polymer.A11yMediaYoutubeUtility.instance) {
           Polymer.A11yMediaYoutubeUtility.instance = document.createElement('a11y-media-youtube-utility');
           document.body.appendChild(Polymer.A11yMediaYoutubeUtility.instance);
+          let api = document.createElement("script");
+          api.setAttribute("src","https://www.youtube.com/iframe_api");
+          api.setAttribute("type","text/javascript");
+          document.body.appendChild(api);
+          window.onYouTubeIframeAPIReady = function(){
+            Polymer.A11yMediaYoutubeUtility.apiReady = true;
+            var event = new CustomEvent('youtube-api-ready');
+            document.dispatchEvent(event);
+          };
         }
       };
 
@@ -72,7 +52,6 @@ Utility to insert, init and control YouTube iframe embeds with a11y-media-player
         let root = this, div = document.createElement('div'), id = "a11y-media-yt-"+this.counter;
         div.setAttribute('id',id);
         elem.appendChild(div);
-
         // function to create and init iframe
         let iframe = new YT.Player(id, {
           width: options.width, 
