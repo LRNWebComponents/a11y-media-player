@@ -109,8 +109,8 @@ Utily to control
         setStickyPlayer: function(player){
           let root = this, parent = root._getParentNode(player);
           root.__playerTop = parent.offsetTop;
-          root.__playerUpperMiddle = root.__playerTop + parent.offsetHeight * 0.15;
-          root.__playerLowerMiddle = root.__playerTop + parent.offsetHeight * 0.85;
+          root.__playerUpperMiddle = root.__playerTop + parent.offsetHeight * 0.90;
+          root.__playerLowerMiddle = root.__playerTop + parent.offsetHeight * 0.10;
           if (player !== root.stickyPlayer && root.stickyPlayer !== undefined && root.stickyPlayer !== null) {
             root.stickyPlayer.toggleSticky(false);
             root.__parent.style.height = 'unset';

@@ -567,7 +567,6 @@ Advanced styles for sliders:
         let root = this, tracks = new Array(); 
         root.__playerReady = true;
         root.__interactive = !root.disableInteractive;
-        console.log('root.__interactive',root.__interactive,'root.disableInteractive',root.disableInteractive);
         root.target = root.$$('#transcript');
         root.__status = root.loadingLabel;
         root.__slider = root.$.slider;
@@ -661,7 +660,6 @@ Advanced styles for sliders:
                 root.__status = root._getHHMMSS(0,root.__media.duration)+'/'+root._getHHMMSS(root.__media.duration);
                 root.$.controls.setStatus(root.__status);
                 root._getTrackData(root.$.loader.media);
-                console.log('updating root.__interactive',root.__interactive,'root.disableInteractive',root.disableInteractive);
                 root.disableInteractive = !root.__interactive;
               }
             });
@@ -762,6 +760,7 @@ Advanced styles for sliders:
        * seeks to a specific time 
        */
       seek: function(time){
+        console.log('seek -> resume',this.__resumePlaying);
         let seekable = this.__media.seekable;
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
           this.__media.seek(time);
@@ -951,6 +950,7 @@ Advanced styles for sliders:
         }
         if(!root.standAlone && root.$.transcript !== undefined && root.$.transcript !== null){
           root.$.transcript.addEventListener('cue-seek',function(e){
+            root.__resumePlaying = root.__playing;
             root.seek(e.detail.cue.seek);
           });
         }
