@@ -211,29 +211,32 @@ Advanced styles for sliders:
       :host #youtube {
         height: 100%;
       }
-      :host #youtubecc {
+      :host[audio-only] #loader {
+        z-index: 2;
+      }
+      :host #customcc {
         position: absolute;
         font-size: 20px;
         bottom: 0.5em;
         width: 100%;
         transition: font-size 0.25s;
       }
-      :host[responsive-size*="lg"] #youtubecc {
+      :host[responsive-size*="lg"] #customcc {
         font-size: 14px;
       }
-      :host[responsive-size*="md"] #youtubecc {
+      :host[responsive-size*="md"] #customcc {
         font-size: 14px;
       }
-      :host[responsive-size*="sm"] #youtubecc {
+      :host[responsive-size*="sm"] #customcc {
         font-size: 12px;
       }
-      :host[responsive-size*="xs"] #youtubecc {
+      :host[responsive-size*="xs"] #customcc {
         font-size: 10px;
       }
-      :host[sticky]:not([sticky-corner="none"]) #youtubecc {
+      :host[sticky]:not([sticky-corner="none"]) #customcc {
         display: none;
       }
-      :host #youtubecctxt {
+      :host #customcctxt {
         display: inline-block;
         margin: 0 10px;
         color: white;
@@ -241,7 +244,7 @@ Advanced styles for sliders:
         background-color: rgba(0, 0, 0, 0.8);
         padding: 0.15em 0.25em;
       }
-      :host #youtubecctxt:empty {
+      :host #customcctxt:empty {
         display: none;
       }
       :host #innerplayer,
@@ -426,7 +429,7 @@ Advanced styles for sliders:
               <slot></slot>
             </a11y-media-video-loader>
             <div id="youtube" hidden$="[[!isYoutube]]" video-id$="[[videoId]]"></div>
-            <div id="youtubecc" hidden$="[[!showYoutubeCaptions]]"><span id="youtubecctxt"></div>
+            <div id="customcc" hidden$="[[!showCustomCaptions]]"><span id="customcctxt"></div>
           </div>
         </div>
         <paper-slider id="slider" 
@@ -554,7 +557,6 @@ Advanced styles for sliders:
         this._addResponsiveUtility();
         this.fire('a11y-player',this);
         if(this.isYoutube) {
-          console.log('isYoutube');
           Polymer.A11yMediaYoutubeUtility.requestAvailability();
           this._youTubeRequest();
         }
@@ -688,7 +690,7 @@ Advanced styles for sliders:
           root.__playProgress = setInterval(() => {
             root.__elapsed = root.__media.getCurrentTime() > 0 ? root.__media.getCurrentTime() : 0;
             root.__duration = root.__media.duration > 0 ? root.__media.duration: 0; 
-            if(root.isYoutube && root.tracks !== undefined && root.tracks !== null) {
+            if((root.isYoutube || root.audioOnly) && root.tracks !== undefined && root.tracks !== null) {
               let track = root.tracks[this.$.transcript.selectedTranscript];
               if(track !== undefined && track !== null && track.cues !== undefined && track.cues !== null){
                 let active = [], caption = '';
@@ -698,7 +700,7 @@ Advanced styles for sliders:
                     caption = caption === '' ? track.cues[i].text : caption;
                   }
                 }
-                root.$.youtubecctxt.innerText = caption;
+                root.$.customcctxt.innerText = caption;
                 root.$.transcript.setActiveCues(active);
               }
             }
@@ -760,7 +762,6 @@ Advanced styles for sliders:
        * seeks to a specific time 
        */
       seek: function(time){
-        console.log('seek -> resume',this.__resumePlaying);
         let seekable = this.__media.seekable;
         if (seekable.length > 0 && time >= seekable.start(0) && time <= seekable.end(0)) {
           this.__media.seek(time);

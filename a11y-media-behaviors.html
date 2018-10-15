@@ -337,9 +337,9 @@ A set of behaviors for a11y-media components.
       /**
         * is YouTube?
         */
-      showYoutubeCaptions: {
+      showCustomCaptions: {
         type: Boolean,
-        computed: '_showYoutubeCaptions(isYoutube,cc)'
+        computed: '_showCustomCaptions(isYoutube,audioOnly,cc)'
       },
       /** 
         * Is stand-alone player (without transcript)?
@@ -644,8 +644,8 @@ A set of behaviors for a11y-media components.
     /**
       * show youtube closed captions layer?
       */ 
-    _showYoutubeCaptions: function(isYoutube,cc){
-      return isYoutube && cc;
+    _showCustomCaptions: function(isYoutube,audioOnly,cc){
+      return (isYoutube || audioOnly) && cc;
     },
     /**
       * Determines if video and transcript are in a flex layout
