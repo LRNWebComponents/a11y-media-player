@@ -270,6 +270,14 @@ Advanced styles for sliders:
         display: block;
         border-top: 1px solid #aaaaaa; 
       }
+      :host .sr-only {
+        position: absolute;
+        left: -9999px;
+        font-size: 0;
+        height: 0;
+        width: 0;
+        overflow: hidden;
+      }
       @media screen {
         :host #printthumb {
           display: none;
@@ -405,6 +413,7 @@ Advanced styles for sliders:
         }
       }
     </style>
+    <div class="sr-only">[[mediaCaption]]</div>
     <div id="outerplayer" lang$="[[uiLanguage]]">
       <div id="player">
         <div id="innerplayer">
@@ -488,7 +497,7 @@ Advanced styles for sliders:
         volume-icon$="[[volumeIcon]]"
         volume-label$="[[volumeLabel]]">
       </a11y-media-controls>
-      <div class="screen-only media-caption">[[mediaCaption]]</div>
+      <div class="screen-only media-caption" aria-hidden="true">[[mediaCaption]]</div>
       <div class="print-only media-caption">[[printCaption]]</div>
     </div>
     <img id="printthumb" aria-hidden="true" src$="[[thumbnailSrc]]">
