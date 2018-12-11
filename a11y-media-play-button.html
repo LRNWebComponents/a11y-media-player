@@ -165,7 +165,7 @@ Custom styles:
         this.$.text.innerText = this.playLabel;
         if(this.audioOnly) {
           let root = this, img = this.$.thumbnail, check = setInterval(function () {
-            if (img.naturalWidth) {
+            if (img && img.naturalWidth) {
               clearInterval(check);
               let aspect = img.naturalHeight/img.naturalWidth * 100;
               root.style.height = aspect+'%';
