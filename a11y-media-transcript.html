@@ -167,6 +167,7 @@ A transcript element to pair with a11y-media-player
        */
       attached: function(){
         Polymer.SimpleColorsUtility.requestAvailability();
+        this.__activeCue = null;
         this.fire('transcript-ready',this);
       },
       /** 
@@ -214,7 +215,7 @@ A transcript element to pair with a11y-media-player
         //console.log('setActiveCues',cues);
         let root = this, offset = (root.$$('#inner') !== null && root.$$('#inner') !== undefined) ? root.$$('#inner').offsetTop : 0, cue = root.$$('#inner a11y-media-transcript-cue[active]');
         root.set('activeCues',cues.slice(0));
-        if (!root.disableScroll && cue !== null & cue !== undefined) {
+        if (!root.disableScroll && cue !== null & cue !== undefined && cue !== this.__activeCue) {
           //javascript scrolling from:  https://stackoverflow.com/questions/8917921/cross-browser-javascript-not-jquery-scroll-to-top-animation#answer-8918062 
           let scrollingTo = function(element, to, duration) {
             if (duration <= 0) return;
@@ -228,6 +229,8 @@ A transcript element to pair with a11y-media-player
             }, 10);
           };
           scrollingTo(root, cue.offsetTop-offset, 250);
+          // stores active cue so that scrolling only occurs if the active cue changes
+          this.__activeCue = cue;
         }
       },
       /** 
